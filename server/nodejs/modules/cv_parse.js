@@ -13,7 +13,7 @@
   - Identify and fix first level split nodes.
     - If split node has nodes beneath, function will have to be reran multiple times.
   - Identify right joins
-    - Untested
+    - Initial tests seem to work
 
   *Planned features...
   - Identify unmapped input parameters
@@ -23,6 +23,7 @@
 
 const fs = require('fs');
 const xml2js = require('xml2js');
+const path = require('path');
 
 const parser = new xml2js.Parser();
 
@@ -362,15 +363,15 @@ function FixSplitNodes(jsonResult, version, cb) {
   });
 }
 
-const filePath = `${__dirname}/employeespunchedin.xml`;
-// const filePath = `${__dirname}/cv_bad.xml`;
-// const filePath = `${__dirname}/cv_bad2.xml`;
+const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'employeespunchedin.xml');
+// const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad.xml`);
+// const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad2.xml`);
 
 ParseFile(filePath, (result) => {
   console.log('Processing...');
   // WriteFile('cv_json_new.json', JSON.stringify(result));
   // console.log('complete');
-
+  
   // return;
 
   GetCvVersion(result, (err, version) => {
@@ -394,9 +395,9 @@ ParseFile(filePath, (result) => {
     // });
 
     console.log('\nWriting files...');
-    // WriteFile('cv_json_new.json', JSON.stringify(result));
+    // WriteFile('./data/json/cv_json_latest.json', JSON.stringify(result));
     const builder = new xml2js.Builder();
     const xml = builder.buildObject(result);
-    WriteFile('cv_xml_new.xml', xml);
+    WriteFile('./data/xml/cv_xml_latest.xml', xml);
   });
 });

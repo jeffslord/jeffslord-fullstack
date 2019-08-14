@@ -1,25 +1,28 @@
-import React, {Component} from 'react'
-import {DropzoneArea} from 'material-ui-dropzone'
- 
-class DropzoneAreaExample extends Component{
-  constructor(props){
+import React, { Component } from "react";
+import { DropzoneArea } from "material-ui-dropzone";
+import MyCvTextBox from "./MyCvTextBox";
+import MyFileUploader from "./MyFileUploader";
+import { Typography } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+
+class MyCvParse extends Component {
+  constructor(props) {
     super(props);
     this.state = {
       files: []
     };
   }
-  handleChange(files){
-    this.setState({
-      files: files
-    });
-  }
-  render(){
+  render() {
     return (
-      <DropzoneArea 
-        onChange={this.handleChange.bind(this)}
-        />
-    )  
+      <div>
+        <Typography variant={"h1"}>Calculation View Optimizer</Typography>
+        <Typography variant={"h2"}>Upload File or Paste Text</Typography>
+        <MyFileUploader />
+        <MyCvTextBox />
+        <Button variant={"contained"}>Process</Button>
+      </div>
+    );
   }
-} 
- 
-export default DropzoneAreaExample;
+}
+
+export default MyCvParse;

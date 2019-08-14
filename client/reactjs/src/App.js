@@ -7,6 +7,9 @@ import MyAppBar from "./components/MyAppBar";
 import MyGameServerPage from "./components/MyGameServerPage";
 import MyCvParse from "./components/MyCvParse";
 import MyCvTextBox from "./components/MyCvTextBox";
+import MyFileUploader from "./components/MyFileUploader";
+import { Typography } from "@material-ui/core";
+
 // import ReactHLS from "react-hls";
 
 class App extends React.Component {
@@ -45,8 +48,12 @@ class App extends React.Component {
         {/* <MyDrawer open={this.state.drawerOpen} setDrawerState={value => setDrawerState(value)} />
         <MyAppBar setDrawerState={value => setDrawerState(value)} />
         <MyGameServerPage serverInfo={this.state.gameServerInfo} /> */}
-        <MyCvParse />
+        {/* <Typography variant={"h1"}>Calculation View Optimizer</Typography>
+        <Typography variant={"h2"}>Upload File or Paste Text</Typography>
+        <MyFileUploader />
         <MyCvTextBox />
+        <Button variant={"contained"}>Process</Button> */}
+        <MyCvParse />
       </div>
     );
   }

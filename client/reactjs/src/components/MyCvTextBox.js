@@ -1,7 +1,7 @@
 import TextField from "@material-ui/core/TextField";
 import React, { Component } from "react";
 
-export default function FilledTextFields() {
+export default function MyCvTextBox() {
   return (
     <TextField
       id="filled-with-placeholder"
