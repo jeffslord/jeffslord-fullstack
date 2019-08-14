@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="cv_bad" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
+    <descriptions defaultDescription="cv_bad"/>
+    <localVariables/>
+    <variableMappings/>
+    <dataSources>
+        <DataSource id="data.table1">
+            <resourceUri>data.table1</resourceUri>
+        </DataSource>
+        <DataSource id="data.table2">
+            <resourceUri>data.table2</resourceUri>
+        </DataSource>
+    </dataSources>
+    <calculationViews>
+        <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+            <viewAttributes>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_2"/>
+                <viewAttribute id="elem_3"/>
+                <viewAttribute id="elem_4"/>
+                <viewAttribute id="elem_5"/>
+            </viewAttributes>
+            <calculatedViewAttributes/>
+            <restrictedViewAttributes/>
+            <input node="data.table1">
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_1" source="elem_1"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_2" source="elem_2"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_3" source="elem_3"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_4" source="elem_4"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_5" source="elem_5"/>
+            </input>
+        </calculationView>
+        <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2">
+            <viewAttributes>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_2"/>
+                <viewAttribute id="elem_3"/>
+            </viewAttributes>
+            <calculatedViewAttributes/>
+            <restrictedViewAttributes/>
+            <input node="Projection_1">
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_1" source="elem_1"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_2" source="elem_2"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_3" source="elem_3"/>
+            </input>
+        </calculationView>
+        <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3">
+            <viewAttributes>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_4"/>
+                <viewAttribute id="elem_5"/>
+            </viewAttributes>
+            <calculatedViewAttributes/>
+            <restrictedViewAttributes/>
+            <input node="Projection_1">
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_1" source="elem_1"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_4" source="elem_4"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_5" source="elem_5"/>
+            </input>
+        </calculationView>
+        <calculationView xsi:type="Calculation:JoinView" id="Join_1" cardinality="CN_N" joinType="leftOuter">
+            <viewAttributes>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_2"/>
+                <viewAttribute id="elem_3"/>
+                <viewAttribute id="elem_4"/>
+                <viewAttribute id="elem_5"/>
+            </viewAttributes>
+            <calculatedViewAttributes/>
+            <restrictedViewAttributes/>
+            <input node="Projection_2">
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_1" source="elem_1"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_2" source="elem_2"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_3" source="elem_3"/>
+            </input>
+            <input node="Projection_3">
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_4" source="elem_4"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_5" source="elem_5"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_1" source="elem_1"/>
+            </input>
+            <joinAttribute name="elem_1"/>
+        </calculationView>
+        <calculationView xsi:type="Calculation:ProjectionView" id="Projection_4">
+            <viewAttributes>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_2"/>
+                <viewAttribute id="elem_3"/>
+            </viewAttributes>
+            <calculatedViewAttributes/>
+            <restrictedViewAttributes/>
+            <input node="data.table2">
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_1" source="elem_1"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_2" source="elem_2"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_3" source="elem_3"/>
+            </input>
+        </calculationView>
+        <calculationView xsi:type="Calculation:JoinView" id="Join_2" cardinality="CN_N" joinType="rightOuter">
+            <viewAttributes>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_2"/>
+                <viewAttribute id="elem_3"/>
+                <viewAttribute id="elem_4"/>
+                <viewAttribute id="elem_5"/>
+                <viewAttribute id="elem_1_1"/>
+                <viewAttribute id="elem_2_1"/>
+                <viewAttribute id="elem_3_1"/>
+            </viewAttributes>
+            <calculatedViewAttributes/>
+            <restrictedViewAttributes/>
+            <input node="Join_1">
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_1" source="elem_1"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_2" source="elem_2"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_3" source="elem_3"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_4" source="elem_4"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_5" source="elem_5"/>
+            </input>
+            <input node="Projection_4">
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_1_1" source="elem_1"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_2_1" source="elem_2"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_3_1" source="elem_3"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_1" source="elem_1"/>
+            </input>
+            <joinAttribute name="elem_1"/>
+        </calculationView>
+    </calculationViews>
+    <logicalModel id="Join_2">
+        <attributes>
+            <attribute id="elem_1" order="1" displayAttribute="false" attributeHierarchyActive="false">
+                <descriptions defaultDescription="elem_1"/>
+                <keyMapping columnObjectName="Join_2" columnName="elem_1"/>
+            </attribute>
+            <attribute id="elem_2" order="2" displayAttribute="false" attributeHierarchyActive="false">
+                <descriptions defaultDescription="elem_2"/>
+                <keyMapping columnObjectName="Join_2" columnName="elem_2"/>
+            </attribute>
+            <attribute id="elem_3" order="3" displayAttribute="false" attributeHierarchyActive="false">
+                <descriptions defaultDescription="elem_3"/>
+                <keyMapping columnObjectName="Join_2" columnName="elem_3"/>
+            </attribute>
+            <attribute id="elem_4" order="4" displayAttribute="false" attributeHierarchyActive="false">
+                <descriptions defaultDescription="elem_4"/>
+                <keyMapping columnObjectName="Join_2" columnName="elem_4"/>
+            </attribute>
+            <attribute id="elem_5" order="5" displayAttribute="false" attributeHierarchyActive="false">
+                <descriptions defaultDescription="elem_5"/>
+                <keyMapping columnObjectName="Join_2" columnName="elem_5"/>
+            </attribute>
+            <attribute id="elem_1_1" order="6" displayAttribute="false" attributeHierarchyActive="false">
+                <descriptions defaultDescription="elem_1"/>
+                <keyMapping columnObjectName="Join_2" columnName="elem_1_1"/>
+            </attribute>
+            <attribute id="elem_2_1" order="7" displayAttribute="false" attributeHierarchyActive="false">
+                <descriptions defaultDescription="elem_2"/>
+                <keyMapping columnObjectName="Join_2" columnName="elem_2_1"/>
+            </attribute>
+            <attribute id="elem_3_1" order="8" displayAttribute="false" attributeHierarchyActive="false">
+                <descriptions defaultDescription="elem_3"/>
+                <keyMapping columnObjectName="Join_2" columnName="elem_3_1"/>
+            </attribute>
+        </attributes>
+        <calculatedAttributes/>
+        <baseMeasures/>
+        <calculatedMeasures/>
+        <restrictedMeasures/>
+    </logicalModel>
+    <layout>
+        <shapes>
+            <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+                <upperLeftCorner x="284.80100002263475" y="112"/>
+
+                <rectangleSize width="160"/>
+            </shape>
+
+            <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+                <upperLeftCorner x="275.33333333333337" y="661.9999964237213"/>
+                <rectangleSize height="30" width="160"/>
+            </shape>
+            <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+                <upperLeftCorner x="92" y="536.9999976158142"/>
+                <rectangleSize height="30" width="160"/>
+            </shape>
+            <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+                <upperLeftCorner x="302" y="536.9999976158142"/>
+                <rectangleSize height="30" width="160"/>
+            </shape>
+            <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+                <upperLeftCorner x="118.66666666666669" y="376.9999988079071"/>
+                <rectangleSize height="30" width="160"/>
+            </shape>
+            <shape modelObjectName="Projection_2" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+                <upperLeftCorner x="20" y="30"/>
+                <rectangleSize width="136.0234375"/>
+            </shape>
+            <shape modelObjectName="Projection_3" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+                <upperLeftCorner x="320" y="30"/>
+                <rectangleSize width="136.0234375"/>
+            </shape>
+            <shape expanded="true" modelObjectName="Projection_4" modelObjectNameSpace="CalculationView">
+                <upperLeftCorner x="368.0293994567891" y="376.9999988079071"/>
+                <rectangleSize height="30" width="160"/>
+            </shape>
+            <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+                <upperLeftCorner x="284.80100002263475" y="217"/>
+                <rectangleSize height="30" width="160"/>
+            </shape>
+            <shape modelObjectName="Join_1" modelObjectNameSpace="Join_2" modelObjectType="JoinNodeInput">
+                <upperLeftCorner x="20" y="30"/>
+                <rectangleSize width="250"/>
+            </shape>
+            <shape modelObjectName="Projection_4" modelObjectNameSpace="Join_2" modelObjectType="JoinNodeInput">
+                <upperLeftCorner x="320" y="30"/>
+                <rectangleSize width="136.0234375"/>
+            </shape>
+        </shapes>
+    </layout>
+</Calculation:scenario>
