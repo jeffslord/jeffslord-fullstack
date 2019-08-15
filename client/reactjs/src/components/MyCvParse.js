@@ -12,14 +12,26 @@ class MyCvParse extends Component {
       files: []
     };
   }
+  TestButton() {
+    fetch("http://localhost:5000/api/cv/", { method: "GET" });
+  }
+  SetFile(newFiles) {
+    this.setState({ files: newFiles });
+  }
   render() {
     return (
       <div>
         <Typography variant={"h1"}>Calculation View Optimizer</Typography>
         <Typography variant={"h2"}>Upload File or Paste Text</Typography>
-        <MyFileUploader />
+        <MyFileUploader
+          onUploadFiles={file => {
+            this.SetFilef(file);
+          }}
+        />
         <MyCvTextBox />
-        <Button variant={"contained"}>Process</Button>
+        <Button variant={"contained"} onClick={this.TestButton}>
+          Process
+        </Button>
       </div>
     );
   }

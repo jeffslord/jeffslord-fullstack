@@ -18,7 +18,6 @@
   *Planned features...
   - Identify unmapped input parameters
 
-
 */
 
 const fs = require('fs');
@@ -34,7 +33,7 @@ function WriteFile(fileName, text) {
 function ParseFile(filePath, cb) {
   fs.readFile(filePath, 'utf8', (err, data) => {
     parser.parseString(data, (err2, result) => {
-      cb(result);
+      cb(null, result);
     });
   });
 }
@@ -254,7 +253,7 @@ function GetSplitNodes(jsonResult, cb) {
       });
     });
   });
-  return cb(splitNodes);
+  return cb(null, splitNodes);
 }
 
 // Duplicate calc view node and return the copy. Does not add to structure.
@@ -330,7 +329,7 @@ function FixSplitNodes(jsonResult, version, cb) {
     const allSplits = [];
     while (!complete) {
       // Get input nodes that are used by more than 1 node
-      GetSplitNodes(jsonResult, (splitNodes) => {
+      GetSplitNodes(jsonResult, (err, splitNodes) => {
         if (Object.keys(splitNodes).length === 0) {
           complete = true;
         } else {
@@ -363,41 +362,52 @@ function FixSplitNodes(jsonResult, version, cb) {
   });
 }
 
-const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'employeespunchedin.xml');
-// const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad.xml`);
-// const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad2.xml`);
+function Test() {
+  const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'employeespunchedin.xml');
+  // const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad.xml`);
+  // const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad2.xml`);
 
-ParseFile(filePath, (result) => {
-  console.log('Processing...');
-  // WriteFile('cv_json_new.json', JSON.stringify(result));
-  // console.log('complete');
-  
-  // return;
+  ParseFile(filePath, (err, result) => {
+    console.log('Processing...');
+    // WriteFile('cv_json_new.json', JSON.stringify(result));
+    // console.log('complete');
 
-  GetCvVersion(result, (err, version) => {
-    console.log('Version: ', version);
-    FixSplitNodes(result, version, (err, splitNodes) => {
-      // if (err) console.error(err);
-      GetDataSourceNames(result, (err, res) => {
-        console.log('Data Sources:', res);
+    // return;
+
+    GetCvVersion(result, (err, version) => {
+      console.log('Version: ', version);
+      FixSplitNodes(result, version, (err, splitNodes) => {
+        // if (err) console.error(err);
+        GetDataSourceNames(result, (err, res) => {
+          console.log('Data Sources:', res);
+        });
+        console.log('Split Nodes:', splitNodes);
       });
-      console.log('Split Nodes:', splitNodes);
-    });
-    // return;
-    FixRightJoins(result, (err, rightOuters) => {
-      // if (err) console.error(err);
-      console.log('Right Outer Joins:', rightOuters.length);
-    });
-    // return;
-    // GetUnmappedParams(result, (err, unmapped) => {
-    //   // if (err) console.error(err);
-    //   console.log('Unmapped parameters:', unmapped);
-    // });
+      // return;
+      FixRightJoins(result, (err, rightOuters) => {
+        // if (err) console.error(err);
+        console.log('Right Outer Joins:', rightOuters.length);
+      });
+      // return;
+      // GetUnmappedParams(result, (err, unmapped) => {
+      //   // if (err) console.error(err);
+      //   console.log('Unmapped parameters:', unmapped);
+      // });
 
-    console.log('\nWriting files...');
-    // WriteFile('./data/json/cv_json_latest.json', JSON.stringify(result));
-    const builder = new xml2js.Builder();
-    const xml = builder.buildObject(result);
-    WriteFile('./data/xml/cv_xml_latest.xml', xml);
+      console.log('\nWriting files...');
+      // WriteFile('./data/json/cv_json_latest.json', JSON.stringify(result));
+      const builder = new xml2js.Builder();
+      const xml = builder.buildObject(result);
+      WriteFile('./data/xml/cv_xml_latest.xml', xml);
+    });
   });
-});
+}
+module.exports = {
+  Test,
+  ParseFile,
+  GetCvVersion,
+  GetRightJoinCvs,
+  FixRightJoins,
+  GetSplitNodes,
+  FixSplitNodes,
+};
