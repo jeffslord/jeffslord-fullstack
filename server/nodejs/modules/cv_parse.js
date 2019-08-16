@@ -37,6 +37,11 @@ function ParseFile(filePath, cb) {
     });
   });
 }
+function ParseXML(xml, cb) {
+  parser.parseString(xml, (err, res) => {
+    cb(null, res);
+  });
+}
 
 // Get the calculation view schema version. 2.3 maps to Hana 1.0 classic, 3.0 is for HANA 2.0 XSA
 function GetCvVersion(jsonResult, cb) {
@@ -405,6 +410,7 @@ function Test() {
 module.exports = {
   Test,
   ParseFile,
+  ParseXML,
   GetCvVersion,
   GetRightJoinCvs,
   FixRightJoins,

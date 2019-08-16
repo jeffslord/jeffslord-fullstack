@@ -4,6 +4,7 @@ import MyFileUploader from "./MyFileUploader";
 import { Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import { log } from "util";
 
 class MyCvParse extends Component {
   constructor(props) {
@@ -21,6 +22,7 @@ class MyCvParse extends Component {
       .then(res => res.json())
       .then(data => {
         console.log(data);
+        // console.log(data.name);
         this.setState({ results: data });
       });
     // .then(data => this.setState({ results: data }));
@@ -32,6 +34,15 @@ class MyCvParse extends Component {
     this.setState({ files: newFiles }, () => {
       console.log("New state: ", this.state);
     });
+  }
+  UploadXML(files) {
+    // let data = new FormData();
+    // data.append("file", file);
+    // // data.append("name", name);
+    // console.log("FormData: ", data);
+    let data = {};
+    data.xml = files[0];
+    console.log("Data: ", data);
   }
   render() {
     return (
@@ -48,13 +59,10 @@ class MyCvParse extends Component {
         <Button
           variant={"contained"}
           files={this.state.files}
-          onClick={() => this.TestButton()}
+          onClick={() => this.UploadXML(this.state.files)}
         >
           Process
         </Button>
-        {/* <Typography variant={"h3"}>
-          {JSON.stringify(this.state.results)}
-        </Typography> */}
         <TextField
           multiline={true}
           value={JSON.stringify(this.state.results)}
