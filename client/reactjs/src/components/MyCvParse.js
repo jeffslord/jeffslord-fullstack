@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { DropzoneArea } from "material-ui-dropzone";
 import MyCvTextBox from "./MyCvTextBox";
 import MyFileUploader from "./MyFileUploader";
 import { Typography } from "@material-ui/core";
@@ -9,14 +8,22 @@ class MyCvParse extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      files: []
+      files: [],
+      test: ""
     };
+    // this.TestButton = this.TestButton.bind(this);
+    this.SetFile = this.SetFile.bind(this);
   }
-  TestButton() {
-    fetch("http://localhost:5000/api/cv/", { method: "GET" });
-  }
+  // TestButton() {
+  //   fetch("http://localhost:5000/api/cv/", { method: "GET" });
+  //   this.setState({ test: "test works" });
+  //   console.log(this.state);
+  // }
   SetFile(newFiles) {
-    this.setState({ files: newFiles });
+    console.log("Previous state: ", this.state);
+    this.setState({ files: newFiles }, () => {
+      console.log("New state: ", this.state);
+    });
   }
   render() {
     return (
@@ -24,14 +31,13 @@ class MyCvParse extends Component {
         <Typography variant={"h1"}>Calculation View Optimizer</Typography>
         <Typography variant={"h2"}>Upload File or Paste Text</Typography>
         <MyFileUploader
-          onUploadFiles={file => {
-            this.SetFilef(file);
-          }}
+          // onUploadFiles={file => {
+          //   this.SetFile(file);
+          // }}
+          setparentfiles={this.SetFile}
         />
-        <MyCvTextBox />
-        <Button variant={"contained"} onClick={this.TestButton}>
-          Process
-        </Button>
+        {/* <MyCvTextBox /> */}
+        {/* <Button variant={"contained"}>Process</Button> */}
       </div>
     );
   }
