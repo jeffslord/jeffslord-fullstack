@@ -12,7 +12,7 @@ class MyCvParse extends Component {
       test: ""
     };
     // this.TestButton = this.TestButton.bind(this);
-    this.SetFile = this.SetFile.bind(this);
+    // this.SetFile = this.SetFile.bind(this);
   }
   // TestButton() {
   //   fetch("http://localhost:5000/api/cv/", { method: "GET" });
@@ -34,7 +34,7 @@ class MyCvParse extends Component {
           // onUploadFiles={file => {
           //   this.SetFile(file);
           // }}
-          setparentfiles={this.SetFile}
+          setparentfiles={files => this.SetFile(files)}
         />
         {/* <MyCvTextBox /> */}
         {/* <Button variant={"contained"}>Process</Button> */}
