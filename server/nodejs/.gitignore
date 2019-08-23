@@ -4,6 +4,7 @@
 *.sar
 SAP_HANA_CLIENT
 node_modules
+uploads
 #############
 
 ##### RECOMMENDED #
