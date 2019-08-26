@@ -30,6 +30,11 @@ function WriteFile(fileName, text) {
   fs.writeFileSync(fileName, text);
 }
 
+/**
+ *
+ * @param {string} filePath
+ * @param {function(error, result)} cb
+ */
 function ParseFile(filePath, cb) {
   fs.readFile(filePath, 'utf8', (err, data) => {
     parser.parseString(data, (err2, result) => {
@@ -366,6 +371,10 @@ function FixSplitNodes(jsonResult, version, cb) {
     return cb(null, allSplits);
   });
 }
+
+// function Fix(filePath){
+//   ParseFile(filePath, ())
+// }
 
 function Test() {
   const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'employeespunchedin.xml');

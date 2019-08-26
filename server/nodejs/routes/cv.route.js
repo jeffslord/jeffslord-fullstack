@@ -31,18 +31,35 @@ router.get('/analyze', (req, res, next) => {
 
 router.post('/upload', upload.single('files'), (req, res, next) => {
   console.log('file', req.file);
-
   console.log('body', req.body);
+  console.log('Upload Path:', req.file.path);
 
-  fs.unlink(req.file, (err) => {
-    res.send(req.body);
+  const data = fs.readFileSync(req.file.path, 'utf8');
+  console.log(data);
+
+  cv.ParseFile(req.file.path, (err, json) => {
+    cv.GetSplitNodes(json, (err, splits) => {
+      fs.unlink(req.file.path, (err) => {
+        console.log(Object.keys(splits).length);
+        res.send(splits);
+      });
+    });
   });
+  // fs.unlink(req.file.path, (err) => {
+  //   res.send(req.body);
+  // });
 });
 router.post('/uploadMany', upload.array('files'), (req, res, next) => {
   console.log('files', req.files);
-
   console.log('body', req.body);
-  res.send('done');
+
+  req.files.forEach((file) => {
+    console.log('Upload Path:', file.path);
+    fs.unlink(file.path, (err) => {
+      console.log('Unlink:', file.path);
+    });
+  });
+  res.send(req.body);
 });
 
 module.exports = router;
