@@ -33,7 +33,7 @@ function WriteFile(fileName, text) {
 /**
  *
  * @param {string} filePath
- * @param {function(error, result)} cb
+ * @param {*} (err, res)
  */
 function ParseFile(filePath, cb) {
   fs.readFile(filePath, 'utf8', (err, data) => {
@@ -372,9 +372,24 @@ function FixSplitNodes(jsonResult, version, cb) {
   });
 }
 
-// function Fix(filePath){
-//   ParseFile(filePath, ())
-// }
+function FixView(filePath, cb) {
+  return null;
+}
+function ProcessView(filePath, cb) {
+  const res = {};
+  ParseFile(filePath, (err, json) => {
+    GetCvVersion(json, (err, version) => {
+      res.version = version;
+      GetSplitNodes(json, (err, splits) => {
+        res.splitNodes = splits;
+        GetRightJoinCvs(json, (err, rightJoins) => {
+          res.rightJoins = rightJoins;
+          return cb(null, res);
+        });
+      });
+    });
+  });
+}
 
 function Test() {
   const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'employeespunchedin.xml');
@@ -418,6 +433,7 @@ function Test() {
 }
 module.exports = {
   Test,
+  ProcessView,
   ParseFile,
   ParseXML,
   GetCvVersion,

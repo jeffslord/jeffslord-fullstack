@@ -29,22 +29,28 @@ router.get('/analyze', (req, res, next) => {
   });
 });
 
-router.post('/upload', upload.single('files'), (req, res, next) => {
+router.post('/upload', upload.single('file'), (req, res, next) => {
   console.log('file', req.file);
-  console.log('body', req.body);
+  // console.log('body', req.body);
   console.log('Upload Path:', req.file.path);
 
   const data = fs.readFileSync(req.file.path, 'utf8');
-  console.log(data);
-
-  cv.ParseFile(req.file.path, (err, json) => {
-    cv.GetSplitNodes(json, (err, splits) => {
-      fs.unlink(req.file.path, (err) => {
-        console.log(Object.keys(splits).length);
-        res.send(splits);
-      });
+  // console.log(data);
+  cv.ProcessView(req.file.path, (err, cvRes) => {
+    fs.unlink(req.file.path, (unlinkErr) => {
+      console.log(cvRes);
+      res.send(cvRes);
     });
   });
+
+  // cv.ParseFile(req.file.path, (err, json) => {
+  //   cv.GetSplitNodes(json, (err, splits) => {
+  //     fs.unlink(req.file.path, (err) => {
+  //       console.log(Object.keys(splits).length);
+  //       res.send(splits);
+  //     });
+  //   });
+  // });
   // fs.unlink(req.file.path, (err) => {
   //   res.send(req.body);
   // });
