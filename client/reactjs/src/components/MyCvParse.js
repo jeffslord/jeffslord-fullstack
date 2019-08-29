@@ -7,108 +7,137 @@ import TextField from "@material-ui/core/TextField";
 import { log } from "util";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
+import red from "@material-ui/core/colors/red";
+import green from "@material-ui/core/colors/green";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
 
-function MyCvParse() {
-  // class MyCvParse extends Component {
-  //   constructor(props) {
-  //     super(props);
-  //     this.state = {
-  //       files: [],
-  //       test: "",
-  //       results: "Results here."
-  //     };
-  //     // this.TestButton = this.TestButton.bind(this);
-  //     // this.SetFile = this.SetFile.bind(this);
-  //   }
-  const [files, setFiles] = useState(null);
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: "center",
+    color: theme.palette.text.secondary
+  }
+}));
+
+export default function MyCvParse() {
+  const classes = useStyles();
+
+  const [files, setFiles] = useState([]);
   const [test, setTest] = useState("");
-  const [results, setResults] = useState("Results here");
+  const [results, setResults] = useState({});
+  const [checks, setChecks] = useState(["version", "rightJoins", "splitNodes"]);
 
   const TestButton = () => {
-    let data = new FormData();
-    // data.append("file", this.state.files[0]);
-    data.append("file", files[0]);
-    fetch("http://localhost:5000/api/cv/upload", {
-      method: "post",
-      body: data
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log("res.json", data);
-        // console.log(data.name);
-        //  this.setState({ results: data });
-        setResults(data);
-      });
-    // .then(data => this.setState({ results: data }));
-    // this.setState({ test: "test works" });
-    setTest("test works");
-    // console.log(this.state);
-    // test;
+    if (files.length > 0) {
+      let data = new FormData();
+      data.append("file", files[0]);
+      fetch("http://localhost:5000/api/cv/upload", {
+        method: "post",
+        body: data
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log("res.json", data);
+          setResults(data);
+        });
+      return;
+      // setTest("test works");
+    }
   };
-  const SetFile = newFiles => {
-    // console.log("Previous state: ", this.state);
-    console.log("Previous files: ", files);
 
-    // this.setState({ files: newFiles }, () => {
-    setFiles(newFiles, () => {
-      console.log("New files: ", files);
-    });
-  };
-  const UploadXML = files => {
-    // let data = new FormData();
-    // data.append("file", file);
-    // // data.append("name", name);
-    // console.log("FormData: ", data);
-    let data = {};
-    data.xml = files[0];
-    console.log("Data: ", data);
-  };
-  // render() {
+  // const UploadXML = files => {
+  //   let data = {};
+  //   data.xml = files[0];
+  //   console.log("Data: ", data);
+  // };
   return (
-    <div>
+    <div className={classes.root}>
       <Grid container>
-        {/* <Paper> */}
-        <Grid item>
+        <Grid item sm>
           <Typography variant={"h1"}>Calculation View Optimizer</Typography>
-        </Grid>
-        <Grid item>
           <Typography variant={"h2"}>Upload File or Paste Text</Typography>
         </Grid>
-        {/* </Paper> */}
-        <MyFileUploader
-          // onUploadFiles={file => {
-          //   this.SetFile(file);
-          // }}
-          // setparentfiles={files => this.SetFile(files)}
-          setparentfiles={files => setFiles(files)}
-        />
-        {/* <MyCvTextBox /> */}
-        <Button
-          variant={"contained"}
-          // files={this.state.files}
-          files={files}
-          // onClick={() => this.UploadXML(this.state.files)}
-          // onClick={() => this.TestButton()}
-          onClick={() => TestButton()}
-        >
-          Process
-        </Button>
-        {/* <TextField
-          multiline={true}
-          value={JSON.stringify(this.state.results)}
-          rowsMax={Infinity}
-        /> */}
-        <TextField
-          multiline={true}
-          // value={JSON.stringify(this.state.results)}
-          value={JSON.stringify(results)}
-          rowsMax={Infinity}
-        ></TextField>
+      </Grid>
+
+      <Grid container justify="center" spacing={3}>
+        <Paper className={classes.paper}>
+          <Grid item>
+            <MyFileUploader setparentfiles={files => setFiles(files)} />
+          </Grid>
+          <Grid item>
+            <Button
+              size="large"
+              fullWidth
+              variant={"contained"}
+              files={files}
+              onClick={() => TestButton()}
+            >
+              Process
+            </Button>
+          </Grid>
+        </Paper>
+        <Paper className={classes.paper}>
+          <Grid container justify="center">
+            <List>
+              {/* <Button>Test</Button> */}
+              {console.log("results", results)}
+
+              {checks.map(check => {
+                console.log("results.check", results[check]);
+                if (
+                  results[check] != null &&
+                  results[check] != {} &&
+                  results[check].length != 0 &&
+                  check != "version"
+                )
+                  return (
+                    <ListItem alignItems="center">
+                      <Button variant="contained" color="secondary">
+                        {check}
+                      </Button>
+                    </ListItem>
+                  );
+                else {
+                  return (
+                    <ListItem alightItems="center">
+                      <Button variant="contained" color="primary">
+                        {check}
+                      </Button>
+                    </ListItem>
+                  );
+                }
+              })}
+            </List>
+          </Grid>
+          <Grid container justify="center">
+            <Button variant="contained" size="large">
+              Fix
+            </Button>
+          </Grid>
+        </Paper>
+      </Grid>
+
+      <Grid container>
+        <Grid item sm>
+          <TextField
+            multiline={true}
+            value={JSON.stringify(results)}
+            rowsMax={Infinity}
+          ></TextField>
+        </Grid>
+        <Grid item sm>
+          <TextField
+            multiline={true}
+            value={JSON.stringify(results)}
+            rowsMax={Infinity}
+          ></TextField>
+        </Grid>
       </Grid>
     </div>
   );
-  // }
-  // }
 }
-
-export default MyCvParse;
