@@ -14,28 +14,11 @@ router.get('/', (req, res, next) => {
   cv.Test();
   res.send('Test successful');
 });
-// router.get()
-// router.get('/analyze', (req, res, next) => {
-//   const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'employeespunchedin.xml');
-//   const analyze = {};
-//   cv.ParseFile(filePath, (err, json) => {
-//     cv.GetSplitNodes(json, (err, splits) => {
-//       analyze.splitNodes = splits;
-//       cv.GetRightJoinCvs(json, (err, rightJoins) => {
-//         analyze.rightJoins = rightJoins;
-//         res.send(analyze);
-//       });
-//     });
-//   });
-// });
 
 router.post('/analyzeSingle', upload.single('file'), (req, res, next) => {
   console.log('file', req.file);
   // console.log('body', req.body);
   console.log('Upload Path:', req.file.path);
-
-  // const data = fs.readFileSync(req.file.path, 'utf8');
-  // console.log(data);
   cv.ProcessView(req.file.path, (err, cvRes) => {
     fs.unlink(req.file.path, (unlinkErr) => {
       console.log(cvRes);
@@ -46,11 +29,9 @@ router.post('/analyzeSingle', upload.single('file'), (req, res, next) => {
 router.post('/fixSingle', upload.single('file'), (req, res, next) => {
   console.log('file', req.file);
   console.log('Upload Path:', req.file.path);
-  // const data = fs.readFileSync(req.file.path, 'utf8');
   cv.FixView(req.file.path, (err, xmlRes) => {
     fs.unlink(req.file.path, (unlinkErr) => {
       const data = { xml: xmlRes };
-      // console.log(xmlRes);
       res.send(data);
     });
   });

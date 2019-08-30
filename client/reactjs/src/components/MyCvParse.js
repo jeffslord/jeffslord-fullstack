@@ -40,7 +40,7 @@ export default function MyCvParse() {
       })
         .then(res => res.json())
         .then(data => {
-          console.log("res.json", data);
+          // console.log("res.json", data);
           setResults(data);
         });
       return;
@@ -56,7 +56,7 @@ export default function MyCvParse() {
       })
         .then(res => res.json())
         .then(data => {
-          console.log("xml", data["xml"]);
+          // console.log("xml", data["xml"]);
           setXmlResult(data["xml"]);
         });
       return;
@@ -68,7 +68,9 @@ export default function MyCvParse() {
     if (results.version !== undefined) {
       return (
         <ListItem>
-          <Button>{"Version: " + results.version}</Button>
+          <Button variant="contained" fullWidth>
+            {"Version: " + results.version}
+          </Button>
         </ListItem>
       );
     }
@@ -83,8 +85,8 @@ export default function MyCvParse() {
           ) {
             console.log("GOOD: ", key, check[key]);
             return (
-              <ListItem>
-                <Button variant="contained" color="primary">
+              <ListItem key={key}>
+                <Button variant="contained" color="primary" fullWidth>
                   {key}
                 </Button>
               </ListItem>
@@ -92,8 +94,8 @@ export default function MyCvParse() {
           } else {
             console.log("BAD: ", key, check[key]);
             return (
-              <ListItem>
-                <Button variant="contained" color="secondary">
+              <ListItem key={key}>
+                <Button variant="contained" color="secondary" fullWidth>
                   {key}
                 </Button>
               </ListItem>
@@ -111,7 +113,7 @@ export default function MyCvParse() {
       <Grid container>
         <Grid item sm>
           <Typography variant={"h1"}>Calculation View Optimizer</Typography>
-          <Typography variant={"h2"}>Upload File or Paste Text</Typography>
+          <Typography variant={"h2"}>Upload File</Typography>
         </Grid>
       </Grid>
 
@@ -135,7 +137,7 @@ export default function MyCvParse() {
           </Paper>
         </Grid>
         <Grid item xs>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper} elevation={5}>
             <Grid container justify="center">
               <Grid item>
                 <List>
@@ -157,7 +159,10 @@ export default function MyCvParse() {
           </Paper>
         </Grid>
         <Grid item xs={12}>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper} elevation={5}>
+            <Grid item xs={12}>
+              <Button variant="contained">Download (not working yet)</Button>
+            </Grid>
             <TextField
               multiline={true}
               value={xmlResult}
