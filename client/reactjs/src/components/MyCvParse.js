@@ -1,15 +1,12 @@
 import React, { Component, useState } from "react";
-import MyCvTextBox from "./MyCvTextBox";
 import MyFileUploader from "./MyFileUploader";
 import { Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import { log } from "util";
+// import { log } from "util";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
-import red from "@material-ui/core/colors/red";
-import green from "@material-ui/core/colors/green";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 
@@ -19,6 +16,7 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     padding: theme.spacing(2),
+    margin: "20px",
     textAlign: "center",
     color: theme.palette.text.secondary
   }
@@ -28,15 +26,15 @@ export default function MyCvParse() {
   const classes = useStyles();
 
   const [files, setFiles] = useState([]);
-  const [test, setTest] = useState("");
   const [results, setResults] = useState({});
   const [checks, setChecks] = useState(["version", "rightJoins", "splitNodes"]);
+  const [xmlResult, setXmlResult] = useState();
 
-  const TestButton = () => {
+  const AnalyzeButton = () => {
     if (files.length > 0) {
       let data = new FormData();
       data.append("file", files[0]);
-      fetch("http://localhost:5000/api/cv/upload", {
+      fetch("http://localhost:5000/api/cv/analyzeSingle", {
         method: "post",
         body: data
       })
@@ -46,15 +44,68 @@ export default function MyCvParse() {
           setResults(data);
         });
       return;
-      // setTest("test works");
+    }
+  };
+  const Fixbutton = () => {
+    if (files.length > 0) {
+      let data = new FormData();
+      data.append("file", files[0]);
+      fetch("http://localhost:5000/api/cv/fixSingle", {
+        method: "post",
+        body: data
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log("xml", data["xml"]);
+          setXmlResult(data["xml"]);
+        });
+      return;
     }
   };
 
-  // const UploadXML = files => {
-  //   let data = {};
-  //   data.xml = files[0];
-  //   console.log("Data: ", data);
-  // };
+  const RenderVersion = () => {
+    console.log("Render Version Called");
+    if (results.version !== undefined) {
+      return (
+        <ListItem>
+          <Button>{"Version: " + results.version}</Button>
+        </ListItem>
+      );
+    }
+  };
+  const RenderChecks = () => {
+    if (results.checks !== undefined) {
+      return results.checks.map(check => {
+        return Object.keys(check).map(key => {
+          if (
+            check[key] !== undefined &&
+            (check[key].length === 0 || Object.keys(check[key]).length === 0)
+          ) {
+            console.log("GOOD: ", key, check[key]);
+            return (
+              <ListItem>
+                <Button variant="contained" color="primary">
+                  {key}
+                </Button>
+              </ListItem>
+            );
+          } else {
+            console.log("BAD: ", key, check[key]);
+            return (
+              <ListItem>
+                <Button variant="contained" color="secondary">
+                  {key}
+                </Button>
+              </ListItem>
+            );
+          }
+        });
+      });
+    } else {
+      return null;
+    }
+  };
+
   return (
     <div className={classes.root}>
       <Grid container>
@@ -64,78 +115,56 @@ export default function MyCvParse() {
         </Grid>
       </Grid>
 
-      <Grid container justify="center" spacing={3}>
-        <Paper className={classes.paper}>
-          <Grid item>
-            <MyFileUploader setparentfiles={files => setFiles(files)} />
-          </Grid>
-          <Grid item>
-            <Button
-              size="large"
-              fullWidth
-              variant={"contained"}
-              files={files}
-              onClick={() => TestButton()}
-            >
-              Process
-            </Button>
-          </Grid>
-        </Paper>
-        <Paper className={classes.paper}>
-          <Grid container justify="center">
-            <List>
-              {/* <Button>Test</Button> */}
-              {console.log("results", results)}
-
-              {checks.map(check => {
-                console.log("results.check", results[check]);
-                if (
-                  results[check] != null &&
-                  results[check] != {} &&
-                  results[check].length != 0 &&
-                  check != "version"
-                )
-                  return (
-                    <ListItem alignItems="center">
-                      <Button variant="contained" color="secondary">
-                        {check}
-                      </Button>
-                    </ListItem>
-                  );
-                else {
-                  return (
-                    <ListItem alightItems="center">
-                      <Button variant="contained" color="primary">
-                        {check}
-                      </Button>
-                    </ListItem>
-                  );
-                }
-              })}
-            </List>
-          </Grid>
-          <Grid container justify="center">
-            <Button variant="contained" size="large">
-              Fix
-            </Button>
-          </Grid>
-        </Paper>
-      </Grid>
-
-      <Grid container>
-        <Grid item sm>
-          <TextField
-            multiline={true}
-            value={JSON.stringify(results)}
-            rowsMax={Infinity}
-          ></TextField>
+      <Grid container justify="center" spacing={0}>
+        <Grid item xs>
+          <Paper className={classes.paper} elevation={5}>
+            <Grid item>
+              <MyFileUploader setparentfiles={files => setFiles(files)} />
+            </Grid>
+            <Grid item>
+              <Button
+                size="large"
+                fullWidth
+                variant={"contained"}
+                files={files}
+                onClick={() => AnalyzeButton()}
+              >
+                Process
+              </Button>
+            </Grid>
+          </Paper>
         </Grid>
-        <Grid item sm>
-          <TextField
-            multiline={true}
-            value={JSON.stringify(results)}
-            rowsMax={Infinity}
-          ></TextField>
+        <Grid item xs>
+          <Paper className={classes.paper}>
+            <Grid container justify="center">
+              <Grid item>
+                <List>
+                  {console.log("results", results)}
+                  {RenderVersion()}
+                  {RenderChecks()}
+                </List>
+              </Grid>
+            </Grid>
+            <Grid container justify="center">
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => Fixbutton()}
+              >
+                Fix
+              </Button>
+            </Grid>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <TextField
+              multiline={true}
+              value={xmlResult}
+              rowsMax={Infinity}
+              fullWidth
+            ></TextField>
+          </Paper>
         </Grid>
       </Grid>
     </div>

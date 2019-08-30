@@ -372,19 +372,34 @@ function FixSplitNodes(jsonResult, version, cb) {
   });
 }
 
-function FixView(filePath, cb) {
-  return null;
-}
 function ProcessView(filePath, cb) {
   const res = {};
+  const checks = [];
   ParseFile(filePath, (err, json) => {
     GetCvVersion(json, (err, version) => {
       res.version = version;
       GetSplitNodes(json, (err, splits) => {
-        res.splitNodes = splits;
-        GetRightJoinCvs(json, (err, rightJoins) => {
-          res.rightJoins = rightJoins;
+        checks.push({ splitNodes: splits });
+        // res.splitNodes = splits;
+        GetRightJoinCvs(json, (err, rJoins) => {
+          checks.push({ rightJoins: rJoins });
+          // res.rightJoins = rightJoins;
+          res.checks = checks;
           return cb(null, res);
+        });
+      });
+    });
+  });
+}
+
+function FixView(filePath, cb) {
+  ParseFile(filePath, (err, parsedJSON) => {
+    GetCvVersion(parsedJSON, (err, cvVersion) => {
+      FixSplitNodes(parsedJSON, cvVersion, (err, splitNodes) => {
+        FixRightJoins(parsedJSON, (err, rightJoins) => {
+          const builder = new xml2js.Builder();
+          const xml = builder.buildObject(parsedJSON);
+          return cb(null, xml);
         });
       });
     });
@@ -434,6 +449,7 @@ function Test() {
 module.exports = {
   Test,
   ProcessView,
+  FixView,
   ParseFile,
   ParseXML,
   GetCvVersion,
