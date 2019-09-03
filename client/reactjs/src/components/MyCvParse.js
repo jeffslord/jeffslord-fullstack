@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MyFileUploader from "./MyFileUploader";
 import { Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
@@ -31,6 +31,10 @@ export default function MyCvParse() {
   // const [checks, setChecks] = useState(["version", "rightJoins", "splitNodes"]);
   const [xmlResult, setXmlResult] = useState();
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    document.title = "Jeff - Calculation View Optimizer";
+  });
 
   const AnalyzeButton = () => {
     if (files.length > 0) {

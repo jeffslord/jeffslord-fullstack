@@ -10,6 +10,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import List from "@material-ui/core/List";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,11 +31,12 @@ export default function MyDrawer(props) {
   const drawerList = () => (
     <div>
       <List>
-        {["Calc View Optimizer"].map((text, index) => (
-          <ListItem>
-            <ListItemText primary={text}></ListItemText>
-          </ListItem>
-        ))}
+        <ListItem>
+          <Link to="/">Home</Link>
+        </ListItem>
+        <ListItem>
+          <Link to="cvoptimizer">Calculation View Optimizer</Link>
+        </ListItem>
       </List>
     </div>
   );

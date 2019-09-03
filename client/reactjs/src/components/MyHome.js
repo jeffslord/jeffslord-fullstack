@@ -18,21 +18,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function MyBar(props) {
+export default function MyHome(props) {
   const classes = useStyles();
 
   //   const [test, setTest] = useState();
 
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton edge="start" onClick={() => props.setDrawerOpen(true)}>
-            <MenuIcon></MenuIcon>
-          </IconButton>
-          <Typography variant="h6">{props.title}</Typography>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+  return <div className={classes.root}></div>;
 }
