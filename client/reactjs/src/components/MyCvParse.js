@@ -9,6 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -29,6 +30,7 @@ export default function MyCvParse() {
   const [results, setResults] = useState({});
   // const [checks, setChecks] = useState(["version", "rightJoins", "splitNodes"]);
   const [xmlResult, setXmlResult] = useState();
+  const [loading, setLoading] = useState(false);
 
   const AnalyzeButton = () => {
     if (files.length > 0) {
@@ -50,6 +52,7 @@ export default function MyCvParse() {
     if (files.length > 0) {
       let data = new FormData();
       data.append("file", files[0]);
+      setLoading(true);
       fetch("http://localhost:5000/api/cv/fixSingle", {
         method: "post",
         body: data
@@ -57,6 +60,7 @@ export default function MyCvParse() {
         .then(res => res.json())
         .then(data => {
           // console.log("xml", data["xml"]);
+          setLoading(false);
           setXmlResult(data["xml"]);
         });
       return;
@@ -110,13 +114,6 @@ export default function MyCvParse() {
 
   return (
     <div className={classes.root}>
-      {/* <Grid container>
-        <Grid item sm>
-          <Typography variant={"h1"}>Calculation View Optimizer</Typography>
-          <Typography variant={"h2"}>Upload File</Typography>
-        </Grid>
-      </Grid> */}
-
       <Grid container justify="center" spacing={0}>
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={5}>
@@ -167,6 +164,7 @@ export default function MyCvParse() {
               >
                 Fix
               </Button>
+              {loading && <CircularProgress></CircularProgress>}
             </Grid>
           </Paper>
         </Grid>
