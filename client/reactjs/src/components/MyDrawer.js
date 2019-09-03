@@ -6,6 +6,10 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import List from "@material-ui/core/List";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,11 +25,25 @@ const useStyles = makeStyles(theme => ({
 
 export default function MyDrawer() {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
+
+  const drawerList = () => (
+    <div>
+      <List>
+        {["Calc View Optimizer"].map((text, index) => (
+          <ListItem>
+            <ListItemText primary={text}></ListItemText>
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
 
   return (
     <div className={classes.root}>
-      <Drawer open={open} onClose={setOpen(false)}></Drawer>
+      <Drawer open={open} onClose={() => setOpen(false)}>
+        {drawerList()}
+      </Drawer>
     </div>
   );
 }
