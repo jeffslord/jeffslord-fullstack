@@ -23,9 +23,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function MyDrawer() {
+export default function MyDrawer(props) {
   const classes = useStyles();
-  const [open, setOpen] = useState(true);
+  //   const [open, setOpen] = useState(true);
 
   const drawerList = () => (
     <div>
@@ -41,7 +41,10 @@ export default function MyDrawer() {
 
   return (
     <div className={classes.root}>
-      <Drawer open={open} onClose={() => setOpen(false)}>
+      <Drawer
+        open={props.drawerOpen}
+        onClose={() => props.setDrawerOpen(false)}
+      >
         {drawerList()}
       </Drawer>
     </div>

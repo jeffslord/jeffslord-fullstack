@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function MyBar() {
+export default function MyBar(props) {
   const classes = useStyles();
 
   //   const [test, setTest] = useState();
@@ -27,7 +27,7 @@ export default function MyBar() {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start">
+          <IconButton edge="start" onClick={() => props.setDrawerOpen(true)}>
             <MenuIcon></MenuIcon>
           </IconButton>
           <Typography variant="h6">Calculation View Optimizer</Typography>
