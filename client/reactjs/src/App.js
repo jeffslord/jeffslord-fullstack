@@ -8,12 +8,14 @@ import MyHome from "./components/MyHome";
 
 export default function App() {
   const [drawerOpen, setDrawerOpen] = useState(true);
+  const [barTitle, setBarTitle] = useState("Home");
 
   return (
     <div className="App">
       <MyBar
         setDrawerOpen={open => setDrawerOpen(open)}
         title={"Title"}
+        // setTitle={title => setBarTitle(title)}
       ></MyBar>
       <MyDrawer
         drawerOpen={drawerOpen}
@@ -21,10 +23,8 @@ export default function App() {
       ></MyDrawer>
       <Switch>
         <Route exact path="/" component={MyHome} />
-        <Route path="/cvoptimizer" component={MyCvParse} />
+        <Route path="/tools/cvoptimizer/" component={MyCvParse} />
       </Switch>
-
-      {/* <MyCvParse /> */}
     </div>
   );
 }

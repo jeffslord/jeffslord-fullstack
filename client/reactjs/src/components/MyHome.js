@@ -23,5 +23,9 @@ export default function MyHome(props) {
 
   //   const [test, setTest] = useState();
 
-  return <div className={classes.root}></div>;
+  return (
+    <div className={classes.root}>
+      <Typography variant="h1">WELCOME</Typography>
+    </div>
+  );
 }
