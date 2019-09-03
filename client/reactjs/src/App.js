@@ -1,7 +1,8 @@
 import React from "react";
-import logo from "./logo.svg";
+// import logo from "./logo.svg";
 import "./App.css";
 import MyCvParse from "./components/MyCvParse";
+import MyBar from "./components/MyBar";
 
 class App extends React.Component {
   constructor(props) {
@@ -27,14 +28,15 @@ class App extends React.Component {
   }
 
   render() {
-    const setDrawerState = value => {
-      this.setState({
-        drawerOpen: value
-      });
-      console.log(this.state.drawerOpen);
-    };
+    // const setDrawerState = value => {
+    //   this.setState({
+    //     drawerOpen: value
+    //   });
+    //   console.log(this.state.drawerOpen);
+    // };
     return (
       <div className="App">
+        <MyBar></MyBar>
         <MyCvParse />
       </div>
     );

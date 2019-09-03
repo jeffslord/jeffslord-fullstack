@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import MyFileUploader from "./MyFileUploader";
 import { Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
@@ -27,7 +27,7 @@ export default function MyCvParse() {
 
   const [files, setFiles] = useState([]);
   const [results, setResults] = useState({});
-  const [checks, setChecks] = useState(["version", "rightJoins", "splitNodes"]);
+  // const [checks, setChecks] = useState(["version", "rightJoins", "splitNodes"]);
   const [xmlResult, setXmlResult] = useState();
 
   const AnalyzeButton = () => {
@@ -110,14 +110,24 @@ export default function MyCvParse() {
 
   return (
     <div className={classes.root}>
-      <Grid container>
+      {/* <Grid container>
         <Grid item sm>
           <Typography variant={"h1"}>Calculation View Optimizer</Typography>
           <Typography variant={"h2"}>Upload File</Typography>
         </Grid>
-      </Grid>
+      </Grid> */}
 
       <Grid container justify="center" spacing={0}>
+        <Grid item xs={12}>
+          <Paper className={classes.paper} elevation={5}>
+            <Typography variant={"h4"}>Instructions</Typography>
+            <Typography variant={"body1"}>
+              Upload a file, click process, check for red boxes, press fix, copy
+              text, paste into calculation view, run auto format.
+            </Typography>
+          </Paper>
+        </Grid>
+
         <Grid item xs>
           <Paper className={classes.paper} elevation={5}>
             <Grid item>
@@ -130,6 +140,7 @@ export default function MyCvParse() {
                 variant={"contained"}
                 files={files}
                 onClick={() => AnalyzeButton()}
+                color="primary"
               >
                 Process
               </Button>
@@ -152,6 +163,7 @@ export default function MyCvParse() {
                 variant="contained"
                 size="large"
                 onClick={() => Fixbutton()}
+                color="primary"
               >
                 Fix
               </Button>

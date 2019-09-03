@@ -1,5 +1,4 @@
-import Drawer from "@material-ui/core/Drawer";
-import React, { useState } from "react";
+import React from "react";
 import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -19,13 +18,21 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function MyDrawer() {
+export default function MyBar() {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
+
+  //   const [test, setTest] = useState();
 
   return (
     <div className={classes.root}>
-      <Drawer open={open} onClose={setOpen(false)}></Drawer>
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton edge="start">
+            <MenuIcon></MenuIcon>
+          </IconButton>
+          <Typography variant="h6">Calculation View Optimizer</Typography>
+        </Toolbar>
+      </AppBar>
     </div>
   );
 }

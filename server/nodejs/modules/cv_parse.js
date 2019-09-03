@@ -4,10 +4,11 @@
   *DOCUMENTATION
 
   *NOTES:
-  Currently this works for classic version of calculation views.
-  Quick check is to see if input nodes use '#' at the beginning. If they do, this will work.
-  A fix for different versions will probably eventually be made.
-  HANA Studio appears to end at version 2.3, while Web Ide is at version 3.0.
+  - UPDATE: This is resolved I think.
+    Currently this works for classic version of calculation views.
+    Quick check is to see if input nodes use '#' at the beginning. If they do, this will work.
+    A fix for different versions will probably eventually be made.
+    HANA Studio appears to end at version 2.3, while Web Ide is at version 3.0.
 
   *Current features...
   - Identify and fix first level split nodes.
