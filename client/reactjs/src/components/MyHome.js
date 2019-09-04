@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -21,7 +21,9 @@ const useStyles = makeStyles(theme => ({
 export default function MyHome(props) {
   const classes = useStyles();
 
-  //   const [test, setTest] = useState();
+  useEffect(() => {
+    document.title = "Jeff - Home";
+  });
 
   return (
     <div className={classes.root}>

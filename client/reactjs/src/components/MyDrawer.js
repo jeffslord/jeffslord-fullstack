@@ -33,28 +33,17 @@ export default function MyDrawer(props) {
   const classes = useStyles();
   //   const [open, setOpen] = useState(true);
 
-  const [expanded, setExpanded] = useState({});
+  const [expanded, setExpanded] = useState({ tools: false });
   const tools = ["cvoptimizer"];
 
-  //   const expandButton = name => {
-  //     if (expanded.includes(name)) {
-  //       let expandedNew = [...expanded];
-  //       expandedNew.splice(expanded.indexOf(name), 1);
-  //       setExpanded(expandedNew);
-  //     } else {
-  //       let expandedNew = [...expanded];
-  //       expandedNew.push(name);
-  //       setExpanded(expandedNew);
-  //     }
-  //   };
   const expandButton = name => {
-    if (name in expanded) {
+    if (expanded[name] === true) {
       let expandedNew = JSON.parse(JSON.stringify(expanded));
-      delete expandedNew.name;
+      expandedNew[name] = false;
       setExpanded(expandedNew);
     } else {
       let expandedNew = JSON.parse(JSON.stringify(expanded));
-      expandedNew.name = true;
+      expandedNew[name] = true;
       setExpanded(expandedNew);
     }
   };
@@ -63,19 +52,18 @@ export default function MyDrawer(props) {
     <div>
       <List>
         <ListItem>
-          <ExpansionPanel>
-            <ExpansionPanelSummary>
-              <Link to="tools/cvoptimizer/">Calculation View Optimizer</Link>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>Test1</ExpansionPanelDetails>
-          </ExpansionPanel>
+          <Link to="/">Home</Link>
         </ListItem>
         <ListItem>
-          <Button onClick>Tools</Button>
-          <Collapse in={true} timeout="auto">
+          <Button onClick={() => expandButton("tools")} fullWidth>
+            Tools
+          </Button>
+        </ListItem>
+        <ListItem>
+          <Collapse in={expanded["tools"]} timeout="auto">
             <List>
               <ListItem>
-                <Link to="/">Home</Link>
+                <Link to="tools/cvoptimizer/">Calculation View Optimizer</Link>
               </ListItem>
               <ListItem>
                 <p>Test again</p>

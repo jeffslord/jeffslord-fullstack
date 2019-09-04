@@ -7,7 +7,7 @@ import { Route, Switch } from "react-router-dom";
 import MyHome from "./components/MyHome";
 
 export default function App() {
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [barTitle, setBarTitle] = useState("Home");
 
   return (
