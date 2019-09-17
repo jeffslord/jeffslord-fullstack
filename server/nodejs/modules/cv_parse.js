@@ -50,7 +50,7 @@ function ParseXML(xml, cb) {
 }
 
 // Get the calculation view schema version. 2.3 maps to Hana 1.0 classic, 3.0 is for HANA 2.0 XSA
-function GetCvVersion(jsonResult, cb) {
+function CheckCvVersion(jsonResult, cb) {
   const version = jsonResult['Calculation:scenario'].$.schemaVersion;
   if (version === undefined) {
     return cb(Error('No version'));
@@ -162,29 +162,6 @@ function GetCvsByInput(jsonResult, inputName, cb) {
     });
   });
   return cb(null, results);
-
-  // GetCvRoot(jsonResult, (err, root) => {
-  //   // let inputNameParsed = JSON.parse(inputName);
-  //   // if (inputNameParsed.charAt(0) !== '#') {
-  //   //   inputNameParsed = `#${inputNameParsed}`;
-  //   // }
-  //   const results = [];
-  //   // Traverse through all calc view nodes
-  //   for (let index = 0; index < root.length; index++) {
-  //     // Traverse through all input to the calc view
-  //     for (let j = 0; j < root[index].input.length; j++) {
-  //       const element = root[index].input[j];
-  //       const inp = element.$.node;
-  //       // If the input node name matches the desired input node, add to result
-  //       if (inp === inputNameParsed) {
-  //         if (results.indexOf(root[index]) === -1) {
-  //           results.push(root[index]);
-  //         }
-  //       }
-  //     }
-  //   }
-  //   return cb(null, results);
-  // });
 }
 // Go through all Calculation View nodes and count how many times each input node is used
 // This will determine whether a split nodes occur
@@ -227,29 +204,11 @@ function GetCvInputsByInput(jsonResult, inputName, cb) {
   });
   // console.log(inputs);
   return cb(null, inputs);
-
-  // GetCvsByInput(jsonResult, inputName, (err, cvs) => {
-  //   // let inputNameParsed = inputName;
-  //   // if (inputNameParsed.charAt(0) === '"') {
-  //   //   inputNameParsed = inputNameParsed.slice(1, -1);
-  //   // }
-  //   cvs.forEach((cv) => {
-  //     cv.input.forEach((input) => {
-  //       // if (inputName.charAt(0) === '"') {
-  //       //   inputName = inputName.slice(1, -1);
-  //       // }
-  //       if (input.$.node === inputNameParsed) {
-  //         inputs.push(input);
-  //       }
-  //     });
-  //   });
-  //   return cb(null, inputs);
-  // });
 }
 
 // Find all input nodes that are used in more than 1 calc view node
 // And remove any datasources
-function GetSplitNodes(jsonResult, cb) {
+function CheckSplitNodes(jsonResult, cb) {
   const splitNodes = {};
   GetDataSourceNames(jsonResult, (err2, ds) => {
     GetCvInputNodeCounts(jsonResult, (err, inputNodes) => {
@@ -276,7 +235,7 @@ function CopyCv(jsonResult, cvName, cb) {
   });
 }
 
-function GetRightJoinCvs(jsonResult, cb) {
+function CheckRightJoinCvs(jsonResult, cb) {
   GetCvs(jsonResult, (err, cvs) => {
     const rightOuters = [];
     cvs.forEach((ele) => {
@@ -322,7 +281,7 @@ function GetUnmappedParams(jsonResult, cb) {
 }
 
 function FixRightJoins(jsonResult, cb) {
-  GetRightJoinCvs(jsonResult, (err, rightOuters) => {
+  CheckRightJoinCvs(jsonResult, (err, rightOuters) => {
     rightOuters.forEach((ele) => {
       ele.$.joinType = 'leftOuter';
       [ele.input[0], ele.input[1]] = [ele.input[1], ele.input[0]];
@@ -340,7 +299,7 @@ function FixSplitNodes(jsonResult, version, cb) {
     const allSplits = [];
     while (!complete) {
       // Get input nodes that are used by more than 1 node
-      GetSplitNodes(jsonResult, (err, splitNodes) => {
+      CheckSplitNodes(jsonResult, (err, splitNodes) => {
         if (Object.keys(splitNodes).length === 0) {
           complete = true;
         } else {
@@ -377,14 +336,12 @@ function ProcessView(filePath, cb) {
   const res = {};
   const checks = [];
   ParseFile(filePath, (err, json) => {
-    GetCvVersion(json, (err, version) => {
+    CheckCvVersion(json, (err, version) => {
       res.version = version;
-      GetSplitNodes(json, (err, splits) => {
+      CheckSplitNodes(json, (err, splits) => {
         checks.push({ splitNodes: splits });
-        // res.splitNodes = splits;
-        GetRightJoinCvs(json, (err, rJoins) => {
+        CheckRightJoinCvs(json, (err, rJoins) => {
           checks.push({ rightJoins: rJoins });
-          // res.rightJoins = rightJoins;
           res.checks = checks;
           return cb(null, res);
         });
@@ -395,7 +352,7 @@ function ProcessView(filePath, cb) {
 
 function FixView(filePath, cb) {
   ParseFile(filePath, (err, parsedJSON) => {
-    GetCvVersion(parsedJSON, (err, cvVersion) => {
+    CheckCvVersion(parsedJSON, (err, cvVersion) => {
       FixSplitNodes(parsedJSON, cvVersion, (err, splitNodes) => {
         FixRightJoins(parsedJSON, (err, rightJoins) => {
           const builder = new xml2js.Builder();
@@ -411,51 +368,24 @@ function Test() {
   const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'employeespunchedin.xml');
   // const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad.xml`);
   // const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad2.xml`);
-
-  ParseFile(filePath, (err, result) => {
-    console.log('Processing...');
-    // WriteFile('cv_json_new.json', JSON.stringify(result));
-    // console.log('complete');
-
-    // return;
-
-    GetCvVersion(result, (err, version) => {
-      console.log('Version: ', version);
-      FixSplitNodes(result, version, (err, splitNodes) => {
-        // if (err) console.error(err);
-        GetDataSourceNames(result, (err, res) => {
-          console.log('Data Sources:', res);
-        });
-        console.log('Split Nodes:', splitNodes);
-      });
-      // return;
-      FixRightJoins(result, (err, rightOuters) => {
-        // if (err) console.error(err);
-        console.log('Right Outer Joins:', rightOuters.length);
-      });
-      // return;
-      // GetUnmappedParams(result, (err, unmapped) => {
-      //   // if (err) console.error(err);
-      //   console.log('Unmapped parameters:', unmapped);
-      // });
-
+  ProcessView(filePath, (err, res) => {
+    FixView(filePath, (err, xml) => {
       console.log('\nWriting files...');
-      // WriteFile('./data/json/cv_json_latest.json', JSON.stringify(result));
-      const builder = new xml2js.Builder();
-      const xml = builder.buildObject(result);
+      WriteFile('./data/json/cv_json_latest.json', JSON.stringify(xml));
       WriteFile('./data/xml/cv_xml_latest.xml', xml);
     });
   });
 }
+
 module.exports = {
   Test,
   ProcessView,
   FixView,
   ParseFile,
   ParseXML,
-  GetCvVersion,
-  GetRightJoinCvs,
+  CheckCvVersion,
+  CheckRightJoinCvs,
   FixRightJoins,
-  GetSplitNodes,
+  CheckSplitNodes,
   FixSplitNodes,
 };

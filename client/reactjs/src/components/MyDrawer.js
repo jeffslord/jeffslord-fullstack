@@ -2,30 +2,27 @@ import Drawer from "@material-ui/core/Drawer";
 import React, { useState } from "react";
 import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import List from "@material-ui/core/List";
 import { Link } from "react-router-dom";
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import Collapse from "@material-ui/core/Collapse";
-import Button from "@material-ui/core/Button";
+import Divider from "@material-ui/core/Divider";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import HomeIcon from "@material-ui/icons/Home";
+import BuildIcon from "@material-ui/icons/Build";
+import HelpIcon from "@material-ui/icons/Help";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1
+    width: "100%",
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper
   },
-  menuButton: {
-    marginRight: theme.spacing(2)
-  },
-  title: {
-    flexGrow: 1
+  nested: {
+    paddingLeft: theme.spacing(4)
   }
 }));
 
@@ -33,7 +30,7 @@ export default function MyDrawer(props) {
   const classes = useStyles();
   //   const [open, setOpen] = useState(true);
 
-  const [expanded, setExpanded] = useState({ tools: false });
+  const [expanded, setExpanded] = useState({ tools: false, other: false });
   const tools = ["cvoptimizer"];
 
   const expandButton = name => {
@@ -50,35 +47,62 @@ export default function MyDrawer(props) {
 
   const drawerList = () => (
     <div>
-      <List>
-        <ListItem>
-          <Button>
-            <Link to="/">Home</Link>
-          </Button>
+      <List className={classes.root}>
+        {/* <Link to="/" style={{ textDecoration: "none" }}> */}
+        <ListItem button component={Link} to="/">
+          <ListItemIcon>
+            <HomeIcon></HomeIcon>
+          </ListItemIcon>
+          <ListItemText primary="Home"></ListItemText>
         </ListItem>
-        <ListItem>
-          <Button onClick={() => expandButton("tools")} fullWidth>
-            Tools
-          </Button>
+        {/* </Link> */}
+        <Divider></Divider>
+        <ListItem button onClick={() => expandButton("tools")}>
+          <ListItemIcon>
+            <BuildIcon></BuildIcon>
+          </ListItemIcon>
+          <ListItemText primary="Tools"></ListItemText>
+          {expanded["tools"] ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <ListItem>
           <Collapse in={expanded["tools"]} timeout="auto">
-            <List>
-              <ListItem>
-                <Button fullWidth>
-                  <Link to="tools/cvoptimizer/">
-                    Calculation View Optimizer
-                  </Link>
-                </Button>
+            <List disablePadding>
+              {/* <Link to="tools/cvoptimizer/"> */}
+              <ListItem button component={Link} to="tools/cvoptimizer/">
+                <ListItemText primary="Calculation View Optimizer"></ListItemText>
               </ListItem>
-              <ListItem>
-                <Button fullWidth>
-                  <p>Test again</p>
-                </Button>
+              {/* </Link> */}
+              <ListItem button>
+                <ListItemText primary="Test Link"></ListItemText>
               </ListItem>
             </List>
           </Collapse>
         </ListItem>
+        <Divider></Divider>
+        <ListItem button onClick={() => expandButton("other")}>
+          <ListItemIcon>
+            <HelpIcon></HelpIcon>
+          </ListItemIcon>
+          <ListItemText primary="Other"></ListItemText>
+          {expanded["other"] ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <ListItem>
+          <Collapse in={expanded["other"]} timeout="auto">
+            <List disablePadding>
+              {/* <Link> */}
+              <ListItem button>
+                <ListItemText primary="Other 1"></ListItemText>
+              </ListItem>
+              {/* </Link> */}
+              {/* <Link> */}
+              <ListItem button>
+                <ListItemText primary="Other 2"></ListItemText>
+              </ListItem>
+              {/* </Link> */}
+            </List>
+          </Collapse>
+        </ListItem>
+        <Divider></Divider>
       </List>
     </div>
   );
