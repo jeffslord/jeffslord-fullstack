@@ -52,7 +52,9 @@ export default function MyDrawer(props) {
     <div>
       <List>
         <ListItem>
-          <Link to="/">Home</Link>
+          <Button>
+            <Link to="/">Home</Link>
+          </Button>
         </ListItem>
         <ListItem>
           <Button onClick={() => expandButton("tools")} fullWidth>
@@ -63,10 +65,16 @@ export default function MyDrawer(props) {
           <Collapse in={expanded["tools"]} timeout="auto">
             <List>
               <ListItem>
-                <Link to="tools/cvoptimizer/">Calculation View Optimizer</Link>
+                <Button fullWidth>
+                  <Link to="tools/cvoptimizer/">
+                    Calculation View Optimizer
+                  </Link>
+                </Button>
               </ListItem>
               <ListItem>
-                <p>Test again</p>
+                <Button fullWidth>
+                  <p>Test again</p>
+                </Button>
               </ListItem>
             </List>
           </Collapse>

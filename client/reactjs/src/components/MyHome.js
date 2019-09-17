@@ -28,6 +28,7 @@ export default function MyHome(props) {
   return (
     <div className={classes.root}>
       <Typography variant="h1">WELCOME</Typography>
+      <Typography variant="body1">This is the one and only website of Jeff Lord. Feel free to browse our limited selection of things.</Typography>
     </div>
   );
 }
