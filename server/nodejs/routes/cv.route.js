@@ -39,6 +39,8 @@ router.post('/fixSingle', upload.single('file'), (req, res, next) => {
 });
 
 router.post('/analyzeMany', upload.array('files'), (req, res, next) => {
+  // console.log(req);
+  console.log('file', req.file);
   console.log('files', req.files);
   console.log('body', req.body);
   const analyzeRes = [];

@@ -39,9 +39,17 @@ export default function MyCvParse() {
 
   const AnalyzeButton = () => {
     if (files.length > 0) {
+      console.log("FILES", files);
+
       let data = new FormData();
-      data.append("file", files[0]);
-      fetch("http://localhost:5000/api/cv/analyzeSingle", {
+      for (const f in files) {
+        data.append("files", files[f]);
+        console.log(f);
+      }
+      console.log(data);
+
+      // data.append("files", files);
+      fetch("http://localhost:5000/api/cv/analyzeMany", {
         method: "post",
         body: data
       })
