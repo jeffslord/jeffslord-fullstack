@@ -21,6 +21,9 @@ const useStyles = makeStyles(theme => ({
     margin: "20px",
     textAlign: "center",
     color: theme.palette.text.secondary
+  },
+  checkTable: {
+    width: "100%"
   }
 }));
 
@@ -133,6 +136,15 @@ export default function MyCvParse() {
     }
   };
 
+  const downloadCalcView = (name, content) => {
+    if (xmlResult != undefined) {
+      var atag = document.createElement("a");
+      var file = new Blob([content], { type: "hdbclaculationview" });
+      atag.href = URL.createObjectURL(file);
+      atag.download = name;
+      atag.click();
+    }
+  };
   return (
     <div className={classes.root}>
       <Grid container justify="center" spacing={0}>
@@ -170,7 +182,9 @@ export default function MyCvParse() {
             <Grid container justify="center">
               <Grid item>
                 <List>
-                  <ListItem>{RenderCheckTable([])}</ListItem>
+                  <ListItem className={classes.check}>
+                    {RenderCheckTable([])}
+                  </ListItem>
                   <ListItem>
                     <Button
                       variant="contained"
@@ -190,7 +204,14 @@ export default function MyCvParse() {
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={5}>
             <Grid item xs={12}>
-              <Button variant="contained">Download (not working yet)</Button>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  downloadCalcView("Fixed", xmlResult);
+                }}
+              >
+                Download txt
+              </Button>
             </Grid>
             <TextField
               multiline={true}
