@@ -23,7 +23,8 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.secondary
   },
   checkTable: {
-    width: "100%"
+    width: "100%",
+    display: "flex"
   }
 }));
 
@@ -35,6 +36,7 @@ export default function MyCvParse() {
   // const [checks, setChecks] = useState(["version", "rightJoins", "splitNodes"]);
   const [xmlResult, setXmlResult] = useState();
   const [loading, setLoading] = useState(false);
+  // const [checkComplete, setCheckComplete] = useState(false);
 
   useEffect(() => {
     document.title = "Jeff - Calculation View Optimizer";
@@ -132,7 +134,12 @@ export default function MyCvParse() {
           }
         ]
       };
-      return <MyCheckTable tableState={tableData}></MyCheckTable>;
+      return (
+        <MyCheckTable
+          tableState={tableData}
+          className={classes.checkTable}
+        ></MyCheckTable>
+      );
     }
   };
 
@@ -147,6 +154,8 @@ export default function MyCvParse() {
   };
   return (
     <div className={classes.root}>
+      {console.log("RESULTS:", results)}
+      {/* Instruction Box */}
       <Grid container justify="center" spacing={0}>
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={5}>
@@ -157,7 +166,7 @@ export default function MyCvParse() {
             </Typography>
           </Paper>
         </Grid>
-
+        {/* Upload Box */}
         <Grid item xs>
           <Paper className={classes.paper} elevation={5}>
             <Grid item>
@@ -177,30 +186,35 @@ export default function MyCvParse() {
             </Grid>
           </Paper>
         </Grid>
-        <Grid item xs>
+        {/* Result Box */}
+        <Grid item xs="6">
           <Paper className={classes.paper} elevation={5}>
-            <Grid container justify="center">
-              <Grid item>
-                <List>
-                  <ListItem className={classes.check}>
-                    {RenderCheckTable([])}
-                  </ListItem>
-                  <ListItem>
-                    <Button
-                      variant="contained"
-                      size="large"
-                      onClick={() => Fixbutton()}
-                      color="primary"
-                    >
-                      Fix All
-                    </Button>
-                    {loading && <CircularProgress></CircularProgress>}
-                  </ListItem>
-                </List>
+            {results.length === 0 && (
+              <Typography variant="h2">RESULTS HERE</Typography>
+            )}
+
+            {results.length > 0 && (
+              <Grid container>
+                <Grid item xs="12">
+                  {RenderCheckTable([])}
+                </Grid>
+                <Grid item xs="12">
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={() => Fixbutton()}
+                    color="primary"
+                    fullWidth
+                  >
+                    Fix All
+                  </Button>
+                  {loading && <CircularProgress></CircularProgress>}
+                </Grid>
               </Grid>
-            </Grid>
+            )}
           </Paper>
         </Grid>
+        {/* Text Result Box */}
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={5}>
             <Grid item xs={12}>
