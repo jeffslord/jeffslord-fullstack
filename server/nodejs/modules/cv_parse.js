@@ -50,12 +50,17 @@ function ParseXML(xml, cb) {
 }
 
 // Get the calculation view schema version. 2.3 maps to Hana 1.0 classic, 3.0 is for HANA 2.0 XSA
-function CheckCvVersion(jsonResult, cb) {
+function CheckCvHeaderInfo(jsonResult, cb) {
   const version = jsonResult['Calculation:scenario'].$.schemaVersion;
+  const { id } = jsonResult['Calculation:scenario'].$;
+  const info = { version, id };
   if (version === undefined) {
     return cb(Error('No version'));
   }
-  return cb(null, version);
+  if (id === undefined) {
+    return cb(Error('No id'));
+  }
+  return cb(null, info);
 }
 
 // Get the root of Calculation View element.
@@ -223,7 +228,10 @@ function CheckSplitNodes(jsonResult, cb) {
       });
     });
   });
-  return cb(null, splitNodes);
+  if (splitNodes === {}) {
+    return cb(null, splitNodes, false);
+  }
+  return cb(null, splitNodes, true);
 }
 
 // Duplicate calc view node and return the copy. Does not add to structure.
@@ -243,7 +251,10 @@ function CheckRightJoinCvs(jsonResult, cb) {
         rightOuters.push(ele);
       }
     });
-    return cb(null, rightOuters);
+    if (rightOuters.length === 0) {
+      return cb(null, rightOuters, false);
+    }
+    return cb(null, rightOuters, true);
   });
 }
 
@@ -336,12 +347,13 @@ function ProcessView(filePath, cb) {
   const res = {};
   const checks = [];
   ParseFile(filePath, (err, json) => {
-    CheckCvVersion(json, (err, version) => {
-      res.version = version;
-      CheckSplitNodes(json, (err, splits) => {
-        checks.push({ splitNodes: splits });
-        CheckRightJoinCvs(json, (err, rJoins) => {
-          checks.push({ rightJoins: rJoins });
+    CheckCvHeaderInfo(json, (err, header) => {
+      res.version = header.version;
+      res.header = header;
+      CheckSplitNodes(json, (err, splits, splitFound) => {
+        checks.push({ checkName: 'Split Nodes', data: splits, found: splitFound });
+        CheckRightJoinCvs(json, (err, rJoins, rJoinsFound) => {
+          checks.push({ checkName: 'Right Joins', data: rJoins, found: rJoinsFound });
           res.checks = checks;
           return cb(null, res);
         });
@@ -352,8 +364,8 @@ function ProcessView(filePath, cb) {
 
 function FixView(filePath, cb) {
   ParseFile(filePath, (err, parsedJSON) => {
-    CheckCvVersion(parsedJSON, (err, cvVersion) => {
-      FixSplitNodes(parsedJSON, cvVersion, (err, splitNodes) => {
+    CheckCvHeaderInfo(parsedJSON, (err, cvHeader) => {
+      FixSplitNodes(parsedJSON, cvHeader.version, (err, splitNodes) => {
         FixRightJoins(parsedJSON, (err, rightJoins) => {
           const builder = new xml2js.Builder();
           const xml = builder.buildObject(parsedJSON);
@@ -383,7 +395,7 @@ module.exports = {
   FixView,
   ParseFile,
   ParseXML,
-  CheckCvVersion,
+  CheckCvHeaderInfo,
   CheckRightJoinCvs,
   FixRightJoins,
   CheckSplitNodes,

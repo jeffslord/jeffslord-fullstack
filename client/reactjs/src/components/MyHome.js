@@ -66,9 +66,9 @@ export default function MyHome(props) {
         This is the one and only website of Jeff Lord. Feel free to browse our
         limited selection of things.
       </Typography>
-      <div style={{ maxWidth: "50%" }}>
+      {/* <div style={{ maxWidth: "50%" }}>
         <MyCheckTable tableState={testState}></MyCheckTable>
-      </div>
+      </div> */}
     </div>
   );
 }

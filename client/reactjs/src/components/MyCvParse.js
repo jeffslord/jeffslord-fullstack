@@ -10,6 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import MyCheckTable from "../components/MyCheckTable";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -27,7 +28,7 @@ export default function MyCvParse() {
   const classes = useStyles();
 
   const [files, setFiles] = useState([]);
-  const [results, setResults] = useState({});
+  const [results, setResults] = useState([]);
   // const [checks, setChecks] = useState(["version", "rightJoins", "splitNodes"]);
   const [xmlResult, setXmlResult] = useState();
   const [loading, setLoading] = useState(false);
@@ -71,48 +72,56 @@ export default function MyCvParse() {
     }
   };
 
-  const RenderVersion = () => {
-    console.log("Render Version Called");
-    if (results.version !== undefined) {
-      return (
-        <ListItem>
-          <Button variant="contained" fullWidth>
-            {"Version: " + results.version}
-          </Button>
-        </ListItem>
-      );
-    }
-  };
-  const RenderChecks = () => {
-    if (results.checks !== undefined) {
-      return results.checks.map(check => {
-        return Object.keys(check).map(key => {
-          if (
-            check[key] !== undefined &&
-            (check[key].length === 0 || Object.keys(check[key]).length === 0)
-          ) {
-            console.log("GOOD: ", key, check[key]);
-            return (
-              <ListItem key={key}>
-                <Button variant="contained" color="primary" fullWidth>
-                  {key}
-                </Button>
-              </ListItem>
-            );
-          } else {
-            console.log("BAD: ", key, check[key]);
-            return (
-              <ListItem key={key}>
-                <Button variant="contained" color="secondary" fullWidth>
-                  {key}
-                </Button>
-              </ListItem>
-            );
-          }
+  const RenderCheckTable = singleViewChecks => {
+    if (results.length > 0) {
+      // change this when multiple working at a time
+      singleViewChecks = results[0];
+      // end change
+      let rows = [];
+      singleViewChecks.checks.forEach(check => {
+        rows.push({
+          check: check["checkName"],
+          found: check["found"].toString()
         });
       });
-    } else {
-      return null;
+      console.log(rows);
+
+      //
+      let tableData = {
+        cvName: singleViewChecks.header.id,
+        cvVersion: singleViewChecks.header.version,
+        columns: [
+          { title: "Check", field: "check" },
+          {
+            title: "Found",
+            field: "found",
+            cellStyle: rowData => ({
+              backgroundColor: rowData === "true" ? "#e57373" : "#a5d6a7"
+            })
+          }
+        ],
+        data: rows,
+        options: {
+          selection: true,
+          selectionProps: rowData => ({
+            disabled: rowData.found === "false",
+            color: "primary"
+          })
+          // rowStyle: rowData => ({
+          //   backgroundColor: rowData.found === "Yes" ? "#e57373" : "#a5d6a7"
+          // })
+        },
+        actions: [
+          {
+            tooltip: "Fix checked",
+            icon: "check",
+            onClick: (evt, data) => {
+              console.log(evt, data);
+            }
+          }
+        ]
+      };
+      return <MyCheckTable tableState={tableData}></MyCheckTable>;
     }
   };
 
@@ -153,22 +162,20 @@ export default function MyCvParse() {
             <Grid container justify="center">
               <Grid item>
                 <List>
-                  {console.log("results", results)}
-                  {RenderVersion()}
-                  {RenderChecks()}
+                  <ListItem>{RenderCheckTable([])}</ListItem>
+                  <ListItem>
+                    <Button
+                      variant="contained"
+                      size="large"
+                      onClick={() => Fixbutton()}
+                      color="primary"
+                    >
+                      Fix All
+                    </Button>
+                    {loading && <CircularProgress></CircularProgress>}
+                  </ListItem>
                 </List>
               </Grid>
-            </Grid>
-            <Grid container justify="center">
-              <Button
-                variant="contained"
-                size="large"
-                onClick={() => Fixbutton()}
-                color="primary"
-              >
-                Fix
-              </Button>
-              {loading && <CircularProgress></CircularProgress>}
             </Grid>
           </Paper>
         </Grid>

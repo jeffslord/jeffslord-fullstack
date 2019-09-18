@@ -17,12 +17,13 @@ router.get('/', (req, res, next) => {
 
 router.post('/analyzeSingle', upload.single('file'), (req, res, next) => {
   console.log('file', req.file);
-  // console.log('body', req.body);
   console.log('Upload Path:', req.file.path);
+  const analyzeRes = [];
   cv.ProcessView(req.file.path, (err, cvRes) => {
     fs.unlink(req.file.path, (unlinkErr) => {
       console.log(cvRes);
-      res.send(cvRes);
+      analyzeRes.push(cvRes);
+      res.send(analyzeRes);
     });
   });
 });
@@ -37,17 +38,26 @@ router.post('/fixSingle', upload.single('file'), (req, res, next) => {
   });
 });
 
-router.post('/uploadMany', upload.array('files'), (req, res, next) => {
+router.post('/analyzeMany', upload.array('files'), (req, res, next) => {
   console.log('files', req.files);
   console.log('body', req.body);
-
+  const analyzeRes = [];
+  let fileCount = 0;
   req.files.forEach((file) => {
     console.log('Upload Path:', file.path);
-    fs.unlink(file.path, (err) => {
-      console.log('Unlink:', file.path);
+    cv.ProcessView(file.path, (err, cvRes) => {
+      fs.unlink(file.path, (err) => {
+        console.log('Unlink:', file.path);
+        analyzeRes.push(cvRes);
+        fileCount += 1;
+        if (fileCount === req.files.length) {
+          res.send(analyzeRes);
+        }
+      });
     });
   });
-  res.send(req.body);
+  // res.send(analyzeRes);
+  // res.send(req.body);
 });
 
 module.exports = router;
