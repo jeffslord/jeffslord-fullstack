@@ -187,7 +187,7 @@ export default function MyCvParse() {
           </Paper>
         </Grid>
         {/* Result Box */}
-        <Grid item xs="6">
+        <Grid item>
           <Paper className={classes.paper} elevation={5}>
             {results.length === 0 && (
               <Typography variant="h2">RESULTS HERE</Typography>
@@ -195,10 +195,10 @@ export default function MyCvParse() {
 
             {results.length > 0 && (
               <Grid container>
-                <Grid item xs="12">
+                <Grid item xs={12}>
                   {RenderCheckTable([])}
                 </Grid>
-                <Grid item xs="12">
+                <Grid item xs={12}>
                   <Button
                     variant="contained"
                     size="large"

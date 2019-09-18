@@ -62,4 +62,22 @@ router.post('/analyzeMany', upload.array('files'), (req, res, next) => {
   // res.send(req.body);
 });
 
+router.post('/fixMany', upload.array('files'), (req, res, next) => {
+  let fileCount = 0;
+  const allRes = [];
+  req.files.forEach((file) => {
+    cv.FixView(file.path, (err, xmlRes) => {
+      fs.unlink(file.path, (unlinkErr) => {
+        // allRes.push({
+        //   file['originalname']:xmlRes
+        // });
+        fileCount += 1;
+        if (fileCount === req.files.length) {
+          res.send(allRes);
+        }
+      });
+    });
+  });
+});
+
 module.exports = router;

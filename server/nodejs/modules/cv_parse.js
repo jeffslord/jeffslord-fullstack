@@ -24,6 +24,7 @@
 const fs = require('fs');
 const xml2js = require('xml2js');
 const path = require('path');
+const util = require('util');
 
 const parser = new xml2js.Parser();
 
@@ -229,9 +230,9 @@ function CheckSplitNodes(jsonResult, cb) {
     });
   });
   if (splitNodes === {}) {
-    return cb(null, splitNodes, false);
+    return cb(null, { splitNodes, found: false });
   }
-  return cb(null, splitNodes, true);
+  return cb(null, { splitNodes, found: true });
 }
 
 // Duplicate calc view node and return the copy. Does not add to structure.
@@ -252,9 +253,9 @@ function CheckRightJoinCvs(jsonResult, cb) {
       }
     });
     if (rightOuters.length === 0) {
-      return cb(null, rightOuters, false);
+      return cb(null, { rightOuters, found: false });
     }
-    return cb(null, rightOuters, true);
+    return cb(null, { rightOuters, found: true });
   });
 }
 
@@ -343,37 +344,73 @@ function FixSplitNodes(jsonResult, version, cb) {
   });
 }
 
-function ProcessView(filePath, cb) {
+const pParseFile = util.promisify(ParseFile);
+const pCheckCvHeaderInfo = util.promisify(CheckCvHeaderInfo);
+const pCheckSplitNodes = util.promisify(CheckSplitNodes);
+const pCheckRightJoinCvs = util.promisify(CheckRightJoinCvs);
+const pFixSplitNodes = util.promisify(FixSplitNodes);
+const pFixRightJoins = util.promisify(FixRightJoins);
+
+async function ProcessView(filePath, cb) {
   const res = {};
   const checks = [];
-  ParseFile(filePath, (err, json) => {
-    CheckCvHeaderInfo(json, (err, header) => {
-      res.version = header.version;
-      res.header = header;
-      CheckSplitNodes(json, (err, splits, splitFound) => {
-        checks.push({ checkName: 'Split Nodes', data: splits, found: splitFound });
-        CheckRightJoinCvs(json, (err, rJoins, rJoinsFound) => {
-          checks.push({ checkName: 'Right Joins', data: rJoins, found: rJoinsFound });
-          res.checks = checks;
-          return cb(null, res);
-        });
-      });
-    });
-  });
+  try {
+    const json = await pParseFile(filePath);
+    const headerInfo = await pCheckCvHeaderInfo(json);
+    const splits = await pCheckSplitNodes(json);
+    console.log('splits', splits);
+
+    const rJoins = await pCheckRightJoinCvs(json);
+    res.header = headerInfo;
+    checks.push({ checkName: 'Split Nodes', data: splits.splitNodes, found: splits.found });
+    checks.push({ checkName: 'Right Joins', data: rJoins.rightOuters, found: rJoins.found });
+    res.checks = checks;
+    console.log('RES', res);
+    return cb(null, res);
+  } catch (err) {
+    throw err;
+  }
+
+  // ParseFile(filePath, (err, json) => {
+  //   CheckCvHeaderInfo(json, (err, header) => {
+  //     res.version = header.version;
+  //     res.header = header;
+  //     CheckSplitNodes(json, (err, splits, splitFound) => {
+  //       checks.push({ checkName: 'Split Nodes', data: splits, found: splitFound });
+  //       CheckRightJoinCvs(json, (err, rJoins, rJoinsFound) => {
+  //         checks.push({ checkName: 'Right Joins', data: rJoins, found: rJoinsFound });
+  //         res.checks = checks;
+  //         return cb(null, res);
+  //       });
+  //     });
+  //   });
+  // });
 }
 
-function FixView(filePath, cb) {
-  ParseFile(filePath, (err, parsedJSON) => {
-    CheckCvHeaderInfo(parsedJSON, (err, cvHeader) => {
-      FixSplitNodes(parsedJSON, cvHeader.version, (err, splitNodes) => {
-        FixRightJoins(parsedJSON, (err, rightJoins) => {
-          const builder = new xml2js.Builder();
-          const xml = builder.buildObject(parsedJSON);
-          return cb(null, xml);
-        });
-      });
-    });
-  });
+async function FixView(filePath, cb) {
+  try {
+    const json = await pParseFile(filePath);
+    const header = await pCheckCvHeaderInfo(json);
+    const split = await pFixSplitNodes(json, header.version);
+    const right = await pFixRightJoins(json);
+    const builder = new xml2js.Builder();
+    const xml = builder.buildObject(json);
+    return cb(null, xml);
+  } catch (err) {
+    throw err;
+  }
+
+  // ParseFile(filePath, (err, parsedJSON) => {
+  //   CheckCvHeaderInfo(parsedJSON, (err, cvHeader) => {
+  //     FixSplitNodes(parsedJSON, cvHeader.version, (err, splitNodes) => {
+  //       FixRightJoins(parsedJSON, (err, rightJoins) => {
+  //         const builder = new xml2js.Builder();
+  //         const xml = builder.buildObject(parsedJSON);
+  //         return cb(null, xml);
+  //       });
+  //     });
+  //   });
+  // });
 }
 
 function Test() {
