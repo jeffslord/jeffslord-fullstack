@@ -15,7 +15,6 @@ export default function App() {
       <MyBar
         setDrawerOpen={open => setDrawerOpen(open)}
         title={"Title"}
-        // setTitle={title => setBarTitle(title)}
       ></MyBar>
       <MyDrawer
         drawerOpen={drawerOpen}

@@ -28,10 +28,11 @@ router.post('/analyzeSingle', upload.single('file'), (req, res, next) => {
   });
 });
 router.post('/fixSingle', upload.single('file'), (req, res, next) => {
-  console.log('file', req.file);
+  console.log('req.file', req.file);
   console.log('Upload Path:', req.file.path);
   cv.FixView(req.file.path, (err, xmlRes) => {
     fs.unlink(req.file.path, (unlinkErr) => {
+      console.log('Unlink:', req.file.path);
       const data = { xml: xmlRes };
       res.send(data);
     });

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -20,8 +20,11 @@ const useStyles = makeStyles(theme => ({
 
 export default function MyBar(props) {
   const classes = useStyles();
+  const [title, setTitle] = useState("Title");
 
-  //   const [test, setTest] = useState();
+  useEffect(() => {
+    setTitle(document.title);
+  });
 
   return (
     <div className={classes.root}>
@@ -30,7 +33,7 @@ export default function MyBar(props) {
           <IconButton edge="start" onClick={() => props.setDrawerOpen(true)}>
             <MenuIcon></MenuIcon>
           </IconButton>
-          <Typography variant="h6">{props.title}</Typography>
+          <Typography variant="h6">{title}</Typography>
         </Toolbar>
       </AppBar>
     </div>

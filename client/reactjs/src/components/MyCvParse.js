@@ -35,11 +35,12 @@ export default function MyCvParse() {
   const [results, setResults] = useState([]);
   // const [checks, setChecks] = useState(["version", "rightJoins", "splitNodes"]);
   const [xmlResult, setXmlResult] = useState();
+  const [xmls, setXmls] = useState([]);
   const [loading, setLoading] = useState(false);
   // const [checkComplete, setCheckComplete] = useState(false);
 
   useEffect(() => {
-    document.title = "Jeff - Calculation View Optimizer";
+    document.title = "Calculation View Optimizer";
   });
 
   const AnalyzeButton = () => {
@@ -167,7 +168,7 @@ export default function MyCvParse() {
           </Paper>
         </Grid>
         {/* Upload Box */}
-        <Grid item xs>
+        <Grid item xs={6}>
           <Paper className={classes.paper} elevation={5}>
             <Grid item>
               <MyFileUploader setparentfiles={files => setFiles(files)} />
@@ -187,7 +188,7 @@ export default function MyCvParse() {
           </Paper>
         </Grid>
         {/* Result Box */}
-        <Grid item>
+        <Grid item xs={6}>
           <Paper className={classes.paper} elevation={5}>
             {results.length === 0 && (
               <Typography variant="h2">RESULTS HERE</Typography>
@@ -225,6 +226,14 @@ export default function MyCvParse() {
                 }}
               >
                 Download txt
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  navigator.clipboard.writeText(xmlResult);
+                }}
+              >
+                Copy
               </Button>
             </Grid>
             <TextField

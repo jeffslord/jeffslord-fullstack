@@ -293,12 +293,12 @@ function GetUnmappedParams(jsonResult, cb) {
 }
 
 function FixRightJoins(jsonResult, cb) {
-  CheckRightJoinCvs(jsonResult, (err, rightOuters) => {
-    rightOuters.forEach((ele) => {
+  CheckRightJoinCvs(jsonResult, (err, rightRes) => {
+    rightRes.rightOuters.forEach((ele) => {
       ele.$.joinType = 'leftOuter';
       [ele.input[0], ele.input[1]] = [ele.input[1], ele.input[0]];
     });
-    return cb(null, rightOuters);
+    return cb(null, rightRes.rightOuters);
   });
 }
 
@@ -311,18 +311,18 @@ function FixSplitNodes(jsonResult, version, cb) {
     const allSplits = [];
     while (!complete) {
       // Get input nodes that are used by more than 1 node
-      CheckSplitNodes(jsonResult, (err, splitNodes) => {
-        if (Object.keys(splitNodes).length === 0) {
+      CheckSplitNodes(jsonResult, (err, splitRes) => {
+        if (Object.keys(splitRes.splitNodes).length === 0) {
           complete = true;
         } else {
-          allSplits.push(splitNodes);
-          Object.keys(splitNodes).forEach((key) => {
+          allSplits.push(splitRes.splitNodes);
+          Object.keys(splitRes.splitNodes).forEach((key) => {
             // Get the calc view nodes based on the name of split inputs
             GetCvInputsByInput(jsonResult, key, (err2, inputNodes) => {
-              for (let i = 0; i < splitNodes[key] - 1; i++) {
+              for (let i = 0; i < splitRes.splitNodes[key] - 1; i++) {
                 // Make a copy for each split (if used in 10 places, create 9 new)
                 CopyCv(jsonResult, key, (cvCopy) => {
-                  const cvCopyNew = cvCopy;
+                   const cvCopyNew = cvCopy;
                   // Change the copies id to new id (_i for iteration)
                   cvCopyNew.$.id = `${cvCopyNew.$.id}_${i + 1}`;
                   // Add copy to the structure
@@ -370,21 +370,6 @@ async function ProcessView(filePath, cb) {
   } catch (err) {
     throw err;
   }
-
-  // ParseFile(filePath, (err, json) => {
-  //   CheckCvHeaderInfo(json, (err, header) => {
-  //     res.version = header.version;
-  //     res.header = header;
-  //     CheckSplitNodes(json, (err, splits, splitFound) => {
-  //       checks.push({ checkName: 'Split Nodes', data: splits, found: splitFound });
-  //       CheckRightJoinCvs(json, (err, rJoins, rJoinsFound) => {
-  //         checks.push({ checkName: 'Right Joins', data: rJoins, found: rJoinsFound });
-  //         res.checks = checks;
-  //         return cb(null, res);
-  //       });
-  //     });
-  //   });
-  // });
 }
 
 async function FixView(filePath, cb) {
@@ -399,26 +384,18 @@ async function FixView(filePath, cb) {
   } catch (err) {
     throw err;
   }
-
-  // ParseFile(filePath, (err, parsedJSON) => {
-  //   CheckCvHeaderInfo(parsedJSON, (err, cvHeader) => {
-  //     FixSplitNodes(parsedJSON, cvHeader.version, (err, splitNodes) => {
-  //       FixRightJoins(parsedJSON, (err, rightJoins) => {
-  //         const builder = new xml2js.Builder();
-  //         const xml = builder.buildObject(parsedJSON);
-  //         return cb(null, xml);
-  //       });
-  //     });
-  //   });
-  // });
 }
 
 function Test() {
   const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'employeespunchedin.xml');
   // const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad.xml`);
   // const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad2.xml`);
+  console.log("Processing...");
   ProcessView(filePath, (err, res) => {
+    console.log("Processing complete!");
+    console.log("Fixing...");
     FixView(filePath, (err, xml) => {
+      console.log("Fixing complete!");
       console.log('\nWriting files...');
       WriteFile('./data/json/cv_json_latest.json', JSON.stringify(xml));
       WriteFile('./data/xml/cv_xml_latest.xml', xml);
