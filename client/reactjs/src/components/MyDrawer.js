@@ -1,6 +1,6 @@
 import Drawer from "@material-ui/core/Drawer";
 import React, { useState } from "react";
-import { Typography } from "@material-ui/core";
+// import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -31,7 +31,7 @@ export default function MyDrawer(props) {
   //   const [open, setOpen] = useState(true);
 
   const [expanded, setExpanded] = useState({ tools: false, other: false });
-  const tools = ["cvoptimizer"];
+  // const tools = ["cvoptimizer"];
 
   const expandButton = name => {
     if (expanded[name] === true) {

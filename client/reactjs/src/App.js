@@ -8,7 +8,7 @@ import MyHome from "./components/MyHome";
 
 export default function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [barTitle, setBarTitle] = useState("Home");
+  // const [barTitle, setBarTitle] = useState("Home");
 
   return (
     <div className="App">

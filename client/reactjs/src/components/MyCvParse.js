@@ -7,10 +7,12 @@ import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
+// import List from "@material-ui/core/List";
+// import ListItem from "@material-ui/core/ListItem";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import MyCheckTable from "../components/MyCheckTable";
+import Snackbar from "@material-ui/core/Snackbar";
+import SnackbarContent from "@material-ui/core/SnackbarContent";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -35,8 +37,9 @@ export default function MyCvParse() {
   const [results, setResults] = useState([]);
   // const [checks, setChecks] = useState(["version", "rightJoins", "splitNodes"]);
   const [xmlResult, setXmlResult] = useState();
-  const [xmls, setXmls] = useState([]);
+  // const [xmls, setXmls] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [textCopyOpen, setTextCopyOpen] = useState(false);
   // const [checkComplete, setCheckComplete] = useState(false);
 
   useEffect(() => {
@@ -145,7 +148,7 @@ export default function MyCvParse() {
   };
 
   const downloadCalcView = (name, content) => {
-    if (xmlResult != undefined) {
+    if (xmlResult !== undefined) {
       var atag = document.createElement("a");
       var file = new Blob([content], { type: "hdbclaculationview" });
       atag.href = URL.createObjectURL(file);
@@ -231,10 +234,26 @@ export default function MyCvParse() {
                 variant="contained"
                 onClick={() => {
                   navigator.clipboard.writeText(xmlResult);
+                  setTextCopyOpen(true);
                 }}
               >
                 Copy
               </Button>
+              <Snackbar
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left"
+                }}
+                open={textCopyOpen}
+                autoHideDuration={1000}
+                onClose={() => {
+                  setTextCopyOpen(false);
+                }}
+                ContentProps={{
+                  "aria-describedby": "message-id"
+                }}
+                message={<span id="message-id">Text Copied</span>}
+              />
             </Grid>
             <TextField
               multiline={true}
