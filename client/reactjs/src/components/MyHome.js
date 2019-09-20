@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import MyCheckTable from "../components/MyCheckTable";
+// import MyCheckTable from "../components/MyCheckTable";
 
 const useStyles = makeStyles(theme => ({
   root: {

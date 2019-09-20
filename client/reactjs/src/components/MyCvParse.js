@@ -12,7 +12,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import MyCheckTable from "../components/MyCheckTable";
 import Snackbar from "@material-ui/core/Snackbar";
-import SnackbarContent from "@material-ui/core/SnackbarContent";
 
 const useStyles = makeStyles(theme => ({
   root: {
