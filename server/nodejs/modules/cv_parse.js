@@ -229,10 +229,10 @@ function CheckSplitNodes(jsonResult, cb) {
       });
     });
   });
-  if (splitNodes === {}) {
-    return cb(null, { splitNodes, found: false });
-  }
-  return cb(null, { splitNodes, found: true });
+  // if (splitNodes === {}) {
+  return cb(null, { splitNodes, found: Object.keys(splitNodes).length > 0 });
+  // }
+  // return cb(null, { splitNodes, found: true });
 }
 
 // Duplicate calc view node and return the copy. Does not add to structure.
@@ -322,7 +322,7 @@ function FixSplitNodes(jsonResult, version, cb) {
               for (let i = 0; i < splitRes.splitNodes[key] - 1; i++) {
                 // Make a copy for each split (if used in 10 places, create 9 new)
                 CopyCv(jsonResult, key, (cvCopy) => {
-                   const cvCopyNew = cvCopy;
+                  const cvCopyNew = cvCopy;
                   // Change the copies id to new id (_i for iteration)
                   cvCopyNew.$.id = `${cvCopyNew.$.id}_${i + 1}`;
                   // Add copy to the structure
@@ -390,12 +390,12 @@ function Test() {
   const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'employeespunchedin.xml');
   // const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad.xml`);
   // const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad2.xml`);
-  console.log("Processing...");
+  console.log('Processing...');
   ProcessView(filePath, (err, res) => {
-    console.log("Processing complete!");
-    console.log("Fixing...");
+    console.log('Processing complete!');
+    console.log('Fixing...');
     FixView(filePath, (err, xml) => {
-      console.log("Fixing complete!");
+      console.log('Fixing complete!');
       console.log('\nWriting files...');
       WriteFile('./data/json/cv_json_latest.json', JSON.stringify(xml));
       WriteFile('./data/xml/cv_xml_latest.xml', xml);
