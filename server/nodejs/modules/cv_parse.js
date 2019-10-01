@@ -10,14 +10,20 @@
     A fix for different versions will probably eventually be made.
     HANA Studio appears to end at version 2.3, while Web Ide is at version 3.0.
 
-  *Current features...
-  - Identify and fix first level split nodes.
-    - If split node has nodes beneath, function will have to be reran multiple times.
+  *Current features:
+  - Identify and fix split nodes. Will recursively check after initial fix.
+  - Fix split nodes
   - Identify right joins
-    - Initial tests seem to work
+  - Fix right joins
 
-  *Planned features...
+  *Planned features:
   - Identify unmapped input parameters
+  - Identify filters on calculated columns
+  - Identify
+
+
+Join on calculated column
+Filter on calculated column
 
 */
 
@@ -302,6 +308,18 @@ function FixRightJoins(jsonResult, cb) {
   });
 }
 
+function CreateInputName(nodeName, version, cb) {
+  let newName = '';
+  if (version <= 2.3) {
+    newName = `#${nodeName}`;
+    // return (null,`#${cvCopyNew.$.id}`);
+  } else {
+    newName = `${nodeName}`;
+    // return null`${cvCopyNew.$.id}`;
+  }
+  return cb(null, newName);
+}
+
 // need to check if split node is a data source
 // if it is a data source than it is allowed to be in multiple places
 function FixSplitNodes(jsonResult, version, cb) {
@@ -328,6 +346,9 @@ function FixSplitNodes(jsonResult, version, cb) {
                   // Add copy to the structure
                   cvRoot.push(cvCopyNew);
                   // Change input node to the newly created calc view node
+                  // CreateInputName(inputNodes[i].$.node, version, (err, newName) => {
+                  //   inputNodes[i].$.node = newName;
+                  // });
                   if (version <= 2.3) {
                     inputNodes[i].$.node = `#${cvCopyNew.$.id}`;
                   } else {
@@ -343,6 +364,18 @@ function FixSplitNodes(jsonResult, version, cb) {
     return cb(null, allSplits);
   });
 }
+
+// function CreateInputName(nodeName, version, cb) {
+//   let newName = '';
+//   if (version <= 2.3) {
+//     newName = `#${nodeName}`;
+//     // return (null,`#${cvCopyNew.$.id}`);
+//   } else {
+//     newName = `${nodeName}`;
+//     // return null`${cvCopyNew.$.id}`;
+//   }
+//   return cb(null, newName);
+// }
 
 const pParseFile = util.promisify(ParseFile);
 const pCheckCvHeaderInfo = util.promisify(CheckCvHeaderInfo);

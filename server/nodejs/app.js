@@ -9,6 +9,7 @@ const cors = require('cors');
 // set router files
 const indexRouter = require('./routes/index');
 const cvRouter = require('./routes/cv.route');
+const hanaRouter = require('./routes/hana.route');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // set routes based on previous routers set
 app.use('/', indexRouter);
 app.use('/api/cv', cvRouter);
+app.use('/api/hana', hanaRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
