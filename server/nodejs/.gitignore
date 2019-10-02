@@ -1,13 +1,3 @@
-### MINE ####
-*.config*
-.vscode
-*.sar
-SAP_HANA_CLIENT
-node_modules
-uploads
-.env
-#############
-
 ##### RECOMMENDED #
 # Compiled source #
 ###################
@@ -46,3 +36,14 @@ uploads
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+### MINE ####
+*.config*
+.vscode
+*.sar
+SAP_HANA_CLIENT
+node_modules
+uploads
+.env
+!tools/hdbclient_node/prebuilt/ntamd64-msvc2010/*
+#############
