@@ -45,5 +45,6 @@ SAP_HANA_CLIENT
 node_modules
 uploads
 .env
+tools/hdbclient_node/build/
 !tools/hdbclient_node/prebuilt/ntamd64-msvc2010/*
 #############
