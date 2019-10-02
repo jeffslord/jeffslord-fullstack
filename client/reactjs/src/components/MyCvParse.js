@@ -12,6 +12,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import MyCheckTable from "../components/MyCheckTable";
 import Snackbar from "@material-ui/core/Snackbar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,6 +41,7 @@ export default function MyCvParse() {
   // const [xmls, setXmls] = useState([]);
   const [loading, setLoading] = useState(false);
   const [textCopyOpen, setTextCopyOpen] = useState(false);
+  const [tabValue, setTabValue] = useState(0);
   // const [checkComplete, setCheckComplete] = useState(false);
 
   useEffect(() => {
@@ -169,7 +172,18 @@ export default function MyCvParse() {
             </Typography>
           </Paper>
         </Grid>
+        {/* <Paper className={classes.paper}> */}
+        {/* Tab Bar */}
+        <Grid item xs={12}>
+          <Paper square>
+            <Tabs value={tabValue} onChange={(event, val) => setTabValue(val)}>
+              <Tab label="Test"></Tab>
+              <Tab label="Test2"></Tab>
+            </Tabs>
+          </Paper>
+        </Grid>
         {/* Upload Box */}
+        <Grid item xs={12}></Grid>
         <Grid item xs={6}>
           <Paper className={classes.paper} elevation={5}>
             <Grid item>
@@ -217,6 +231,7 @@ export default function MyCvParse() {
             )}
           </Paper>
         </Grid>
+        {/* </Paper> */}
         {/* Text Result Box */}
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={5}>
