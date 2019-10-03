@@ -72,7 +72,7 @@ function CheckCvHeaderInfo(jsonResult, cb) {
 
 // Get the root of Calculation View element.
 // This contains an array of all calculation view nodes
-function GetCvRoot(jsonResult, cb) {
+function GetNodeRoot(jsonResult, cb) {
   const cvRoot = jsonResult['Calculation:scenario'].calculationViews[0].calculationView;
   if (cvRoot === undefined) {
     return cb(Error('No calculation view'));
@@ -102,7 +102,7 @@ function GetVarMapRoot(jsonResult, cb) {
 
 // Get Data Sources root element
 // This contains the origin of all data sources. Tables, other views, etc.
-function GetDataSourcesRoot(jsonResult, cb) {
+function GetDataSourceRoot(jsonResult, cb) {
   const dataSourcesRoot = jsonResult['Calculation:scenario'].dataSources[0].DataSource;
   if (dataSourcesRoot === undefined) {
     return cb(Error('No data sources'));
@@ -119,7 +119,7 @@ function GetDataSourcesRoot(jsonResult, cb) {
 // }
 function GetDataSourceNames(jsonResult, cb) {
   const ds = [];
-  GetDataSourcesRoot(jsonResult, (err, root) => {
+  GetDataSourceRoot(jsonResult, (err, root) => {
     root.forEach((ele) => {
       ds.push(ele.$.id);
     });
@@ -129,8 +129,8 @@ function GetDataSourceNames(jsonResult, cb) {
 // function GetDataSourceByName(jsonResult, cb) {}
 
 // Get CalculationView node by name (id)
-function GetCvByName(jsonResult, cvName, cb) {
-  GetCvRoot(jsonResult, (err, root) => {
+function GetNodeByName(jsonResult, cvName, cb) {
+  GetNodeRoot(jsonResult, (err, root) => {
     let cvNameParsed = JSON.parse(cvName);
     if (cvNameParsed.charAt(0) === '#') {
       cvNameParsed = cvNameParsed.substr(1);
@@ -145,8 +145,8 @@ function GetCvByName(jsonResult, cvName, cb) {
 }
 // Get all CalculationView nodes
 // Return array
-function GetCvs(jsonResult, cb) {
-  GetCvRoot(jsonResult, (err, root) => {
+function GetNodes(jsonResult, cb) {
+  GetNodeRoot(jsonResult, (err, root) => {
     const cvs = [];
     for (let i = 0; i < root.length; i++) {
       cvs.push(root[i]);
@@ -158,13 +158,13 @@ function GetCvs(jsonResult, cb) {
 // Get all Calculation View nodes that have specified input node
 //! can probably change this to use the GetCvs function. Just remove elements that don't have match.
 //! i made the change
-function GetCvsByInput(jsonResult, inputName, cb) {
+function GetNodesByInput(jsonResult, inputName, cb) {
   let inputNameParsed = JSON.parse(inputName);
   if (inputNameParsed.charAt(0) !== '#') {
     inputNameParsed = `#${inputNameParsed}`;
   }
   const results = [];
-  GetCvs(jsonResult, (err, cvs) => {
+  GetNodes(jsonResult, (err, cvs) => {
     cvs.forEach((cv) => {
       cv.input.forEach((input) => {
         if (input.$.node === inputNameParsed && results.indexOf(input) === -1) {
@@ -178,8 +178,8 @@ function GetCvsByInput(jsonResult, inputName, cb) {
 // Go through all Calculation View nodes and count how many times each input node is used
 // This will determine whether a split nodes occur
 //! check if this is comparing with data sources. data sources can occur multiple times.
-function GetCvInputNodeCounts(jsonResult, cb) {
-  GetCvs(jsonResult, (err, cvs) => {
+function GetInputNodeCounts(jsonResult, cb) {
+  GetNodes(jsonResult, (err, cvs) => {
     const inputNodes = {};
     cvs.forEach((ele1) => {
       ele1.input.forEach((ele2) => {
@@ -199,13 +199,13 @@ function GetCvInputNodeCounts(jsonResult, cb) {
 //! figure out what this does exactly
 // Get all Calculation View Inputs based on an input name
 // Used to change mappings to newly created nodes.
-function GetCvInputsByInput(jsonResult, inputName, cb) {
+function GetInputs(jsonResult, inputName, cb) {
   let inputNameParsed = inputName;
   if (inputNameParsed.charAt(0) === '"') {
     inputNameParsed = inputNameParsed.slice(1, -1);
   }
   const inputs = [];
-  GetCvs(jsonResult, (err, cvs) => {
+  GetNodes(jsonResult, (err, cvs) => {
     cvs.forEach((cv) => {
       cv.input.forEach((input) => {
         if (input.$.node === inputNameParsed) {
@@ -223,7 +223,7 @@ function GetCvInputsByInput(jsonResult, inputName, cb) {
 function CheckSplitNodes(jsonResult, cb) {
   const splitNodes = {};
   GetDataSourceNames(jsonResult, (err2, ds) => {
-    GetCvInputNodeCounts(jsonResult, (err, inputNodes) => {
+    GetInputNodeCounts(jsonResult, (err, inputNodes) => {
       Object.keys(inputNodes).forEach((key) => {
         if (inputNodes[key] > 1) {
           let keyParsed = JSON.parse(key);
@@ -243,7 +243,7 @@ function CheckSplitNodes(jsonResult, cb) {
 
 // Duplicate calc view node and return the copy. Does not add to structure.
 function CopyCv(jsonResult, cvName, cb) {
-  GetCvByName(jsonResult, cvName, (cv) => {
+  GetNodeByName(jsonResult, cvName, (cv) => {
     // duplicate cv into another cv and add it to the root
     const cvCopy = JSON.parse(JSON.stringify(cv));
     return cb(cvCopy);
@@ -251,7 +251,7 @@ function CopyCv(jsonResult, cvName, cb) {
 }
 
 function CheckRightJoinCvs(jsonResult, cb) {
-  GetCvs(jsonResult, (err, cvs) => {
+  GetNodes(jsonResult, (err, cvs) => {
     const rightOuters = [];
     cvs.forEach((ele) => {
       if (ele.$.joinType === 'rightOuter') {
@@ -324,7 +324,7 @@ function CreateInputName(nodeName, version, cb) {
 // if it is a data source than it is allowed to be in multiple places
 function FixSplitNodes(jsonResult, version, cb) {
   // const cvRoot = GetCvRoot(jsonResult);
-  GetCvRoot(jsonResult, (err, cvRoot) => {
+  GetNodeRoot(jsonResult, (err, cvRoot) => {
     let complete = false;
     const allSplits = [];
     while (!complete) {
@@ -336,7 +336,7 @@ function FixSplitNodes(jsonResult, version, cb) {
           allSplits.push(splitRes.splitNodes);
           Object.keys(splitRes.splitNodes).forEach((key) => {
             // Get the calc view nodes based on the name of split inputs
-            GetCvInputsByInput(jsonResult, key, (err2, inputNodes) => {
+            GetInputs(jsonResult, key, (err2, inputNodes) => {
               for (let i = 0; i < splitRes.splitNodes[key] - 1; i++) {
                 // Make a copy for each split (if used in 10 places, create 9 new)
                 CopyCv(jsonResult, key, (cvCopy) => {
