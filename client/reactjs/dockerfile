@@ -1,0 +1,10 @@
+# Base image is Alpine with latest stale Node installed. 
+FROM node:alpine
+
+# set working directory for subsequent commands
+WORKDIR /
+
+# leverage build cache by copying npm package files first
+COPY ./package*.json ./
+
+RUN npm install
