@@ -35,19 +35,39 @@ const cvUtils = require('./cv_utils');
 // Find all input nodes that are used in more than 1 calc view node
 // And remove any datasources
 function CheckSplitNodes(jsonResult, cb) {
-  cvUtils.GetSplitNodes(jsonResult, (err, splitNodes) => cb(null, { splitNodes, found: Object.keys(splitNodes).length > 0 }));
+  cvUtils.GetSplitNodes(jsonResult, (err, splitNodes) => {
+    if (err) {
+      return cb(err);
+    }
+    return cb(null, { splitNodes, found: Object.keys(splitNodes).length > 0 });
+  });
 }
 
 function CheckRightJoinCvs(jsonResult, cb) {
-  cvUtils.GetRightJoinCvs(jsonResult, (err, rightOuters) => cb(null, { rightOuters, found: rightOuters.length > 0 }));
+  cvUtils.GetRightJoinCvs(jsonResult, (err, rightOuters) => {
+    if (err) {
+      return cb(err);
+    }
+    return cb(null, { rightOuters, found: rightOuters.length > 0 });
+  });
 }
 
 function CheckCalcColumnsInFilter(jsonResult, cb) {
-  cvUtils.GetCalcColumnsInFilter(jsonResult, (err, calColInFilter) => cb(null, { calColInFilter, found: calColInFilter.length > 0 }));
+  cvUtils.GetCalcColumnsInFilter(jsonResult, (err, calColInFilter) => {
+    if (err) {
+      return cb(err);
+    }
+    return cb(null, { calColInFilter, found: calColInFilter.length > 0 });
+  });
 }
 
 function CheckUnmappedParameters(jsonResult, cb) {
-  cvUtils.GetUnmappedParameters(jsonResult, (err, unmapped) => cb(null, { unmapped, found: unmapped.length > 0 }));
+  cvUtils.GetUnmappedParameters(jsonResult, (err, unmapped) => {
+    if (err) {
+      return cb(err);
+    }
+    return cb(null, { unmapped, found: unmapped.length > 0 });
+  });
 }
 // need to check if split node is a data source
 // if it is a data source than it is allowed to be in multiple places
