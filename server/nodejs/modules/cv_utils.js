@@ -1,3 +1,6 @@
+//! NOTES
+// Get Roots seem to be the same as getting their respective element arrays
+
 const fs = require('fs');
 const xml2js = require('xml2js');
 const path = require('path');
@@ -62,7 +65,7 @@ function GetLocalVars(jsonResult, cb) {
   const localVars = [];
   GetLocalVarRoot(jsonResult, (err, localVarRoot) => {
     if (err) {
-      return err;
+      return cb(err);
     }
     localVarRoot.forEach((ele) => {
       localVars.push(ele);
@@ -74,7 +77,7 @@ function GetLocalVarNames(jsonResult, cb) {
   const localVarNames = [];
   GetLocalVars(jsonResult, (err, localVars) => {
     if (err) {
-      return err;
+      return cb(err);
     }
     localVars.forEach((ele) => {
       localVarNames.push(ele.$.id);
@@ -91,6 +94,49 @@ function GetVarMapRoot(jsonResult, cb) {
     return cb(Error('No variable mappings'));
   }
   return cb(null, varMapRoot);
+}
+
+function GetVarMaps(jsonResult, cb) {
+  const varMaps = [];
+  GetVarMapRoot(jsonResult, (err, varMapRoot) => {
+    if (err) {
+      return cb(err);
+    }
+    varMapRoot.forEach((ele) => {
+      varMaps.push(ele);
+    });
+  });
+  return cb(null, varMaps);
+}
+function GetVarMapLocalTarget(jsonResult, cb) {
+  const localTarget = [];
+  GetVarMaps(jsonResult, (err, varMaps) => {
+    if (err) {
+      return cb(err);
+    }
+    varMaps.forEach((ele) => {
+      const data = {
+        local: ele.localVariable[0],
+        target: ele.targetVariable[0].$.name,
+      };
+      localTarget.push(data);
+    });
+  });
+  return cb(null, localTarget);
+}
+
+function GetUnmappedParameters(jsonResult, cb) {
+  let unmapped = [];
+  GetLocalVarNames(jsonResult, (err, localVarNames) => {
+    GetVarMapLocalTarget(jsonResult, (err, varMaps) => {
+      const exists = [];
+      varMaps.forEach((map) => {
+        exists.push(map.local);
+      });
+      unmapped = localVarNames.filter(x => !exists.includes(x));
+    });
+  });
+  return cb(null, unmapped);
 }
 
 // Get Data Sources root element
@@ -260,7 +306,7 @@ function GetCalculatedColumnNames(jsonResult, cb) {
   const calcColumnNames = [];
   GetCalculatedColumns(jsonResult, (err, calcColumns) => {
     if (err) {
-      return Error('Error at GetCalculatedColumns');
+      return cb(Error('Error at GetCalculatedColumns'));
     }
     calcColumns.forEach((element) => {
       calcColumnNames.push(element.$.id);
@@ -277,7 +323,7 @@ function Test() {
     // GetDataSourceNames(jsonRes, (err, res) => {
     //   console.log(res);
     // });
-    GetLocalVarNames(jsonRes, (err, res) => {
+    GetUnmappedParameters(jsonRes, (err, res) => {
       console.log(res);
     });
     // GetCalculatedColumns(jsonRes, (err, res) => {});

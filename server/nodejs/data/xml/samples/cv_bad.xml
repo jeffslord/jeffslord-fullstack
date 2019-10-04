@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_BAD" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
+    xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" 
+    xmlns:Variable="http://www.sap.com/ndb/BiModelVariable.ecore" id="CV_BAD" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
     <descriptions defaultDescription="CV_BAD"/>
     <localVariables>
         <variable id="IP_MY_INPUT1" parameter="true">
@@ -18,12 +19,17 @@
             </variableProperties>
         </variable>
     </localVariables>
-    <variableMappings/>
+    <variableMappings>
+        <mapping xsi:type="Variable:VariableMapping" dataSource="CV_BAD_SUB">
+            <targetVariable name="IP_MY_FIRST" resourceUri="CV_BAD_SUB"/>
+            <localVariable>IP_MY_INPUT1</localVariable>
+        </mapping>
+    </variableMappings>
     <dataSources>
-        <DataSource id="tables.table1">
-            <resourceUri>tables.table1</resourceUri>
+        <DataSource id="CV_BAD_SUB">
+            <resourceUri>CV_BAD_SUB</resourceUri>
         </DataSource>
-        <DataSource id="Projection_7$$$$tables.table1$$">
+        <DataSource id="tables.table1">
             <resourceUri>tables.table1</resourceUri>
         </DataSource>
     </dataSources>
@@ -111,7 +117,7 @@
             </viewAttributes>
             <calculatedViewAttributes/>
             <restrictedViewAttributes/>
-            <input node="tables.table1"/>
+            <input node="CV_BAD_SUB"/>
         </calculationView>
         <calculationView xsi:type="Calculation:UnionView" id="Union_1">
             <viewAttributes>
@@ -151,7 +157,7 @@
                 </calculatedViewAttribute>
             </calculatedViewAttributes>
             <restrictedViewAttributes/>
-            <input node="Projection_7$$$$tables.table1$$"/>
+            <input node="tables.table1"/>
 
             <filter>&quot;CC_MY_CALCULATED&quot;=''</filter>
         </calculationView>
