@@ -55,31 +55,6 @@ function CheckSplitNodes(jsonResult, cb) {
   // return cb(null, { splitNodes, found: true });
 }
 
-function CheckRightJoinCvs(jsonResult, cb) {
-  cvUtils.GetNodes(jsonResult, (err, cvs) => {
-    const rightOuters = [];
-    cvs.forEach((ele) => {
-      if (ele.$.joinType === 'rightOuter') {
-        rightOuters.push(ele);
-      }
-    });
-    if (rightOuters.length === 0) {
-      return cb(null, { rightOuters, found: false });
-    }
-    return cb(null, { rightOuters, found: true });
-  });
-}
-
-function FixRightJoins(jsonResult, cb) {
-  CheckRightJoinCvs(jsonResult, (err, rightRes) => {
-    rightRes.rightOuters.forEach((ele) => {
-      ele.$.joinType = 'leftOuter';
-      [ele.input[0], ele.input[1]] = [ele.input[1], ele.input[0]];
-    });
-    return cb(null, rightRes.rightOuters);
-  });
-}
-
 // need to check if split node is a data source
 // if it is a data source than it is allowed to be in multiple places
 function FixSplitNodes(jsonResult, version, cb) {
@@ -122,6 +97,31 @@ function FixSplitNodes(jsonResult, version, cb) {
       });
     }
     return cb(null, allSplits);
+  });
+}
+
+function CheckRightJoinCvs(jsonResult, cb) {
+  cvUtils.GetNodes(jsonResult, (err, cvs) => {
+    const rightOuters = [];
+    cvs.forEach((ele) => {
+      if (ele.$.joinType === 'rightOuter') {
+        rightOuters.push(ele);
+      }
+    });
+    if (rightOuters.length === 0) {
+      return cb(null, { rightOuters, found: false });
+    }
+    return cb(null, { rightOuters, found: true });
+  });
+}
+
+function FixRightJoins(jsonResult, cb) {
+  CheckRightJoinCvs(jsonResult, (err, rightRes) => {
+    rightRes.rightOuters.forEach((ele) => {
+      ele.$.joinType = 'leftOuter';
+      [ele.input[0], ele.input[1]] = [ele.input[1], ele.input[0]];
+    });
+    return cb(null, rightRes.rightOuters);
   });
 }
 

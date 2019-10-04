@@ -1,5 +1,6 @@
 const fs = require('fs');
 const xml2js = require('xml2js');
+const path = require('path');
 
 const parser = new xml2js.Parser();
 
@@ -57,6 +58,31 @@ function GetLocalVarRoot(jsonResult, cb) {
   return cb(null, localVarRoot);
 }
 
+function GetLocalVars(jsonResult, cb) {
+  const localVars = [];
+  GetLocalVarRoot(jsonResult, (err, localVarRoot) => {
+    if (err) {
+      return err;
+    }
+    localVarRoot.forEach((ele) => {
+      localVars.push(ele);
+    });
+  });
+  return cb(null, localVars);
+}
+function GetLocalVarNames(jsonResult, cb) {
+  const localVarNames = [];
+  GetLocalVars(jsonResult, (err, localVars) => {
+    if (err) {
+      return err;
+    }
+    localVars.forEach((ele) => {
+      localVarNames.push(ele.$.id);
+    });
+  });
+  return cb(null, localVarNames);
+}
+
 // Get Variable Map root element
 // This contains an array of all mappings of input parameters?
 function GetVarMapRoot(jsonResult, cb) {
@@ -77,14 +103,24 @@ function GetDataSourceRoot(jsonResult, cb) {
   return cb(null, dataSourcesRoot);
 }
 
-function GetDataSourceNames(jsonResult, cb) {
-  const ds = [];
+function GetDataSources(jsonResult, cb) {
+  const dataSources = [];
   GetDataSourceRoot(jsonResult, (err, root) => {
-    root.forEach((ele) => {
-      ds.push(ele.$.id);
+    root.forEach((ds) => {
+      dataSources.push(ds);
     });
   });
-  return cb(null, ds);
+  return cb(null, dataSources);
+}
+
+function GetDataSourceNames(jsonResult, cb) {
+  const dataSourceNames = [];
+  GetDataSources(jsonResult, (err, dataSources) => {
+    dataSources.forEach((ds) => {
+      dataSourceNames.push(ds.$.id);
+    });
+  });
+  return cb(null, dataSourceNames);
 }
 // function GetDataSourceByName(jsonResult, cb) {}
 
@@ -199,6 +235,55 @@ function CreateInputName(nodeName, version, cb) {
   }
   return cb(null, newName);
 }
+
+function GetCalculatedColumns(jsonResult, cb) {
+  const calcColumns = [];
+  GetNodes(jsonResult, (err, nodes) => {
+    // console.log(nodes);
+    nodes.forEach((element) => {
+      //   console.log(element);
+      console.log('First att:', element.calculatedViewAttributes[0]);
+
+      if (element.calculatedViewAttributes[0] !== '') {
+        const calcAtts = element.calculatedViewAttributes[0].calculatedViewAttribute;
+        // console.log('Attributes:', element.calculatedViewAttributes[0].calculatedViewAttribute[0]);
+        calcAtts.forEach((col) => {
+          calcColumns.push(col);
+          console.log(col);
+        });
+      }
+    });
+  });
+  return cb(null, calcColumns);
+}
+function GetCalculatedColumnNames(jsonResult, cb) {
+  const calcColumnNames = [];
+  GetCalculatedColumns(jsonResult, (err, calcColumns) => {
+    if (err) {
+      return Error('Error at GetCalculatedColumns');
+    }
+    calcColumns.forEach((element) => {
+      calcColumnNames.push(element.$.id);
+    });
+  });
+}
+
+function Test() {
+  //   const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'employeespunchedin.xml');
+  const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'samples', 'cv_bad.xml');
+  // const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad2.xml`);
+  ParseFile(filePath, (err, jsonRes) => {
+    WriteFile('./data/json/cv_json_latest.json', JSON.stringify(jsonRes));
+    // GetDataSourceNames(jsonRes, (err, res) => {
+    //   console.log(res);
+    // });
+    GetLocalVarNames(jsonRes, (err, res) => {
+      console.log(res);
+    });
+    // GetCalculatedColumns(jsonRes, (err, res) => {});
+  });
+}
+Test();
 
 module.exports = {
   GetCvheaderInfo,

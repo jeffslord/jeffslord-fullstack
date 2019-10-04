@@ -1,170 +1,174 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="cv_bad" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
-    <descriptions defaultDescription="cv_bad"/>
-    <localVariables/>
+    xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_BAD" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
+    <descriptions defaultDescription="CV_BAD"/>
+    <localVariables>
+        <variable id="IP_MY_INPUT1" parameter="true">
+            <descriptions defaultDescription=""/>
+            <variableProperties datatype="VARCHAR" length="13" mandatory="false">
+                <valueDomain type="empty"/>
+                <selection multiLine="false" type="Single"/>
+            </variableProperties>
+        </variable>
+        <variable id="IP_MY_INPUT2" parameter="true">
+            <descriptions defaultDescription=""/>
+            <variableProperties datatype="VARCHAR" length="13" mandatory="false">
+                <valueDomain type="empty"/>
+                <selection multiLine="false" type="Single"/>
+            </variableProperties>
+        </variable>
+    </localVariables>
     <variableMappings/>
     <dataSources>
-        <DataSource id="cds.table1">
-            <resourceUri>cds.table1</resourceUri>
+        <DataSource id="tables.table1">
+            <resourceUri>tables.table1</resourceUri>
         </DataSource>
-        <DataSource id="cv_bad2">
-            <resourceUri>cv_bad2</resourceUri>
+        <DataSource id="Projection_7$$$$tables.table1$$">
+            <resourceUri>tables.table1</resourceUri>
         </DataSource>
     </dataSources>
     <calculationViews>
         <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
             <viewAttributes>
-                <viewAttribute id="id"/>
-                <viewAttribute id="value1"/>
-                <viewAttribute id="value2"/>
-                <viewAttribute id="value3"/>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_2"/>
+                <viewAttribute id="elem_3"/>
+
+                <viewAttribute id="CC_MY_CALCULATED"/>
+                <viewAttribute id="CC_ANOTHER_CALCULATED"/>
             </viewAttributes>
             <calculatedViewAttributes/>
             <restrictedViewAttributes/>
-            <input node="cds.table1">
-                <mapping xsi:type="Calculation:AttributeMapping" target="id" source="id"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value1" source="value1"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value2" source="value2"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value3" source="value3"/>
-            </input>
-        </calculationView>
-        <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2">
-            <viewAttributes>
-                <viewAttribute id="id"/>
-                <viewAttribute id="value3"/>
-                <viewAttribute id="value4"/>
-                <viewAttribute id="value5"/>
-            </viewAttributes>
-            <calculatedViewAttributes/>
-            <restrictedViewAttributes/>
-            <input node="cv_bad2">
-                <mapping xsi:type="Calculation:AttributeMapping" target="id" source="id"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value3" source="value3"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value4" source="value4"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value5" source="value5"/>
-            </input>
+            <input node="Join_1"/>
         </calculationView>
         <calculationView xsi:type="Calculation:JoinView" id="Join_1" cardinality="CN_N" joinType="rightOuter">
             <viewAttributes>
-                <viewAttribute id="id"/>
-                <viewAttribute id="value1"/>
-                <viewAttribute id="value2"/>
-                <viewAttribute id="value3"/>
-                <viewAttribute id="value4"/>
-                <viewAttribute id="value5"/>
-                <viewAttribute hidden="true" id="JOIN$value3$value3"/>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_2"/>
+                <viewAttribute id="elem_3"/>
+
+                <viewAttribute id="CC_MY_CALCULATED"/>
+                <viewAttribute id="CC_ANOTHER_CALCULATED"/>
             </viewAttributes>
             <calculatedViewAttributes/>
             <restrictedViewAttributes/>
-            <input node="Projection_1">
-                <mapping xsi:type="Calculation:AttributeMapping" target="id" source="id"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value1" source="value1"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value2" source="value2"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$value3$value3" source="value3"/>
+            <input node="Projection_5">
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_1" source="elem_1"/>
             </input>
-            <input node="Projection_2">
-                <mapping xsi:type="Calculation:AttributeMapping" target="value3" source="value3"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value4" source="value4"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value5" source="value5"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$value3$value3" source="value3"/>
+            <input node="Projection_7">
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_1" source="elem_1"/>
             </input>
-            <joinAttribute name="JOIN$value3$value3"/>
+            <joinAttribute name="elem_1"/>
+        </calculationView>
+        <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2">
+            <viewAttributes>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_2"/>
+                <viewAttribute id="elem_3"/>
+            </viewAttributes>
+            <calculatedViewAttributes/>
+            <restrictedViewAttributes/>
+            <input node="Projection_1"/>
         </calculationView>
         <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3">
             <viewAttributes>
-                <viewAttribute id="id"/>
-                <viewAttribute id="value1"/>
-                <viewAttribute id="value2"/>
-                <viewAttribute id="value3"/>
-                <viewAttribute id="value4"/>
-                <viewAttribute id="value5"/>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_2"/>
+                <viewAttribute id="elem_3"/>
             </viewAttributes>
             <calculatedViewAttributes/>
             <restrictedViewAttributes/>
-            <input node="Join_1">
-                <mapping xsi:type="Calculation:AttributeMapping" target="id" source="id"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value1" source="value1"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value2" source="value2"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value3" source="value3"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value4" source="value4"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value5" source="value5"/>
-            </input>
+            <input node="Projection_1"/>
         </calculationView>
-        <calculationView xsi:type="Calculation:ProjectionView" id="Projection_4">
+        <calculationView xsi:type="Calculation:ProjectionView" id="Projection_4" filterExpressionLanguage="SQL">
             <viewAttributes>
-                <viewAttribute id="id"/>
-                <viewAttribute id="value1"/>
-                <viewAttribute id="value2"/>
-                <viewAttribute id="value3"/>
-                <viewAttribute id="value4"/>
-                <viewAttribute id="value5"/>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_2"/>
+                <viewAttribute id="elem_3"/>
+
+                <viewAttribute id="CC_ANOTHER_CALCULATED"/>
             </viewAttributes>
             <calculatedViewAttributes/>
             <restrictedViewAttributes/>
-            <input node="Join_1">
-                <mapping xsi:type="Calculation:AttributeMapping" target="id" source="id"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value1" source="value1"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value2" source="value2"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value3" source="value3"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value4" source="value4"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value5" source="value5"/>
-            </input>
+            <input node="Projection_1"/>
+
+            <filter>&quot;CC_ANOTHER_CALCULATED&quot;=''</filter>
+        </calculationView>
+        <calculationView xsi:type="Calculation:ProjectionView" id="Projection_5">
+            <viewAttributes>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_2"/>
+            </viewAttributes>
+            <calculatedViewAttributes/>
+            <restrictedViewAttributes/>
+            <input node="Projection_6"/>
+        </calculationView>
+        <calculationView xsi:type="Calculation:ProjectionView" id="Projection_6">
+            <viewAttributes>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_2"/>
+                <viewAttribute id="elem_3"/>
+            </viewAttributes>
+            <calculatedViewAttributes/>
+            <restrictedViewAttributes/>
+            <input node="tables.table1"/>
         </calculationView>
         <calculationView xsi:type="Calculation:UnionView" id="Union_1">
             <viewAttributes>
-                <viewAttribute id="id"/>
-                <viewAttribute id="value1"/>
-                <viewAttribute id="value2"/>
-                <viewAttribute id="value3"/>
-                <viewAttribute id="value4"/>
-                <viewAttribute id="value5"/>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_2"/>
+                <viewAttribute id="elem_3"/>
             </viewAttributes>
             <calculatedViewAttributes/>
             <restrictedViewAttributes/>
-            <input node="Projection_3">
-                <mapping xsi:type="Calculation:AttributeMapping" target="id" source="id"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value1" source="value1"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value2" source="value2"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value3" source="value3"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value4" source="value4"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value5" source="value5"/>
+            <input node="Projection_3" emptyUnionBehavior="NO_ROW">
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_1" source="elem_1"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_2" source="elem_2"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_3" source="elem_3"/>
             </input>
-            <input node="Projection_4">
-                <mapping xsi:type="Calculation:AttributeMapping" target="id" source="id"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value1" source="value1"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value2" source="value2"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value3" source="value3"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value4" source="value4"/>
-                <mapping xsi:type="Calculation:AttributeMapping" target="value5" source="value5"/>
+            <input node="Projection_2" emptyUnionBehavior="NO_ROW">
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_1" source="elem_1"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_2" source="elem_2"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_3" source="elem_3"/>
             </input>
+            <input node="Projection_4" emptyUnionBehavior="NO_ROW">
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_1" source="elem_1"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_2" source="elem_2"/>
+                <mapping xsi:type="Calculation:AttributeMapping" target="elem_3" source="elem_3"/>
+            </input>
+        </calculationView>
+        <calculationView xsi:type="Calculation:ProjectionView" id="Projection_7" filterExpressionLanguage="SQL">
+            <viewAttributes>
+                <viewAttribute id="elem_1"/>
+                <viewAttribute id="elem_3"/>
+            </viewAttributes>
+            <calculatedViewAttributes>
+                <calculatedViewAttribute id="CC_MY_CALCULATED" datatype="VARCHAR" length="32" expressionLanguage="SQL">
+                    <formula>CONCAT(&quot;elem_1&quot;, &quot;elem_3&quot;)</formula>
+                </calculatedViewAttribute>
+                <calculatedViewAttribute id="CC_ANOTHER_CALCULATED" datatype="VARCHAR" length="32" expressionLanguage="SQL">
+                    <formula>CONCAT(&quot;elem_1&quot;, &quot;elem_1&quot;)</formula>
+                </calculatedViewAttribute>
+            </calculatedViewAttributes>
+            <restrictedViewAttributes/>
+            <input node="Projection_7$$$$tables.table1$$"/>
+
+            <filter>&quot;CC_MY_CALCULATED&quot;=''</filter>
         </calculationView>
     </calculationViews>
     <logicalModel id="Union_1">
         <attributes>
-            <attribute id="id" order="1" displayAttribute="false" attributeHierarchyActive="false">
-                <descriptions defaultDescription="id"/>
-                <keyMapping columnObjectName="Union_1" columnName="id"/>
+            <attribute id="elem_1" order="1" displayAttribute="false" attributeHierarchyActive="false">
+                <descriptions defaultDescription="elem_1"/>
+                <keyMapping columnObjectName="Union_1" columnName="elem_1"/>
             </attribute>
-            <attribute id="value1" order="2" displayAttribute="false" attributeHierarchyActive="false">
-                <descriptions defaultDescription="value1"/>
-                <keyMapping columnObjectName="Union_1" columnName="value1"/>
+            <attribute id="elem_2" order="2" displayAttribute="false" attributeHierarchyActive="false">
+                <descriptions defaultDescription="elem_2"/>
+                <keyMapping columnObjectName="Union_1" columnName="elem_2"/>
             </attribute>
-            <attribute id="value2" order="3" displayAttribute="false" attributeHierarchyActive="false">
-                <descriptions defaultDescription="value2"/>
-                <keyMapping columnObjectName="Union_1" columnName="value2"/>
-            </attribute>
-            <attribute id="value3" order="4" displayAttribute="false" attributeHierarchyActive="false">
-                <descriptions defaultDescription="value3"/>
-                <keyMapping columnObjectName="Union_1" columnName="value3"/>
-            </attribute>
-            <attribute id="value4" order="5" displayAttribute="false" attributeHierarchyActive="false">
-                <descriptions defaultDescription="value4"/>
-                <keyMapping columnObjectName="Union_1" columnName="value4"/>
-            </attribute>
-            <attribute id="value5" order="6" displayAttribute="false" attributeHierarchyActive="false">
-                <descriptions defaultDescription="value5"/>
-                <keyMapping columnObjectName="Union_1" columnName="value5"/>
+            <attribute id="elem_3" order="3" displayAttribute="false" attributeHierarchyActive="false">
+                <descriptions defaultDescription="elem_3"/>
+                <keyMapping columnObjectName="Union_1" columnName="elem_3"/>
             </attribute>
         </attributes>
         <calculatedAttributes/>
@@ -175,41 +179,54 @@
     <layout>
         <shapes>
             <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
-                <upperLeftCorner x="243.11386177790735" y="112"/>
+                <upperLeftCorner x="320" y="112"/>
 
                 <rectangleSize width="160"/>
             </shape>
 
             <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
-                <upperLeftCorner x="92" y="621.9999964237213"/>
-                <rectangleSize height="30" width="160"/>
-            </shape>
-            <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
-                <upperLeftCorner x="302" y="621.9999964237213"/>
+                <upperLeftCorner x="305" y="516"/>
                 <rectangleSize height="30" width="160"/>
             </shape>
             <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
-                <upperLeftCorner x="134.3146497113139" y="481.9999976158142"/>
+                <upperLeftCorner x="305" y="621"/>
                 <rectangleSize height="30" width="160"/>
             </shape>
-            <shape modelObjectName="Projection_1" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+            <shape modelObjectName="Projection_5" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
                 <upperLeftCorner x="20" y="30"/>
-                <rectangleSize width="136.0234375"/>
+                <rectangleSize width="136"/>
             </shape>
-            <shape modelObjectName="Projection_2" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+            <shape modelObjectName="Projection_7" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
                 <upperLeftCorner x="320" y="30"/>
-                <rectangleSize width="136.0234375"/>
+                <rectangleSize width="136"/>
+            </shape>
+
+            <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+                <upperLeftCorner x="302" y="391"/>
+                <rectangleSize height="30" width="160"/>
             </shape>
             <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
-                <upperLeftCorner x="317.6479830446473" y="356.9999988079071"/>
+                <upperLeftCorner x="92" y="391"/>
                 <rectangleSize height="30" width="160"/>
             </shape>
             <shape expanded="true" modelObjectName="Projection_4" modelObjectNameSpace="CalculationView">
-                <upperLeftCorner x="107.64798304464726" y="356.9999988079071"/>
+                <upperLeftCorner x="512" y="391"/>
+                <rectangleSize height="30" width="160"/>
+            </shape>
+            <shape expanded="true" modelObjectName="Projection_5" modelObjectNameSpace="CalculationView">
+                <upperLeftCorner x="204" y="781"/>
+                <rectangleSize height="30" width="160"/>
+            </shape>
+            <shape expanded="true" modelObjectName="Projection_6" modelObjectNameSpace="CalculationView">
+                <upperLeftCorner x="204" y="886"/>
                 <rectangleSize height="30" width="160"/>
             </shape>
             <shape expanded="true" modelObjectName="Union_1" modelObjectNameSpace="CalculationView">
-                <upperLeftCorner x="243.11386177790735" y="217"/>
+                <upperLeftCorner x="302" y="236"/>
+                <rectangleSize height="30" width="160"/>
+            </shape>
+            <shape expanded="true" modelObjectName="Projection_7" modelObjectNameSpace="CalculationView">
+                <upperLeftCorner x="414" y="781"/>
                 <rectangleSize height="30" width="160"/>
             </shape>
         </shapes>
