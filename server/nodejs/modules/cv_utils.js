@@ -295,17 +295,11 @@ function CreateInputName(nodeName, version, cb) {
 function GetCalculatedColumns(jsonResult, cb) {
   const calcColumns = [];
   GetNodes(jsonResult, (err, nodes) => {
-    // console.log(nodes);
     nodes.forEach((element) => {
-      //   console.log(element);
-      //   console.log('First att:', element.calculatedViewAttributes[0]);
-
       if (element.calculatedViewAttributes[0] !== '') {
         const calcAtts = element.calculatedViewAttributes[0].calculatedViewAttribute;
-        // console.log('Attributes:', element.calculatedViewAttributes[0].calculatedViewAttribute[0]);
         calcAtts.forEach((col) => {
           calcColumns.push(col);
-          //   console.log(col);
         });
       }
     });
@@ -367,7 +361,7 @@ function Test() {
     // GetCalculatedColumns(jsonRes, (err, res) => {});
   });
 }
-Test();
+// Test();
 
 module.exports = {
   GetCvheaderInfo,

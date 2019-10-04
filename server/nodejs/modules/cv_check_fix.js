@@ -19,7 +19,7 @@
   *Planned features:
   - Identify unmapped input parameters
   - Identify filters on calculated columns
-  - Identify
+  -
 
 
 Join on calculated column
@@ -60,11 +60,17 @@ function CheckSplitNodes(jsonResult, cb) {
 function FixSplitNodes(jsonResult, version, cb) {
   // const cvRoot = GetCvRoot(jsonResult);
   cvUtils.GetNodeRoot(jsonResult, (err, cvRoot) => {
+    if (err) {
+      return cb(err);
+    }
     let complete = false;
     const allSplits = [];
     while (!complete) {
       // Get input nodes that are used by more than 1 node
       CheckSplitNodes(jsonResult, (err, splitRes) => {
+        if (err) {
+          return cb(err);
+        }
         if (Object.keys(splitRes.splitNodes).length === 0) {
           complete = true;
         } else {
