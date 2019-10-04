@@ -168,7 +168,6 @@ function GetDataSourceNames(jsonResult, cb) {
   });
   return cb(null, dataSourceNames);
 }
-// function GetDataSourceByName(jsonResult, cb) {}
 
 // Get CalculationView node by name (id)
 function GetNodeByName(jsonResult, cvName, cb) {
@@ -218,6 +217,17 @@ function GetNodesByInput(jsonResult, inputName, cb) {
   });
   return cb(null, results);
 }
+
+function GetFilterExpressions(jsonResult, cb) {
+  const filterExpressions = [];
+  GetNodes(jsonResult, (err, nodes) => {
+    nodes.forEach((node) => {
+      if (node.filter !== undefined) filterExpressions.push(node.filter[0]);
+    });
+  });
+  return cb(null, filterExpressions);
+}
+
 // Go through all Calculation View nodes and count how many times each input node is used
 // This will determine whether a split nodes occur
 //! check if this is comparing with data sources. data sources can occur multiple times.
@@ -323,7 +333,7 @@ function Test() {
     // GetDataSourceNames(jsonRes, (err, res) => {
     //   console.log(res);
     // });
-    GetUnmappedParameters(jsonRes, (err, res) => {
+    GetFilterExpressions(jsonRes, (err, res) => {
       console.log(res);
     });
     // GetCalculatedColumns(jsonRes, (err, res) => {});
