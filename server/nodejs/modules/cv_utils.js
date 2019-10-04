@@ -319,7 +319,7 @@ function GetCalculatedColumnNames(jsonResult, cb) {
   return cb(null, calcColumnNames);
 }
 
-function CheckCalcColumnsInFilter(jsonResult, cb) {
+function GetCalcColumnsInFilter(jsonResult, cb) {
   const calcColumnsInFilter = [];
   GetCalculatedColumnNames(jsonResult, (err, calcColumns) => {
     if (err) {
@@ -342,6 +342,36 @@ function CheckCalcColumnsInFilter(jsonResult, cb) {
   });
   return cb(null, calcColumnsInFilter);
 }
+function GetRightJoinCvs(jsonResult, cb) {
+  GetNodes(jsonResult, (err, cvs) => {
+    const rightOuters = [];
+    cvs.forEach((ele) => {
+      if (ele.$.joinType === 'rightOuter') {
+        rightOuters.push(ele);
+      }
+    });
+    return cb(null, rightOuters);
+    // return cb(null, { rightOuters, found: rightOuters.length > 0 });
+  });
+}
+
+function GetSplitNodes(jsonResult, cb) {
+  const splitNodes = {};
+  GetDataSourceNames(jsonResult, (err2, ds) => {
+    GetInputNodeCounts(jsonResult, (err, inputNodes) => {
+      Object.keys(inputNodes).forEach((key) => {
+        if (inputNodes[key] > 1) {
+          let keyParsed = JSON.parse(key);
+          keyParsed = keyParsed.replace('#', '');
+          if (!ds.includes(keyParsed)) {
+            splitNodes[key] = inputNodes[key];
+          }
+        }
+      });
+    });
+  });
+  return cb(null, splitNodes);
+}
 
 function Test() {
   //   const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'employeespunchedin.xml');
@@ -352,7 +382,7 @@ function Test() {
     // GetDataSourceNames(jsonRes, (err, res) => {
     //   console.log(res);
     // });
-    CheckCalcColumnsInFilter(jsonRes, (err, res) => {
+    GetCalcColumnsInFilter(jsonRes, (err, res) => {
       if (err) {
         console.error(err);
       }
@@ -382,4 +412,8 @@ module.exports = {
   WriteFile,
   GetCalculatedColumns,
   GetFilterExpressions,
+  GetCalcColumnsInFilter,
+  GetRightJoinCvs,
+  GetSplitNodes,
+  GetUnmappedParameters,
 };

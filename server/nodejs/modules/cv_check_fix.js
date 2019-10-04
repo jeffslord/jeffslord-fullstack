@@ -35,26 +35,20 @@ const cvUtils = require('./cv_utils');
 // Find all input nodes that are used in more than 1 calc view node
 // And remove any datasources
 function CheckSplitNodes(jsonResult, cb) {
-  const splitNodes = {};
-  cvUtils.GetDataSourceNames(jsonResult, (err2, ds) => {
-    cvUtils.GetInputNodeCounts(jsonResult, (err, inputNodes) => {
-      Object.keys(inputNodes).forEach((key) => {
-        if (inputNodes[key] > 1) {
-          let keyParsed = JSON.parse(key);
-          keyParsed = keyParsed.replace('#', '');
-          if (!ds.includes(keyParsed)) {
-            splitNodes[key] = inputNodes[key];
-          }
-        }
-      });
-    });
-  });
-  // if (splitNodes === {}) {
-  return cb(null, { splitNodes, found: Object.keys(splitNodes).length > 0 });
-  // }
-  // return cb(null, { splitNodes, found: true });
+  cvUtils.GetSplitNodes(jsonResult, (err, splitNodes) => cb(null, { splitNodes, found: Object.keys(splitNodes).length > 0 }));
 }
 
+function CheckRightJoinCvs(jsonResult, cb) {
+  cvUtils.GetRightJoinCvs(jsonResult, (err, rightOuters) => cb(null, { rightOuters, found: rightOuters.length > 0 }));
+}
+
+function CheckCalcColumnsInFilter(jsonResult, cb) {
+  cvUtils.GetCalcColumnsInFilter(jsonResult, (err, calColInFilter) => cb(null, { calColInFilter, found: calColInFilter.length > 0 }));
+}
+
+function CheckUnmappedParameters(jsonResult, cb) {
+  cvUtils.GetUnmappedParameters(jsonResult, (err, unmapped) => cb(null, { unmapped, found: unmapped.length > 0 }));
+}
 // need to check if split node is a data source
 // if it is a data source than it is allowed to be in multiple places
 function FixSplitNodes(jsonResult, version, cb) {
@@ -103,22 +97,6 @@ function FixSplitNodes(jsonResult, version, cb) {
       });
     }
     return cb(null, allSplits);
-  });
-}
-
-function CheckRightJoinCvs(jsonResult, cb) {
-  cvUtils.GetNodes(jsonResult, (err, cvs) => {
-    const rightOuters = [];
-    cvs.forEach((ele) => {
-      if (ele.$.joinType === 'rightOuter') {
-        rightOuters.push(ele);
-      }
-    });
-    return cb(null, { rightOuters, found: rightOuters.length > 0 });
-    // if (rightOuters.length === 0) {
-    //   return cb(null, { rightOuters, found: false });
-    // }
-    // return cb(null, { rightOuters, found: true });
   });
 }
 
