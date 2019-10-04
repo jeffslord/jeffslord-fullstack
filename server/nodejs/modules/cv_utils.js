@@ -298,14 +298,14 @@ function GetCalculatedColumns(jsonResult, cb) {
     // console.log(nodes);
     nodes.forEach((element) => {
       //   console.log(element);
-      console.log('First att:', element.calculatedViewAttributes[0]);
+      //   console.log('First att:', element.calculatedViewAttributes[0]);
 
       if (element.calculatedViewAttributes[0] !== '') {
         const calcAtts = element.calculatedViewAttributes[0].calculatedViewAttribute;
         // console.log('Attributes:', element.calculatedViewAttributes[0].calculatedViewAttribute[0]);
         calcAtts.forEach((col) => {
           calcColumns.push(col);
-          console.log(col);
+          //   console.log(col);
         });
       }
     });
@@ -322,6 +322,31 @@ function GetCalculatedColumnNames(jsonResult, cb) {
       calcColumnNames.push(element.$.id);
     });
   });
+  return cb(null, calcColumnNames);
+}
+
+function CheckCalcColumnsInFilter(jsonResult, cb) {
+  const calcColumnsInFilter = [];
+  GetCalculatedColumnNames(jsonResult, (err, calcColumns) => {
+    if (err) {
+      return cb(err);
+    }
+    GetFilterExpressions(jsonResult, (err, filters) => {
+      if (err) {
+        return cb(err);
+      }
+      filters.forEach((filter) => {
+        // console.log(filter);
+        calcColumns.forEach((col) => {
+          console.log('Filter:', filter, 'Column:', col);
+          if (filter.includes(col)) {
+            calcColumnsInFilter.push(col);
+          }
+        });
+      });
+    });
+  });
+  return cb(null, calcColumnsInFilter);
 }
 
 function Test() {
@@ -333,8 +358,11 @@ function Test() {
     // GetDataSourceNames(jsonRes, (err, res) => {
     //   console.log(res);
     // });
-    GetFilterExpressions(jsonRes, (err, res) => {
-      console.log(res);
+    CheckCalcColumnsInFilter(jsonRes, (err, res) => {
+      if (err) {
+        console.error(err);
+      }
+      console.log('RES\n', res);
     });
     // GetCalculatedColumns(jsonRes, (err, res) => {});
   });
@@ -358,4 +386,6 @@ module.exports = {
   ParseFile,
   ParseXML,
   WriteFile,
+  GetCalculatedColumns,
+  GetFilterExpressions,
 };
