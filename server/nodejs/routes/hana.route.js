@@ -4,7 +4,7 @@ const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
 const hana = require('@sap/hana-client');
-const cv = require('../modules/cv_parse');
+const cv = require('../modules/cv_check_fix');
 
 const router = express.Router();
 

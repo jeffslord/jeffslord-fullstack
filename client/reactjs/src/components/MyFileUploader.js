@@ -7,7 +7,7 @@ export default function MyFileUploader(props) {
       dropzoneText={"Upload calculation view or xml file here"}
       onChange={files => props.setparentfiles(files)}
       filesLimit={1}
-      acceptedFiles={[".xml", ".hdbcalculationview"]}
+      acceptedFiles={[".xml", ".hdbcalculationview", ".calculationview"]}
     />
   );
 }

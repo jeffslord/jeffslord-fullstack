@@ -3,12 +3,9 @@ import MyFileUploader from "./MyFileUploader";
 import { Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-// import { log } from "util";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
-// import List from "@material-ui/core/List";
-// import ListItem from "@material-ui/core/ListItem";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import MyCheckTable from "../components/MyCheckTable";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -149,7 +146,7 @@ export default function MyCvParse() {
     }
   };
 
-  const downloadCalcView = (name, content) => {
+  const DownloadCalcView = (name, content) => {
     if (xmlResult !== undefined) {
       var atag = document.createElement("a");
       var file = new Blob([content], { type: "hdbclaculationview" });
@@ -239,7 +236,7 @@ export default function MyCvParse() {
               <Button
                 variant="contained"
                 onClick={() => {
-                  downloadCalcView("Fixed", xmlResult);
+                  DownloadCalcView("Fixed", xmlResult);
                 }}
               >
                 Download txt
