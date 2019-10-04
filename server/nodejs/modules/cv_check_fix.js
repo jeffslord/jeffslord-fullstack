@@ -108,10 +108,11 @@ function CheckRightJoinCvs(jsonResult, cb) {
         rightOuters.push(ele);
       }
     });
-    if (rightOuters.length === 0) {
-      return cb(null, { rightOuters, found: false });
-    }
-    return cb(null, { rightOuters, found: true });
+    return cb(null, { rightOuters, found: rightOuters.length > 0 });
+    // if (rightOuters.length === 0) {
+    //   return cb(null, { rightOuters, found: false });
+    // }
+    // return cb(null, { rightOuters, found: true });
   });
 }
 
@@ -124,8 +125,6 @@ function FixRightJoins(jsonResult, cb) {
     return cb(null, rightRes.rightOuters);
   });
 }
-
-
 
 const pParseFile = util.promisify(cvUtils.ParseFile);
 const pGetCvheaderInfo = util.promisify(cvUtils.GetCvheaderInfo);
