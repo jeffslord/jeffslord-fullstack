@@ -18,6 +18,7 @@ function WriteFile(fileName, text) {
 function ParseFile(filePath, cb) {
   fs.readFile(filePath, 'utf8', (err, data) => {
     parser.parseString(data, (err2, result) => {
+      WriteFile('./data/json/cv_json_latest.json', JSON.stringify(result, null, 4));
       cb(null, result);
     });
   });
@@ -54,9 +55,12 @@ function GetNodeRoot(jsonResult, cb) {
 // Get Local Variable element
 // This contains an array of all local variable elements (input parameters)?
 function GetLocalVarRoot(jsonResult, cb) {
+  // console.log('TEST')
   const localVarRoot = jsonResult['Calculation:scenario'].localVariables[0].variable;
+  // console.log('INFO', localVarRoot);
   if (localVarRoot === undefined) {
-    return cb(Error('No local variables'));
+    return cb(null, []);
+    // return cb(Error('No local variables'));
   }
   return cb(null, localVarRoot);
 }
@@ -66,6 +70,9 @@ function GetLocalVars(jsonResult, cb) {
   GetLocalVarRoot(jsonResult, (err, localVarRoot) => {
     if (err) {
       return cb(err);
+    }
+    if (localVarRoot.length === 0) {
+      return cb(null, localVars);
     }
     localVarRoot.forEach((ele) => {
       localVars.push(ele);
@@ -91,7 +98,8 @@ function GetLocalVarNames(jsonResult, cb) {
 function GetVarMapRoot(jsonResult, cb) {
   const varMapRoot = jsonResult['Calculation:scenario'].variableMappings[0].mapping;
   if (varMapRoot === undefined) {
-    return cb(Error('No variable mappings'));
+    return cb(null, []);
+    // return cb(Error('No variable mappings'));
   }
   return cb(null, varMapRoot);
 }
@@ -123,20 +131,6 @@ function GetVarMapLocalTarget(jsonResult, cb) {
     });
   });
   return cb(null, localTarget);
-}
-
-function GetUnmappedParameters(jsonResult, cb) {
-  let unmapped = [];
-  GetLocalVarNames(jsonResult, (err, localVarNames) => {
-    GetVarMapLocalTarget(jsonResult, (err, varMaps) => {
-      const exists = [];
-      varMaps.forEach((map) => {
-        exists.push(map.local);
-      });
-      unmapped = localVarNames.filter(x => !exists.includes(x));
-    });
-  });
-  return cb(null, unmapped);
 }
 
 // Get Data Sources root element
@@ -318,6 +312,57 @@ function GetCalculatedColumnNames(jsonResult, cb) {
   });
   return cb(null, calcColumnNames);
 }
+function GetCalculatedColumnFormulas(jsonResult, cb) {
+  const formulas = [];
+  GetCalculatedColumns(jsonResult, (err, calcColumns) => {
+    if (err) {
+      return cb(err);
+    }
+    calcColumns.forEach((element) => {
+      formulas.push(element.formula[0]);
+    });
+  });
+  return cb(null, formulas);
+}
+function GetUnmappedParameters(jsonResult, cb) {
+  let unmapped = [];
+  GetLocalVarNames(jsonResult, (err, localVarNames) => {
+    // console.log('GetLocalVarNames:', localVarNames);
+    GetVarMapLocalTarget(jsonResult, (err, varMaps) => {
+      // console.log('GetVarMapLocalTarget:', varMaps);
+      const exists = [];
+      varMaps.forEach((map) => {
+        exists.push(map.local);
+      });
+      unmapped = localVarNames.filter(x => !exists.includes(x));
+      GetCalculatedColumnFormulas(jsonResult, (err, formulas) => {
+        GetFilterExpressions(jsonResult, (err, filters) => {
+          const toRemove = [];
+          //! optimization here. break out of for loop when found
+          unmapped.forEach((unmap) => {
+            console.log('Searching unmapped:', unmap);
+            for (let i = 0; i < filters.length; i += 1) {
+              if (filters[i].includes(unmap)) {
+                toRemove.push(unmapped.indexOf(unmap));
+                // break;
+              }
+            }
+            for (let i = 0; i < formulas.length; i += 1) {
+              if (formulas[i].includes(unmap)) {
+                toRemove.push(unmapped.indexOf(unmap));
+                // break;
+              }
+            }
+            toRemove.forEach((removal) => {
+              unmapped.splice(removal, 1);
+            });
+          });
+        });
+      });
+    });
+  });
+  return cb(null, unmapped);
+}
 
 function GetCalcColumnsInFilter(jsonResult, cb) {
   const calcColumnsInFilter = [];
@@ -332,7 +377,7 @@ function GetCalcColumnsInFilter(jsonResult, cb) {
       filters.forEach((filter) => {
         // console.log(filter);
         calcColumns.forEach((col) => {
-          console.log('Filter:', filter, 'Column:', col);
+          // console.log('Filter:', filter, 'Column:', col);
           if (filter.includes(col)) {
             calcColumnsInFilter.push(col);
           }
@@ -378,7 +423,7 @@ function Test() {
   const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'samples', 'cv_bad.xml');
   // const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad2.xml`);
   ParseFile(filePath, (err, jsonRes) => {
-    WriteFile('./data/json/cv_json_latest.json', JSON.stringify(jsonRes));
+    WriteFile('./data/json/cv_json_latest.json', JSON.stringify(jsonRes, null, 4));
     // GetDataSourceNames(jsonRes, (err, res) => {
     //   console.log(res);
     // });
@@ -386,7 +431,7 @@ function Test() {
       if (err) {
         console.error(err);
       }
-      console.log('RES\n', res);
+      // console.log('RES\n', res);
     });
     // GetCalculatedColumns(jsonRes, (err, res) => {});
   });

@@ -24,6 +24,9 @@
 
 Join on calculated column
 Filter on calculated column
+Calculated columns in joins
+  mapping defines how names change
+  join attribute gives
 
 */
 
@@ -53,11 +56,11 @@ function CheckRightJoinCvs(jsonResult, cb) {
 }
 
 function CheckCalcColumnsInFilter(jsonResult, cb) {
-  cvUtils.GetCalcColumnsInFilter(jsonResult, (err, calColInFilter) => {
+  cvUtils.GetCalcColumnsInFilter(jsonResult, (err, calcColsInFilter) => {
     if (err) {
       return cb(err);
     }
-    return cb(null, { calColInFilter, found: calColInFilter.length > 0 });
+    return cb(null, { calcColsInFilter, found: calcColsInFilter.length > 0 });
   });
 }
 
@@ -134,6 +137,8 @@ const pParseFile = util.promisify(cvUtils.ParseFile);
 const pGetCvheaderInfo = util.promisify(cvUtils.GetCvheaderInfo);
 const pCheckSplitNodes = util.promisify(CheckSplitNodes);
 const pCheckRightJoinCvs = util.promisify(CheckRightJoinCvs);
+const pCheckCalcColumnsInFilter = util.promisify(CheckCalcColumnsInFilter);
+const pCheckUnmappedParameters = util.promisify(CheckUnmappedParameters);
 const pFixSplitNodes = util.promisify(FixSplitNodes);
 const pFixRightJoins = util.promisify(FixRightJoins);
 
@@ -141,19 +146,53 @@ async function CheckView(filePath, cb) {
   const res = {};
   const checks = [];
   try {
-    //! SPLIT NODES
     const json = await pParseFile(filePath);
     const headerInfo = await pGetCvheaderInfo(json);
+
+    //! SPLIT NODES
     const splits = await pCheckSplitNodes(json);
-    console.log('splits', splits);
+    // console.log('Split Nodes:\n', splits);
 
     //! RIGHT JOINS
     const rJoins = await pCheckRightJoinCvs(json);
     res.header = headerInfo;
-    checks.push({ checkName: 'Split Nodes', data: splits.splitNodes, found: splits.found });
-    checks.push({ checkName: 'Right Joins', data: rJoins.rightOuters, found: rJoins.found });
+    // console.log('Right Outer Joins:\n', rJoins);
+
+    //! CALCULATED COLUMNS IN FILTER
+    const calcColsInFilter = await pCheckCalcColumnsInFilter(json);
+    // console.log('Calculated Columns in Filters:\n', cColsFilter);
+
+    //! UNMAPPED PARAMETERS (Not used in filters or calculations)
+    const unmapped = await pCheckUnmappedParameters(json);
+    // console.log('Unmapped Parameters:\n', unmapped);
+
+    checks.push({
+      checkName: 'Split Nodes',
+      data: splits.splitNodes,
+      found: splits.found,
+      autoFix: true,
+    });
+    checks.push({
+      checkName: 'Right Joins',
+      data: rJoins.rightOuters,
+      found: rJoins.found,
+      autoFix: true,
+    });
+    checks.push({
+      checkName: 'Calculated Columns in Filter',
+      data: calcColsInFilter.calcColsInFilter,
+      found: calcColsInFilter.found,
+      autoFix: false,
+    });
+    checks.push({
+      checkName: 'Unmapped parameters',
+      data: unmapped.unmapped,
+      found: unmapped.found,
+      autoFix: false,
+    });
+
     res.checks = checks;
-    console.log('RES', res);
+    console.log('Check Results', JSON.stringify(res, null, 4));
     return cb(null, res);
   } catch (err) {
     throw err;
@@ -192,7 +231,7 @@ function Test() {
       }
       console.log('Fixing complete!');
       console.log('\nWriting files...');
-      cvUtils.WriteFile('./data/json/cv_json_latest.json', JSON.stringify(xml));
+      // cvUtils.WriteFile('./data/json/cv_json_latest.json', JSON.stringify(xml));
       cvUtils.WriteFile('./data/xml/cv_xml_latest.xml', xml);
     });
   });
