@@ -5,6 +5,7 @@ import MyBar from "./components/MyBar";
 import MyDrawer from "./components/MyDrawer";
 import { Route, Switch } from "react-router-dom";
 import MyHome from "./components/MyHome";
+import MyCvClassic from "./components/MyCvClassic";
 
 export default function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -23,6 +24,7 @@ export default function App() {
       <Switch>
         <Route exact path="/" component={MyHome} />
         <Route path="/tools/cvoptimizer/" component={MyCvParse} />
+        <Route path="/tools/cvclassic/" component={MyCvClassic} />
       </Switch>
     </div>
   );

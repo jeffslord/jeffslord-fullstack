@@ -91,10 +91,12 @@ router.post('/fixMany', upload.array('files'), (req, res, next) => {
   });
 });
 
-// router.get('/downloadFixedView', (req, res, next) => {
-//   fs.writeFile('../data/download/', req.body.xml, (err) => {
-//     fs.unlink('')
-//   });
-// });
+router.post('/analyzeManyCdata', (req, res, next) => {
+  const { cdata } = req.body;
+  const current = cdata.replace(/[\t\n\r]/gm, '');
+  res.send(current);
+});
+
+router.post('/analyzeCdata', (req, res, next) => {});
 
 module.exports = router;

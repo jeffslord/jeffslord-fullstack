@@ -69,11 +69,11 @@ export default function MyDrawer(props) {
             <List disablePadding>
               {/* <Link to="tools/cvoptimizer/"> */}
               <ListItem button component={Link} to="tools/cvoptimizer/">
-                <ListItemText primary="Calculation View Optimizer"></ListItemText>
+                <ListItemText primary="Individual View Optimizer"></ListItemText>
               </ListItem>
               {/* </Link> */}
-              <ListItem button>
-                <ListItemText primary="Test Link"></ListItemText>
+              <ListItem button component={Link} to="tools/cvclassic/">
+                <ListItemText primary="Classic Schema Analyzer"></ListItemText>
               </ListItem>
             </List>
           </Collapse>

@@ -1,4 +1,4 @@
-const config = require('dotenv').config();
+// const config = require('dotenv').config();
 
 const hana = require('@sap/hana-client');
 
@@ -22,7 +22,7 @@ client.connect(
     }
     console.log('Connected');
     client.exec(
-      'select SCHEMA_NAME from sys.schemas where schema_name like \'%CROSS_CONTAINER%\'',
+      "select SCHEMA_NAME from sys.schemas where schema_name like '%CROSS_CONTAINER%'",
       (err, rows) => {
         if (err) {
           console.error(err);

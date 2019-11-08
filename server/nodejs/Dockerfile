@@ -2,7 +2,7 @@ FROM node:10
 
 RUN mkdir -p /srv/app/my-client
 # Create app directory
-WORKDIR /app
+WORKDIR /usr/src/app
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied

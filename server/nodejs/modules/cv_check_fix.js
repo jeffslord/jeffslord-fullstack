@@ -11,22 +11,23 @@
     HANA Studio appears to end at version 2.3, while Web Ide is at version 3.0.
 
   *Current features:
-  - Identify and fix split nodes. Will recursively check after initial fix.
-  - Fix split nodes
+  - Identify split nodes
+  - Fix split nodes (Will recursively check after initial fix)
   - Identify right joins
-  - Fix right joins
-
-  *Planned features:
+  - Fix right joins (By converting them to left joins)
   - Identify unmapped input parameters
   - Identify filters on calculated columns
-  -
+
+  *Planned features:
+  - Identify calculated columns in joins
+  - Select classic schema to auto analyze cdata from a schema
+  - Upload zip of xsa calculation views to analyze from
 
 
-Join on calculated column
-Filter on calculated column
+//Filter on calculated column
 Calculated columns in joins
   mapping defines how names change
-  join attribute gives
+  join attribute gives which columns are joined?
 
 */
 
