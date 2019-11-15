@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import MyFileUploader from "./MyFileUploader";
+import MyFileUploaderIndividual from "./MyFileUploaderIndividual";
 import { Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";

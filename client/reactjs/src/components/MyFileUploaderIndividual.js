@@ -1,7 +1,7 @@
 import React from "react";
 import { DropzoneArea } from "material-ui-dropzone";
 
-export default function MyFileUploader(props) {
+export default function MyFileUploaderIndividual(props) {
   return (
     <DropzoneArea
       dropzoneText={"Upload calculation view or xml file here"}

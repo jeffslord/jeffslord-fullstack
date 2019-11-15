@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import MyFileUploader from "./MyFileUploader";
+import MyFileUploaderIndividual from "./MyFileUploaderIndividual";
 import { Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -157,9 +157,26 @@ export default function MyCvParse() {
       atag.click();
     }
   };
+  const TabChange = val => {
+    setTabValue(val);
+    if (val === 0) {
+    } else if (val === 1) {
+    } else if (val === 2) {
+    }
+  };
   return (
     <div className={classes.root}>
       {console.log("RESULTS:", results)}
+      {/* Tab Bar */}
+      <Grid item xs={12}>
+        <Paper square>
+          <Tabs value={tabValue} onChange={(event, val) => TabChange(val)}>
+            <Tab label="Individual View"></Tab>
+            <Tab label="XSA Project Zip"></Tab>
+            <Tab label="Classic Schema"></Tab>
+          </Tabs>
+        </Paper>
+      </Grid>
       {/* Instruction Box */}
       <Grid container justify="center" spacing={0}>
         <Grid item xs={12}>
@@ -172,21 +189,14 @@ export default function MyCvParse() {
           </Paper>
         </Grid>
         {/* <Paper className={classes.paper}> */}
-        {/* Tab Bar */}
-        <Grid item xs={12}>
-          <Paper square>
-            <Tabs value={tabValue} onChange={(event, val) => setTabValue(val)}>
-              <Tab label="Test"></Tab>
-              <Tab label="Test2"></Tab>
-            </Tabs>
-          </Paper>
-        </Grid>
         {/* Upload Box */}
         <Grid item xs={12}></Grid>
         <Grid item xs={6}>
           <Paper className={classes.paper} elevation={5}>
             <Grid item>
-              <MyFileUploader setparentfiles={files => setFiles(files)} />
+              <MyFileUploaderIndividual
+                setparentfiles={files => setFiles(files)}
+              />
             </Grid>
             <Grid item>
               <Button

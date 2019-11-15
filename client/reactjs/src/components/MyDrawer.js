@@ -75,6 +75,10 @@ export default function MyDrawer(props) {
               <ListItem button component={Link} to="tools/cvclassic/">
                 <ListItemText primary="Classic Schema Analyzer"></ListItemText>
               </ListItem>
+              {/* </Link> */}
+              <ListItem button component={Link} to="tools/cvxsa/">
+                <ListItemText primary="XSA Project Zip Analyzer"></ListItemText>
+              </ListItem>
             </List>
           </Collapse>
         </ListItem>

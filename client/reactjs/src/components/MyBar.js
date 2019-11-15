@@ -5,6 +5,8 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,6 +36,16 @@ export default function MyBar(props) {
             <MenuIcon></MenuIcon>
           </IconButton>
           <Typography variant="h6">{title}</Typography>
+          {/* <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={"age"}
+            // onChange={ }
+          >
+            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem>
+          </Select> */}
         </Toolbar>
       </AppBar>
     </div>
