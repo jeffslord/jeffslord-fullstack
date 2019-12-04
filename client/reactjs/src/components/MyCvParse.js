@@ -232,46 +232,50 @@ export default function MyCvParse() {
                 <Typography variant={"h3"}>Text</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
-                <Grid item xs={12}>
-                  <Button
-                    variant="contained"
-                    onClick={() => {
-                      DownloadCalcView("Fixed", xmlResult);
-                    }}
-                  >
-                    Download txt
-                  </Button>
-                  <Button
-                    variant="contained"
-                    onClick={() => {
-                      navigator.clipboard.writeText(xmlResult);
-                      setTextCopyOpen(true);
-                    }}
-                  >
-                    Copy
-                  </Button>
-                  <Snackbar
-                    anchorOrigin={{
-                      vertical: "bottom",
-                      horizontal: "left"
-                    }}
-                    open={textCopyOpen}
-                    autoHideDuration={1000}
-                    onClose={() => {
-                      setTextCopyOpen(false);
-                    }}
-                    ContentProps={{
-                      "aria-describedby": "message-id"
-                    }}
-                    message={<span id="message-id">Text Copied</span>}
-                  />
+                <Grid container>
+                  <Grid item xs={12}>
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        DownloadCalcView("Fixed", xmlResult);
+                      }}
+                    >
+                      Download txt
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        navigator.clipboard.writeText(xmlResult);
+                        setTextCopyOpen(true);
+                      }}
+                    >
+                      Copy
+                    </Button>
+                    <Snackbar
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "left"
+                      }}
+                      open={textCopyOpen}
+                      autoHideDuration={1000}
+                      onClose={() => {
+                        setTextCopyOpen(false);
+                      }}
+                      ContentProps={{
+                        "aria-describedby": "message-id"
+                      }}
+                      message={<span id="message-id">Text Copied</span>}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      multiline={true}
+                      value={xmlResult}
+                      rowsMax={Infinity}
+                      fullWidth
+                    ></TextField>
+                  </Grid>
                 </Grid>
-                <TextField
-                  multiline={true}
-                  value={xmlResult}
-                  rowsMax={Infinity}
-                  fullWidth
-                ></TextField>
               </ExpansionPanelDetails>
             </ExpansionPanel>
           </Paper>
