@@ -26,7 +26,7 @@ export default function MyCheckTable(props) {
   const disabled = ["Calculated Columns in Filter", "Unmapped parameters"];
 
   return (
-    <div>
+    <div className={classes.root}>
       <ExpansionPanel>
         <ExpansionPanelSummary
           className={
@@ -51,10 +51,12 @@ export default function MyCheckTable(props) {
             }
             // label={props.check.checkName}
           />
-          <Typography>{props.check.checkName}</Typography>
+          <Typography variant={"h5"}>{props.check.checkName}</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Typography>{JSON.stringify(props.check.data)}</Typography>
+          <Typography variant={"body1"}>
+            {JSON.stringify(props.check.data)}
+          </Typography>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>

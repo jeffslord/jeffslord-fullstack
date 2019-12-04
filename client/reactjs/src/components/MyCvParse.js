@@ -15,13 +15,17 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1
   },
   paper: {
-    padding: theme.spacing(2),
+    // padding: theme.spacing(2),
     margin: "20px",
     textAlign: "center",
     color: theme.palette.text.secondary
@@ -32,6 +36,9 @@ const useStyles = makeStyles(theme => ({
   },
   expansionGood: {
     background: "red"
+  },
+  button: {
+    minHeight: "75px"
   }
 }));
 
@@ -164,90 +171,109 @@ export default function MyCvParse() {
         </Grid>
         {/* <Paper className={classes.paper}> */}
         {/* Upload Box */}
-        <Grid item xs={12}></Grid>
+        {/* <Grid item xs={12}></Grid> */}
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={5}>
-            <Grid item>
-              <MyFileUploaderIndividual
-                setparentfiles={files => setFiles(files)}
-              />
-            </Grid>
-            <Grid item>
-              <Button
-                size="large"
-                fullWidth
-                variant={"contained"}
-                files={files}
-                onClick={() => AnalyzeButton()}
-                color="primary"
-              >
-                Process
-              </Button>
-            </Grid>
+            <ExpansionPanel defaultExpanded>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant={"h3"}>Upload</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <MyFileUploaderIndividual
+                      setparentfiles={files => setFiles(files)}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button
+                      className={classes.button}
+                      size="large"
+                      fullWidth
+                      variant={"contained"}
+                      files={files}
+                      onClick={() => AnalyzeButton()}
+                      color="primary"
+                    >
+                      Process
+                    </Button>
+                  </Grid>
+                </Grid>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
           </Paper>
         </Grid>
         {/* Checks */}
-        <Grid item xs={6}>
-          {/* <Drawer variant="permanent">
-            <List>
-              {["test1", "test2"].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List>
-          </Drawer> */}
+        <Grid item xs={12}>
           <Paper className={classes.paper} elevation={5}>
-            {resChecks.map((check, i) => (
-              <ul key={i}>
-                <MyCvExpansionResult check={check}></MyCvExpansionResult>
-              </ul>
-            ))}
+            <ExpansionPanel defaultExpanded>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="h3">Results</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <List>
+                  {resChecks.map((check, i) => (
+                    <ListItem>
+                      {/* <ul key={i}> */}
+                      <MyCvExpansionResult check={check}></MyCvExpansionResult>
+                      {/* </ul> */}
+                    </ListItem>
+                  ))}
+                </List>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
           </Paper>
         </Grid>
         {/* Text Result Box */}
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <Paper className={classes.paper} elevation={5}>
-            <Grid item xs={12}>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  DownloadCalcView("Fixed", xmlResult);
-                }}
-              >
-                Download txt
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  navigator.clipboard.writeText(xmlResult);
-                  setTextCopyOpen(true);
-                }}
-              >
-                Copy
-              </Button>
-              <Snackbar
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left"
-                }}
-                open={textCopyOpen}
-                autoHideDuration={1000}
-                onClose={() => {
-                  setTextCopyOpen(false);
-                }}
-                ContentProps={{
-                  "aria-describedby": "message-id"
-                }}
-                message={<span id="message-id">Text Copied</span>}
-              />
-            </Grid>
-            <TextField
-              multiline={true}
-              value={xmlResult}
-              rowsMax={Infinity}
-              fullWidth
-            ></TextField>
+            <ExpansionPanel>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant={"h3"}>Text</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      DownloadCalcView("Fixed", xmlResult);
+                    }}
+                  >
+                    Download txt
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      navigator.clipboard.writeText(xmlResult);
+                      setTextCopyOpen(true);
+                    }}
+                  >
+                    Copy
+                  </Button>
+                  <Snackbar
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "left"
+                    }}
+                    open={textCopyOpen}
+                    autoHideDuration={1000}
+                    onClose={() => {
+                      setTextCopyOpen(false);
+                    }}
+                    ContentProps={{
+                      "aria-describedby": "message-id"
+                    }}
+                    message={<span id="message-id">Text Copied</span>}
+                  />
+                </Grid>
+                <TextField
+                  multiline={true}
+                  value={xmlResult}
+                  rowsMax={Infinity}
+                  fullWidth
+                ></TextField>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
           </Paper>
         </Grid>
       </Grid>
