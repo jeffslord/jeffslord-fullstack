@@ -6,11 +6,15 @@ import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import MyCheckTable from "../components/MyCheckTable";
 import Snackbar from "@material-ui/core/Snackbar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import MyCvExpansionResult from "../components/MyCvExpansionResult";
+import Drawer from "@material-ui/core/Drawer";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,6 +29,9 @@ const useStyles = makeStyles(theme => ({
   checkTable: {
     width: "100%",
     display: "flex"
+  },
+  expansionGood: {
+    background: "red"
   }
 }));
 
@@ -33,18 +40,18 @@ export default function MyCvParse() {
 
   const [files, setFiles] = useState([]);
   const [results, setResults] = useState([]);
-  // const [checks, setChecks] = useState(["version", "rightJoins", "splitNodes"]);
   const [xmlResult, setXmlResult] = useState();
-  // const [xmls, setXmls] = useState([]);
   const [loading, setLoading] = useState(false);
   const [textCopyOpen, setTextCopyOpen] = useState(false);
   const [tabValue, setTabValue] = useState(0);
-  // const [checkComplete, setCheckComplete] = useState(false);
+  const [resHeaders, setResHeaders] = useState([]);
+  const [resChecks, setResChecks] = useState([]);
 
   useEffect(() => {
     document.title = "Calculation View Optimizer";
   });
 
+  // Run analysis on file to get all values returned
   const AnalyzeButton = () => {
     if (files.length > 0) {
       console.log("FILES", files);
@@ -66,9 +73,33 @@ export default function MyCvParse() {
         .then(data => {
           // console.log("res.json", data);
           setResults(data);
+          GetHeaders(data, (err, headers) => {
+            setResHeaders(headers);
+            GetChecks(data, (err2, checks) => {
+              setResChecks(checks);
+            });
+          });
         });
       return;
     }
+  };
+  // extract header information from the result set containing all data
+  const GetHeaders = (data, cb) => {
+    let headers = [];
+    data.forEach(ele => {
+      headers.push(ele.header);
+      console.log("HEADER:", ele.header);
+    });
+    return cb(null, headers[0]);
+  };
+  // extract data information from the result set
+  const GetChecks = (data, cb) => {
+    let checks = [];
+    data.forEach(ele => {
+      checks.push(ele.checks);
+      console.log("CHECK:", ele.checks);
+    });
+    return cb(null, checks[0]);
   };
   const Fixbutton = () => {
     if (files.length > 0) {
@@ -90,64 +121,6 @@ export default function MyCvParse() {
     }
   };
 
-  const RenderCheckTable = singleViewChecks => {
-    if (results.length > 0) {
-      // change this when multiple working at a time
-      singleViewChecks = results[0];
-      // end change
-      let rows = [];
-      singleViewChecks.checks.forEach(check => {
-        rows.push({
-          check: check["checkName"],
-          found: check["found"].toString()
-        });
-      });
-      console.log(rows);
-
-      //
-      let tableData = {
-        cvName: singleViewChecks.header.id,
-        cvVersion: singleViewChecks.header.version,
-        columns: [
-          { title: "Check", field: "check" },
-          {
-            title: "Found",
-            field: "found",
-            cellStyle: rowData => ({
-              backgroundColor: rowData === "true" ? "#e57373" : "#a5d6a7"
-            })
-          }
-        ],
-        data: rows,
-        options: {
-          selection: false,
-          selectionProps: rowData => ({
-            disabled: rowData.found === "false",
-            color: "primary"
-          })
-          // rowStyle: rowData => ({
-          //   backgroundColor: rowData.found === "Yes" ? "#e57373" : "#a5d6a7"
-          // })
-        },
-        actions: [
-          {
-            tooltip: "Fix checked",
-            icon: "check",
-            onClick: (evt, data) => {
-              console.log(evt, data);
-            }
-          }
-        ]
-      };
-      return (
-        <MyCheckTable
-          tableState={tableData}
-          className={classes.checkTable}
-        ></MyCheckTable>
-      );
-    }
-  };
-
   const DownloadCalcView = (name, content) => {
     if (xmlResult !== undefined) {
       var atag = document.createElement("a");
@@ -164,6 +137,7 @@ export default function MyCvParse() {
     } else if (val === 2) {
     }
   };
+
   return (
     <div className={classes.root}>
       {console.log("RESULTS:", results)}
@@ -191,7 +165,7 @@ export default function MyCvParse() {
         {/* <Paper className={classes.paper}> */}
         {/* Upload Box */}
         <Grid item xs={12}></Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <Paper className={classes.paper} elevation={5}>
             <Grid item>
               <MyFileUploaderIndividual
@@ -212,37 +186,27 @@ export default function MyCvParse() {
             </Grid>
           </Paper>
         </Grid>
-        {/* Result Box */}
+        {/* Checks */}
         <Grid item xs={6}>
+          {/* <Drawer variant="permanent">
+            <List>
+              {["test1", "test2"].map((text, index) => (
+                <ListItem button key={text}>
+                  <ListItemText primary={text} />
+                </ListItem>
+              ))}
+            </List>
+          </Drawer> */}
           <Paper className={classes.paper} elevation={5}>
-            {results.length === 0 && (
-              <Typography variant="h2">RESULTS HERE</Typography>
-            )}
-
-            {results.length > 0 && (
-              <Grid container>
-                <Grid item xs={12}>
-                  {RenderCheckTable([])}
-                </Grid>
-                <Grid item xs={12}>
-                  <Button
-                    variant="contained"
-                    size="large"
-                    onClick={() => Fixbutton()}
-                    color="primary"
-                    fullWidth
-                  >
-                    Fix All
-                  </Button>
-                  {loading && <CircularProgress></CircularProgress>}
-                </Grid>
-              </Grid>
-            )}
+            {resChecks.map((check, i) => (
+              <ul key={i}>
+                <MyCvExpansionResult check={check}></MyCvExpansionResult>
+              </ul>
+            ))}
           </Paper>
         </Grid>
-        {/* </Paper> */}
         {/* Text Result Box */}
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <Paper className={classes.paper} elevation={5}>
             <Grid item xs={12}>
               <Button

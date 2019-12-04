@@ -1,9 +1,9 @@
 //! NOTES
 // Get Roots seem to be the same as getting their respective element arrays
 
-const fs = require('fs');
-const xml2js = require('xml2js');
-const path = require('path');
+const fs = require("fs");
+const xml2js = require("xml2js");
+const path = require("path");
 
 const parser = new xml2js.Parser();
 
@@ -16,9 +16,12 @@ function WriteFile(fileName, text) {
  * @param {*} (err, res)
  */
 function ParseFile(filePath, cb) {
-  fs.readFile(filePath, 'utf8', (err, data) => {
+  fs.readFile(filePath, "utf8", (err, data) => {
     parser.parseString(data, (err2, result) => {
-      WriteFile('./data/json/cv_json_latest.json', JSON.stringify(result, null, 4));
+      WriteFile(
+        "./data/json/cv_json_latest.json",
+        JSON.stringify(result, null, 4)
+      );
       cb(null, result);
     });
   });
@@ -30,14 +33,14 @@ function ParseXML(xml, cb) {
 }
 
 function GetCvheaderInfo(jsonResult, cb) {
-  const version = jsonResult['Calculation:scenario'].$.schemaVersion;
-  const { id } = jsonResult['Calculation:scenario'].$;
+  const version = jsonResult["Calculation:scenario"].$.schemaVersion;
+  const { id } = jsonResult["Calculation:scenario"].$;
   const info = { version, id };
   if (version === undefined) {
-    return cb(Error('No version'));
+    return cb(Error("No version"));
   }
   if (id === undefined) {
-    return cb(Error('No id'));
+    return cb(Error("No id"));
   }
   return cb(null, info);
 }
@@ -45,9 +48,10 @@ function GetCvheaderInfo(jsonResult, cb) {
 // Get the root of Calculation View element.
 // This contains an array of all calculation view nodes
 function GetNodeRoot(jsonResult, cb) {
-  const cvRoot = jsonResult['Calculation:scenario'].calculationViews[0].calculationView;
+  const cvRoot =
+    jsonResult["Calculation:scenario"].calculationViews[0].calculationView;
   if (cvRoot === undefined) {
-    return cb(Error('No calculation view'));
+    return cb(Error("No calculation view"));
   }
   return cb(null, cvRoot);
 }
@@ -56,7 +60,8 @@ function GetNodeRoot(jsonResult, cb) {
 // This contains an array of all local variable elements (input parameters)?
 function GetLocalVarRoot(jsonResult, cb) {
   // console.log('TEST')
-  const localVarRoot = jsonResult['Calculation:scenario'].localVariables[0].variable;
+  const localVarRoot =
+    jsonResult["Calculation:scenario"].localVariables[0].variable;
   // console.log('INFO', localVarRoot);
   if (localVarRoot === undefined) {
     return cb(null, []);
@@ -74,7 +79,7 @@ function GetLocalVars(jsonResult, cb) {
     if (localVarRoot.length === 0) {
       return cb(null, localVars);
     }
-    localVarRoot.forEach((ele) => {
+    localVarRoot.forEach(ele => {
       localVars.push(ele);
     });
   });
@@ -86,7 +91,7 @@ function GetLocalVarNames(jsonResult, cb) {
     if (err) {
       return cb(err);
     }
-    localVars.forEach((ele) => {
+    localVars.forEach(ele => {
       localVarNames.push(ele.$.id);
     });
   });
@@ -96,7 +101,8 @@ function GetLocalVarNames(jsonResult, cb) {
 // Get Variable Map root element
 // This contains an array of all mappings of input parameters?
 function GetVarMapRoot(jsonResult, cb) {
-  const varMapRoot = jsonResult['Calculation:scenario'].variableMappings[0].mapping;
+  const varMapRoot =
+    jsonResult["Calculation:scenario"].variableMappings[0].mapping;
   if (varMapRoot === undefined) {
     return cb(null, []);
     // return cb(Error('No variable mappings'));
@@ -110,22 +116,23 @@ function GetVarMaps(jsonResult, cb) {
     if (err) {
       return cb(err);
     }
-    varMapRoot.forEach((ele) => {
+    varMapRoot.forEach(ele => {
       varMaps.push(ele);
     });
   });
   return cb(null, varMaps);
 }
+
 function GetVarMapLocalTarget(jsonResult, cb) {
   const localTarget = [];
   GetVarMaps(jsonResult, (err, varMaps) => {
     if (err) {
       return cb(err);
     }
-    varMaps.forEach((ele) => {
+    varMaps.forEach(ele => {
       const data = {
         local: ele.localVariable[0],
-        target: ele.targetVariable[0].$.name,
+        target: ele.targetVariable[0].$.name
       };
       localTarget.push(data);
     });
@@ -133,12 +140,13 @@ function GetVarMapLocalTarget(jsonResult, cb) {
   return cb(null, localTarget);
 }
 
-// Get Data Sources root element
+// Get Data Sources root element.
 // This contains the origin of all data sources. Tables, other views, etc.
 function GetDataSourceRoot(jsonResult, cb) {
-  const dataSourcesRoot = jsonResult['Calculation:scenario'].dataSources[0].DataSource;
+  const dataSourcesRoot =
+    jsonResult["Calculation:scenario"].dataSources[0].DataSource;
   if (dataSourcesRoot === undefined) {
-    return cb(Error('No data sources'));
+    return cb(Error("No data sources"));
   }
   return cb(null, dataSourcesRoot);
 }
@@ -146,7 +154,7 @@ function GetDataSourceRoot(jsonResult, cb) {
 function GetDataSources(jsonResult, cb) {
   const dataSources = [];
   GetDataSourceRoot(jsonResult, (err, root) => {
-    root.forEach((ds) => {
+    root.forEach(ds => {
       dataSources.push(ds);
     });
   });
@@ -156,7 +164,7 @@ function GetDataSources(jsonResult, cb) {
 function GetDataSourceNames(jsonResult, cb) {
   const dataSourceNames = [];
   GetDataSources(jsonResult, (err, dataSources) => {
-    dataSources.forEach((ds) => {
+    dataSources.forEach(ds => {
       dataSourceNames.push(ds.$.id);
     });
   });
@@ -167,7 +175,7 @@ function GetDataSourceNames(jsonResult, cb) {
 function GetNodeByName(jsonResult, cvName, cb) {
   GetNodeRoot(jsonResult, (err, root) => {
     let cvNameParsed = JSON.parse(cvName);
-    if (cvNameParsed.charAt(0) === '#') {
+    if (cvNameParsed.charAt(0) === "#") {
       cvNameParsed = cvNameParsed.substr(1);
     }
     for (let i = 0; i < root.length; i += 1) {
@@ -196,13 +204,13 @@ function GetNodes(jsonResult, cb) {
 //! i made the change
 function GetNodesByInput(jsonResult, inputName, cb) {
   let inputNameParsed = JSON.parse(inputName);
-  if (inputNameParsed.charAt(0) !== '#') {
+  if (inputNameParsed.charAt(0) !== "#") {
     inputNameParsed = `#${inputNameParsed}`;
   }
   const results = [];
   GetNodes(jsonResult, (err, cvs) => {
-    cvs.forEach((cv) => {
-      cv.input.forEach((input) => {
+    cvs.forEach(cv => {
+      cv.input.forEach(input => {
         if (input.$.node === inputNameParsed && results.indexOf(input) === -1) {
           results.push(cv);
         }
@@ -212,10 +220,11 @@ function GetNodesByInput(jsonResult, inputName, cb) {
   return cb(null, results);
 }
 
+// Get all filter expressions that occur in all nodes
 function GetFilterExpressions(jsonResult, cb) {
   const filterExpressions = [];
   GetNodes(jsonResult, (err, nodes) => {
-    nodes.forEach((node) => {
+    nodes.forEach(node => {
       if (node.filter !== undefined) filterExpressions.push(node.filter[0]);
     });
   });
@@ -228,8 +237,8 @@ function GetFilterExpressions(jsonResult, cb) {
 function GetInputNodeCounts(jsonResult, cb) {
   GetNodes(jsonResult, (err, cvs) => {
     const inputNodes = {};
-    cvs.forEach((ele1) => {
-      ele1.input.forEach((ele2) => {
+    cvs.forEach(ele1 => {
+      ele1.input.forEach(ele2 => {
         const inputNode = JSON.stringify(ele2.$.node);
         if (inputNode in inputNodes) {
           inputNodes[inputNode] += 1;
@@ -253,8 +262,8 @@ function GetInputs(jsonResult, inputName, cb) {
   }
   const inputs = [];
   GetNodes(jsonResult, (err, cvs) => {
-    cvs.forEach((cv) => {
-      cv.input.forEach((input) => {
+    cvs.forEach(cv => {
+      cv.input.forEach(input => {
         if (input.$.node === inputNameParsed) {
           inputs.push(input);
         }
@@ -267,15 +276,16 @@ function GetInputs(jsonResult, inputName, cb) {
 
 // Duplicate calc view node and return the copy. Does not add to structure.
 function CopyCv(jsonResult, cvName, cb) {
-  GetNodeByName(jsonResult, cvName, (cv) => {
+  GetNodeByName(jsonResult, cvName, cv => {
     // duplicate cv into another cv and add it to the root
     const cvCopy = JSON.parse(JSON.stringify(cv));
     return cb(cvCopy);
   });
 }
 
+// Create Name for Input Node depending on version of calculation view.
 function CreateInputName(nodeName, version, cb) {
-  let newName = '';
+  let newName = "";
   if (version <= 2.3) {
     newName = `#${nodeName}`;
     // return (null,`#${cvCopyNew.$.id}`);
@@ -289,10 +299,11 @@ function CreateInputName(nodeName, version, cb) {
 function GetCalculatedColumns(jsonResult, cb) {
   const calcColumns = [];
   GetNodes(jsonResult, (err, nodes) => {
-    nodes.forEach((element) => {
-      if (element.calculatedViewAttributes[0] !== '') {
-        const calcAtts = element.calculatedViewAttributes[0].calculatedViewAttribute;
-        calcAtts.forEach((col) => {
+    nodes.forEach(element => {
+      if (element.calculatedViewAttributes[0] !== "") {
+        const calcAtts =
+          element.calculatedViewAttributes[0].calculatedViewAttribute;
+        calcAtts.forEach(col => {
           calcColumns.push(col);
         });
       }
@@ -304,9 +315,9 @@ function GetCalculatedColumnNames(jsonResult, cb) {
   const calcColumnNames = [];
   GetCalculatedColumns(jsonResult, (err, calcColumns) => {
     if (err) {
-      return cb(Error('Error at GetCalculatedColumns'));
+      return cb(Error("Error at GetCalculatedColumns"));
     }
-    calcColumns.forEach((element) => {
+    calcColumns.forEach(element => {
       calcColumnNames.push(element.$.id);
     });
   });
@@ -318,7 +329,7 @@ function GetCalculatedColumnFormulas(jsonResult, cb) {
     if (err) {
       return cb(err);
     }
-    calcColumns.forEach((element) => {
+    calcColumns.forEach(element => {
       formulas.push(element.formula[0]);
     });
   });
@@ -331,7 +342,7 @@ function GetUnmappedParameters(jsonResult, cb) {
     GetVarMapLocalTarget(jsonResult, (err, varMaps) => {
       // console.log('GetVarMapLocalTarget:', varMaps);
       const exists = [];
-      varMaps.forEach((map) => {
+      varMaps.forEach(map => {
         exists.push(map.local);
       });
       unmapped = localVarNames.filter(x => !exists.includes(x));
@@ -339,7 +350,7 @@ function GetUnmappedParameters(jsonResult, cb) {
         GetFilterExpressions(jsonResult, (err, filters) => {
           const toRemove = [];
           //! optimization here. break out of for loop when found
-          unmapped.forEach((unmap) => {
+          unmapped.forEach(unmap => {
             // console.log('Searching unmapped:', unmap);
             for (let i = 0; i < filters.length; i += 1) {
               if (filters[i].includes(unmap)) {
@@ -353,7 +364,7 @@ function GetUnmappedParameters(jsonResult, cb) {
                 // break;
               }
             }
-            toRemove.forEach((removal) => {
+            toRemove.forEach(removal => {
               unmapped.splice(removal, 1);
             });
           });
@@ -374,9 +385,9 @@ function GetCalcColumnsInFilter(jsonResult, cb) {
       if (err) {
         return cb(err);
       }
-      filters.forEach((filter) => {
+      filters.forEach(filter => {
         // console.log(filter);
-        calcColumns.forEach((col) => {
+        calcColumns.forEach(col => {
           // console.log('Filter:', filter, 'Column:', col);
           if (filter.includes(col)) {
             calcColumnsInFilter.push(col);
@@ -390,8 +401,8 @@ function GetCalcColumnsInFilter(jsonResult, cb) {
 function GetRightJoinCvs(jsonResult, cb) {
   GetNodes(jsonResult, (err, cvs) => {
     const rightOuters = [];
-    cvs.forEach((ele) => {
-      if (ele.$.joinType === 'rightOuter') {
+    cvs.forEach(ele => {
+      if (ele.$.joinType === "rightOuter") {
         rightOuters.push(ele);
       }
     });
@@ -404,10 +415,10 @@ function GetSplitNodes(jsonResult, cb) {
   const splitNodes = {};
   GetDataSourceNames(jsonResult, (err2, ds) => {
     GetInputNodeCounts(jsonResult, (err, inputNodes) => {
-      Object.keys(inputNodes).forEach((key) => {
+      Object.keys(inputNodes).forEach(key => {
         if (inputNodes[key] > 1) {
           let keyParsed = JSON.parse(key);
-          keyParsed = keyParsed.replace('#', '');
+          keyParsed = keyParsed.replace("#", "");
           if (!ds.includes(keyParsed)) {
             splitNodes[key] = inputNodes[key];
           }
@@ -432,10 +443,20 @@ function GetCalculatedColumnsInJoin(jsonResult, cb) {
 
 function Test() {
   //   const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'employeespunchedin.xml');
-  const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'samples', 'cv_bad.xml');
+  const filePath = path.join(
+    `${__dirname}`,
+    "..",
+    "data",
+    "xml",
+    "samples",
+    "cv_bad.xml"
+  );
   // const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad2.xml`);
   ParseFile(filePath, (err, jsonRes) => {
-    WriteFile('./data/json/cv_json_latest.json', JSON.stringify(jsonRes, null, 4));
+    WriteFile(
+      "./data/json/cv_json_latest.json",
+      JSON.stringify(jsonRes, null, 4)
+    );
     // GetDataSourceNames(jsonRes, (err, res) => {
     //   console.log(res);
     // });
@@ -472,5 +493,5 @@ module.exports = {
   GetCalcColumnsInFilter,
   GetRightJoinCvs,
   GetSplitNodes,
-  GetUnmappedParameters,
+  GetUnmappedParameters
 };
