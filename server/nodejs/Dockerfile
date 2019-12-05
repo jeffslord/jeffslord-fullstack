@@ -13,7 +13,8 @@ COPY package.json .
 COPY package-lock.json .
 
 RUN npm config set @sap:registry: https://npm.sap.com
-
+RUN npm install @sap/hana-client
+RUN npm config set registry https://registry.npmjs.com/
 RUN npm install
 
 # If you are building your code for production
