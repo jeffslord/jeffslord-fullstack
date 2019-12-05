@@ -12,18 +12,16 @@ WORKDIR /srv/app/home-server
 COPY package.json .
 COPY package-lock.json .
 
-# Bundle app source
-# COPY . /srv/app/home-server
-COPY . .
-
-RUN ls -l
-
-RUN npm install tools/hdbclient_node
+RUN npm config set @sap:registry: https://npm.sap.com
 
 RUN npm install
 
 # If you are building your code for production
 # RUN npm ci --only=production
+
+# Bundle app source
+# COPY . /srv/app/home-server
+COPY . .
 
 # EXPOSE 8080
 CMD [ "npm", "run" "devstart" ]
