@@ -18,4 +18,4 @@ RUN npm install
 COPY . /srv/app/home-server
 
 # EXPOSE 8080
-CMD [ "npm", "start" ]
+CMD [ "npm", "run" "devstart" ]
