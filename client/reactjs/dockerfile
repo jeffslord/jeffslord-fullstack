@@ -1,20 +1,20 @@
-FROM node:10
+FROM node:10-alpine
 
-RUN mkdir -p /srv/app/my-client
+RUN mkdir -p /srv/app/home-client
 # Create app directory
-WORKDIR /app
+WORKDIR /srv/app/home-client
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
-COPY package*.json ./
+COPY package*.json /srv/app/home-client/
 
 RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production
 
 # Bundle app source
-COPY . .
+COPY . /srv/app/home-client
 
-EXPOSE 8080
+# EXPOSE 8080
 CMD [ "npm", "start" ]

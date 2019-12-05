@@ -1,0 +1,29 @@
+version: "3"
+services:
+  server:
+    build: ./server/nodejs
+    environment:
+      # API_HOST: ${API_HOST}
+      APP_SERVER_PORT: ${APP_SERVER_PORT}
+    expose:
+      - ${APP_SERVER_PORT}
+    ports:
+      - ${APP_SERVER_PORT}:${APP_SERVER_PORT}
+    volumes:
+      - ./server/nodejs/src:srv/app/home-server
+    command: npm run devstart
+
+  client:
+    build: ./client/reactjs
+    environment:
+      - REACT_APP_PORT:${REACT_APP_PORT}
+    expose:
+      - ${REACT_APP_PORT}
+    ports:
+      - ${REACT_APP_PORT}:${REACT_APP_PORT}
+    volumes:
+      - ./client/reactjs/src:/srv/app/home-client/src
+      - ./client/reactjs/public:/srv/app/home-client/public
+    links:
+      - server
+    command: npm run start
