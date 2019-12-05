@@ -12,13 +12,16 @@ WORKDIR /srv/app/home-server
 COPY package.json .
 COPY package-lock.json .
 
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
-
 # Bundle app source
 # COPY . /srv/app/home-server
 COPY . .
+
+RUN ls -l
+
+RUN npm install
+
+# If you are building your code for production
+# RUN npm ci --only=production
 
 # EXPOSE 8080
 CMD [ "npm", "run" "devstart" ]
