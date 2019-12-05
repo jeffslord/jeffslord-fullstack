@@ -12,9 +12,11 @@ WORKDIR /srv/app/home-server
 COPY package.json .
 COPY package-lock.json .
 
-RUN npm config set @sap:registry: https://npm.sap.com
+# RUN npm config set @sap:registry: https://npm.sap.com
+RUN npm config --global set @sap:registry https://npm.sap.com
 RUN npm install @sap/hana-client
-RUN npm config set registry https://registry.npmjs.com/
+RUN npm update @sap/hana-client
+RUN npm config --global set registry https://registry.npmjs.com/
 RUN npm install
 
 # If you are building your code for production
