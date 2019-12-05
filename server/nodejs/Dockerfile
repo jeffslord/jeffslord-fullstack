@@ -18,6 +18,8 @@ COPY . .
 
 RUN ls -l
 
+RUN npm install tools/hdbclient_node
+
 RUN npm install
 
 # If you are building your code for production
