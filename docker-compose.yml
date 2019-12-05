@@ -10,7 +10,7 @@ services:
     ports:
       - ${APP_SERVER_PORT}:${APP_SERVER_PORT}
     volumes:
-      - ./server/nodejs/src:/srv/app/home-server
+      - ./server/nodejs/src:/srv/app/home-server/src
     command: npm run devstart
 
   client:
