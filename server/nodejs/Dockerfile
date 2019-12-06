@@ -9,15 +9,22 @@ WORKDIR /srv/app/home-server
 # where available (npm@5+)
 # COPY package.json /srv/app/home-server
 # COPY package-lock.json /srv/app/home-server
-COPY package.json .
-COPY package-lock.json .
+COPY package*.json .
+COPY .npmrc .
+# COPY package-lock.json .
 
-# RUN npm config set @sap:registry: https://npm.sap.com
-RUN npm config --global set @sap:registry https://npm.sap.com
-RUN npm install @sap/hana-client
-RUN npm update @sap/hana-client
-RUN npm config --global set registry https://registry.npmjs.com/
-RUN npm install
+#RUN npm install --registry=https://npm.sap.com
+#RUN npm config --global set @sap:registry https://npm.sap.com
+#RUN npm install @sap/hana-client
+#RUN npm update @sap/hana-client
+#RUN npm install ./tools/hdbclient_node/
+
+#RUN npm config set registry https://registry.npmjs.com/
+
+RUN npm config set registry https://npm.sap.com &&\
+    npm install @sap/hana-client &&\
+    npm config set registry https://registry.npmjs.org/ && \
+    npm install
 
 # If you are building your code for production
 # RUN npm ci --only=production
