@@ -4,16 +4,16 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
-// const bodyParser = require('body-parser');
 
 require('dotenv').config();
 
 // set router files
 const indexRouter = require('./routes/index');
 const cvRouter = require('./routes/cv.route');
-const hanaRouter = require('./routes/hana.route');
+// const hanaRouter = require('./routes/hana.route');
 
 const app = express();
+console.log("PORT:", process.env.APP_SERVER_PORT);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -30,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // set routes based on previous routers set
 app.use('/', indexRouter);
 app.use('/api/cv', cvRouter);
-app.use('/api/hana', hanaRouter);
+// app.use('/api/hana', hanaRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

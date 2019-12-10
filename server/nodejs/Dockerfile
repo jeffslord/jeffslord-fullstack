@@ -21,10 +21,10 @@ COPY .npmrc .
 
 #RUN npm config set registry https://registry.npmjs.com/
 
-RUN npm config set registry https://npm.sap.com &&\
-    npm install @sap/hana-client &&\
-    npm config set registry https://registry.npmjs.org/ && \
-    npm install
+# RUN npm config set registry https://npm.sap.com &&\
+#     npm install @sap/hana-client &&\
+#     npm config set registry https://registry.npmjs.org/ && \
+RUN npm install
 
 # If you are building your code for production
 # RUN npm ci --only=production

@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from "react";
-import MyFileUploaderIndividual from "./MyFileUploaderIndividual";
 import { Typography } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import MyCheckTable from "../components/MyCheckTable";
-import Snackbar from "@material-ui/core/Snackbar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
 import MySchemaList from "../components/MySchemaList";
 
 const useStyles = makeStyles(theme => ({
