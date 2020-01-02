@@ -1,29 +1,43 @@
-version: "3"
+version: "3.7"
 services:
   server:
     build: ./server/nodejs
     environment:
-      # API_HOST: ${API_HOST}
-      APP_SERVER_PORT: ${APP_SERVER_PORT}
+      APP_SERVER_PORT: ${SERVER_PORT}
     expose:
-      - ${APP_SERVER_PORT}
-    ports:
-      - ${APP_SERVER_PORT}:${APP_SERVER_PORT}
+      - ${SERVER_PORT}
+    # ports:
+    #   - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
       - ./server/nodejs/src:/srv/app/home-server/src
     command: npm run devstart
-
+    networks:
+      - traefik
+      # - myapp
   client:
     build: ./client/reactjs
     environment:
-      - REACT_APP_PORT:${REACT_APP_PORT}
+      - CLIENT_PORT:${CLIENT_PORT}
     expose:
-      - ${REACT_APP_PORT}
-    ports:
-      - ${REACT_APP_PORT}:${REACT_APP_PORT}
+      - ${CLIENT_PORT}
+    # ports:
+    #   - ${CLIENT_PORT}:${CLIENT_PORT}
     volumes:
       - ./client/reactjs/src:/srv/app/home-client/src
       - ./client/reactjs/public:/srv/app/home-client/public
     links:
       - server
     command: npm run start
+    networks:
+      - traefik
+      # - myapp
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.cv.rule=Host(`cv.jeffslord.com`)
+      - traefik.http.services.cv.loadbalancer.server.port=${CLIENT_PORT}
+
+networks:
+  traefik:
+    external: true
+  # myapp:
+  #   name: myapp
