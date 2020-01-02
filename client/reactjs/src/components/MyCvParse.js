@@ -71,8 +71,7 @@ export default function MyCvParse() {
       console.log(data);
 
       // data.append("files", files);
-      // fetch("http://localhost:5000/api/cv/analyzeMany", {
-      fetch("/api/cv/analyzeMany", {
+      fetch("http://server:9051/api/cv/analyzeMany", {
         method: "post",
         body: data
       })
@@ -113,8 +112,7 @@ export default function MyCvParse() {
       let data = new FormData();
       data.append("file", files[0]);
       setLoading(true);
-      // fetch("http://localhost:5000/api/cv/fixSingle", {
-      fetch("/api/cv/fixSingle", {
+      fetch("http://server:9051/api/cv/fixSingle", {
         method: "post",
         body: data
       })

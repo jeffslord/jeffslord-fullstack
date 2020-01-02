@@ -23,7 +23,6 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:5000/",
   "devDependencies": {},
   "browserslist": {
     "production": [

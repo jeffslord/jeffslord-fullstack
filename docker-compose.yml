@@ -2,8 +2,10 @@ version: "3.7"
 services:
   server:
     build: ./server/nodejs
+    # environment:
+    #   - APP_SERVER_PORT=${SERVER_PORT}
     environment:
-      APP_SERVER_PORT: ${SERVER_PORT}
+      - SERVER_PORT=${SERVER_PORT}
     expose:
       - ${SERVER_PORT}
     # ports:
@@ -13,13 +15,16 @@ services:
     command: npm run devstart
     networks:
       - traefik
-    labels:
-      - traefik.enable=true
-      - traefik.http.services.cv_server.loadbalancer.server.port=${SERVER_PORT}
+      - cv
+    # labels:
+    #   - traefik.enable=true
+    #   - traefik.http.services.cv_server.loadbalancer.server.port=${SERVER_PORT}
+    #   - traefik.docker.network=traefik
   client:
     build: ./client/reactjs
     environment:
-      - CLIENT_PORT:${CLIENT_PORT}
+      - CLIENT_PORT=${CLIENT_PORT}
+      - PORT=${CLIENT_PORT}
     expose:
       - ${CLIENT_PORT}
     # ports:
@@ -32,11 +37,15 @@ services:
     command: npm run start
     networks:
       - traefik
+      - cv
     labels:
       - traefik.enable=true
       - traefik.http.routers.cv_client.rule=Host(`cv.jeffslord.com`)
       - traefik.http.services.cv_client.loadbalancer.server.port=${CLIENT_PORT}
+      - traefik.docker.network=traefik
 
 networks:
   traefik:
     external: true
+  cv:
+    driver: bridge

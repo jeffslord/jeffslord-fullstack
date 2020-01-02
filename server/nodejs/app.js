@@ -13,7 +13,7 @@ const cvRouter = require('./routes/cv.route');
 // const hanaRouter = require('./routes/hana.route');
 
 const app = express();
-console.log("PORT:", process.env.APP_SERVER_PORT);
+console.log("PORT:", process.env.SERVER_PORT);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
