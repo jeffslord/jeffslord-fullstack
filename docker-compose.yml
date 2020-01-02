@@ -13,7 +13,9 @@ services:
     command: npm run devstart
     networks:
       - traefik
-      # - myapp
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.cv_server.loadbalancer.server.port=${SERVER_PORT}
   client:
     build: ./client/reactjs
     environment:
@@ -30,14 +32,11 @@ services:
     command: npm run start
     networks:
       - traefik
-      # - myapp
     labels:
       - traefik.enable=true
-      - traefik.http.routers.cv.rule=Host(`cv.jeffslord.com`)
-      - traefik.http.services.cv.loadbalancer.server.port=${CLIENT_PORT}
+      - traefik.http.routers.cv_client.rule=Host(`cv.jeffslord.com`)
+      - traefik.http.services.cv_client.loadbalancer.server.port=${CLIENT_PORT}
 
 networks:
   traefik:
     external: true
-  # myapp:
-  #   name: myapp
