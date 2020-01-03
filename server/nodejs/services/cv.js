@@ -34,6 +34,7 @@ Calculated columns in joins
 const xml2js = require("xml2js");
 const path = require("path");
 const util = require("util");
+const fs = require('fs');
 const cvUtils = require("./cv_utils");
 
 // Find all input nodes that are used in more than 1 calc view node
@@ -214,6 +215,46 @@ async function FixView(filePath, cb) {
   }
 }
 
+const pCheckView = util.promisify(CheckView);
+
+async function AnalyzeSingle(filePath, cb) {
+  try {
+    const checkRes = await pCheckView(filePath);
+    fs.unlinkSync(filePath);
+    return cb(null, checkRes);
+  }
+  catch (err) {
+    fs.unlinkSync(filePath);
+    throw err;
+  }
+}
+
+async function AnalyzeMany(files, cb) {
+  try {
+    let analyzeRes = [];
+    let fileCount = 0;
+    files.forEach((file) => {
+      CheckView(file.path, (err, checkRes) => {
+        if (err) {
+          fs.unlinkSync(file.path);
+          throw err;
+        } else {
+          fs.unlinkSync(file.path);
+          analyzeRes.push(checkRes);
+          fileCount += 1;
+          if (fileCount === files.length) {
+            console.log(analyzeRes);
+            return cb(null, analyzeRes);
+          }
+        }
+      })
+    })
+  } catch (err) {
+    fs.unlinkSync(file.path);
+    throw (err);
+  }
+}
+
 function Test() {
   const filePath = path.join(
     `${__dirname}`,
@@ -247,5 +288,7 @@ function Test() {
 module.exports = {
   Test,
   CheckView,
-  FixView
+  FixView,
+  AnalyzeSingle,
+  AnalyzeMany
 };
