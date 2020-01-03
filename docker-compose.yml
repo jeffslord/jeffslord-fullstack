@@ -1,43 +1,38 @@
 version: "3.7"
 services:
-  server:
+  cv_server:
     build: ./server/nodejs
-    # environment:
-    #   - APP_SERVER_PORT=${SERVER_PORT}
     environment:
       - SERVER_PORT=${SERVER_PORT}
-    expose:
-      - ${SERVER_PORT}
-    # ports:
-    #   - ${SERVER_PORT}:${SERVER_PORT}
+    # expose:
+    #   - ${SERVER_PORT}
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
       - ./server/nodejs/src:/srv/app/home-server/src
     command: npm run devstart
     networks:
       - traefik
-      - cv
+      # - cv
     # labels:
     #   - traefik.enable=true
     #   - traefik.http.services.cv_server.loadbalancer.server.port=${SERVER_PORT}
+    #   - traefik.http.routers.cv_client.rule=Host(`api.jeffslord.com`)
     #   - traefik.docker.network=traefik
-  client:
+  cv_client:
     build: ./client/reactjs
     environment:
       - CLIENT_PORT=${CLIENT_PORT}
       - PORT=${CLIENT_PORT}
     expose:
       - ${CLIENT_PORT}
-    # ports:
-    #   - ${CLIENT_PORT}:${CLIENT_PORT}
     volumes:
       - ./client/reactjs/src:/srv/app/home-client/src
       - ./client/reactjs/public:/srv/app/home-client/public
-    links:
-      - server
     command: npm run start
     networks:
       - traefik
-      - cv
+      # - cv
     labels:
       - traefik.enable=true
       - traefik.http.routers.cv_client.rule=Host(`cv.jeffslord.com`)
@@ -47,5 +42,5 @@ services:
 networks:
   traefik:
     external: true
-  cv:
-    driver: bridge
+  # cv:
+  #   driver: bridge
