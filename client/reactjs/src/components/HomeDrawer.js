@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function MyDrawer(props) {
+export default function HomeDrawer(props) {
   const classes = useStyles();
   //   const [open, setOpen] = useState(true);
 
@@ -48,14 +48,12 @@ export default function MyDrawer(props) {
   const drawerList = () => (
     <div>
       <List className={classes.root}>
-        {/* <Link to="/" style={{ textDecoration: "none" }}> */}
         <ListItem button component={Link} to="/">
           <ListItemIcon>
             <HomeIcon></HomeIcon>
           </ListItemIcon>
           <ListItemText primary="Home"></ListItemText>
         </ListItem>
-        {/* </Link> */}
         <Divider></Divider>
         <ListItem button onClick={() => expandButton("tools")}>
           <ListItemIcon>
@@ -67,16 +65,13 @@ export default function MyDrawer(props) {
         <ListItem>
           <Collapse in={expanded["tools"]} timeout="auto">
             <List disablePadding>
-              {/* <Link to="tools/cvoptimizer/"> */}
-              <ListItem button component={Link} to="tools/cvoptimizer/">
+              <ListItem button component={Link} to="/tools/cvoptimizer/">
                 <ListItemText primary="Individual View Optimizer"></ListItemText>
               </ListItem>
-              {/* </Link> */}
-              <ListItem button component={Link} to="tools/cvclassic/">
+              <ListItem button component={Link} to="/tools/cvclassic/">
                 <ListItemText primary="Classic Schema Analyzer"></ListItemText>
               </ListItem>
-              {/* </Link> */}
-              <ListItem button component={Link} to="tools/cvxsa/">
+              <ListItem button component={Link} to="/tools/cvxsa/">
                 <ListItemText primary="XSA Project Zip Analyzer"></ListItemText>
               </ListItem>
             </List>
@@ -93,20 +88,22 @@ export default function MyDrawer(props) {
         <ListItem>
           <Collapse in={expanded["other"]} timeout="auto">
             <List disablePadding>
-              {/* <Link> */}
               <ListItem button>
                 <ListItemText primary="Other 1"></ListItemText>
               </ListItem>
-              {/* </Link> */}
-              {/* <Link> */}
               <ListItem button>
                 <ListItemText primary="Other 2"></ListItemText>
               </ListItem>
-              {/* </Link> */}
             </List>
           </Collapse>
         </ListItem>
         <Divider></Divider>
+        <ListItem button component={Link} to="/login">
+          <ListItemIcon>
+            <HomeIcon></HomeIcon>
+          </ListItemIcon>
+          <ListItemText primary="Login"></ListItemText>
+        </ListItem>
       </List>
     </div>
   );

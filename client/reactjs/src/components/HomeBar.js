@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function MyBar(props) {
+export default function HomeBar(props) {
   const classes = useStyles();
   const [title, setTitle] = useState("Title");
 
@@ -36,16 +36,6 @@ export default function MyBar(props) {
             <MenuIcon></MenuIcon>
           </IconButton>
           <Typography variant="h6">{title}</Typography>
-          {/* <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={"age"}
-            // onChange={ }
-          >
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
-          </Select> */}
         </Toolbar>
       </AppBar>
     </div>

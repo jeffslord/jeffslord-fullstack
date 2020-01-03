@@ -10,7 +10,7 @@ import { ListItem } from '@material-ui/core';
 
 const styles = {};
 
-const MyDrawer = (props) => {
+const HomeDrawer = (props) => {
   const { classes, setDrawerState, open } = props;
   const categorySecurity = ['Security', 'Cameras', 'Sensors'];
   const categoryMedia = ['Media'];
@@ -45,10 +45,10 @@ const MyDrawer = (props) => {
     </div>
   );
 };
-MyDrawer.propTypes = {
+HomeDrawer.propTypes = {
   classes: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   setDrawerState: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(MyDrawer);
+export default withStyles(styles)(HomeDrawer);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import MyFileUploaderIndividual from "./MyFileUploaderIndividual";
+import HomeFileUploaderIndividual from "./HomeFileUploaderIndividual";
 import { Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Snackbar from "@material-ui/core/Snackbar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import MyCvExpansionResult from "../components/MyCvExpansionResult";
+import HomeCvExpansionResult from "./HomeCvExpansionResult";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function MyCvParse() {
+export default function HomeCvParse() {
   const classes = useStyles();
 
   const [files, setFiles] = useState([]);
@@ -182,7 +182,7 @@ export default function MyCvParse() {
               <ExpansionPanelDetails>
                 <Grid container>
                   <Grid item xs={12}>
-                    <MyFileUploaderIndividual
+                    <HomeFileUploaderIndividual
                       setparentfiles={files => setFiles(files)}
                     />
                   </Grid>
@@ -216,7 +216,7 @@ export default function MyCvParse() {
                   {resChecks.map((check, i) => (
                     <ListItem>
                       {/* <ul key={i}> */}
-                      <MyCvExpansionResult check={check}></MyCvExpansionResult>
+                      <HomeCvExpansionResult check={check}></HomeCvExpansionResult>
                       {/* </ul> */}
                     </ListItem>
                   ))}

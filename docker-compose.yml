@@ -37,6 +37,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.cv_client.rule=Host(`cv.jeffslord.com`)
       - traefik.http.services.cv_client.loadbalancer.server.port=${CLIENT_PORT}
+      # - "traefik.http.middlewares.test-auth.forwardauth.address=https://authserver.com/auth"
       - traefik.docker.network=traefik
 
 networks:
