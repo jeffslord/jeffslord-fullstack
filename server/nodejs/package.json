@@ -30,5 +30,11 @@
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.1",
     "nodemon": "^1.18.4"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "*.json",
+      "*.xml"
+    ]
   }
 }

@@ -4,21 +4,21 @@ services:
     build: ./server/nodejs
     environment:
       - SERVER_PORT=${SERVER_PORT}
-    # expose:
-    #   - ${SERVER_PORT}
-    ports:
-      - ${SERVER_PORT}:${SERVER_PORT}
+    expose:
+      - ${SERVER_PORT}
+    # ports:
+    #   - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
       - ./server/nodejs/src:/srv/app/home-server/src
     command: npm run devstart
     networks:
       - traefik
       # - cv
-    # labels:
-    #   - traefik.enable=true
-    #   - traefik.http.services.cv_server.loadbalancer.server.port=${SERVER_PORT}
-    #   - traefik.http.routers.cv_client.rule=Host(`api.jeffslord.com`)
-    #   - traefik.docker.network=traefik
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.cv_server.loadbalancer.server.port=${SERVER_PORT}
+      - traefik.http.routers.cv_server.rule=Host(`cv_api.jeffslord.com`)
+      - traefik.docker.network=traefik
   cv_client:
     build: ./client/reactjs
     environment:
