@@ -13,8 +13,8 @@ router.get('/', (req, res, next) => {
   res.send('Test successful');
 });
 
-router.post('/analyzeSingle', upload.single('file'), (req, res, next) => {
-  cv.AnalyzeSingle(req.file.path, (err, analyzeRes) => {
+router.post('/analyzeSingleFile', upload.single('file'), (req, res, next) => {
+  cv.AnalyzeSingleFile(req.file.path, (err, analyzeRes) => {
     if (err) {
       throw err;
     } else {
@@ -23,29 +23,28 @@ router.post('/analyzeSingle', upload.single('file'), (req, res, next) => {
   })
 });
 
-router.post('/fixSingle', upload.single('file'), (req, res, next) => {
-  cv.FixView(req.file.path, (err, xmlRes) => {
+router.post('/analyzeManyFiles', upload.array('files'), (req, res, next) => {
+  cv.AnalyzeManyFiles(req.files, (err, analyzeRes) => {
     if (err) {
-      fs.unlinkSync(req.file.path);
+      throw err;
+    } else {
+      res.send(analyzeRes);
     }
-    fs.unlink(req.file.path, (unlinkErr) => {
+  })
+});
+
+router.post('/fixSingleFile', upload.single('file'), (req, res, next) => {
+  cv.FixSingleFile(req.file.path, (err, xmlRes) => {
+    if (err) {
+      throw err
+    } else {
       const data = { xml: xmlRes };
       res.send(data);
-    });
+    }
   });
 });
 
-router.post('/analyzeMany', upload.array('files'), (req, res, next) => {
-  cv.AnalyzeMany(req.files, (err, analyzeRes) => {
-    if (err) {
-      throw err;
-    } else {
-      res.send(analyzeRes);
-    }
-  })
-});
-
-router.post('/fixMany', upload.array('files'), (req, res, next) => {
+router.post('/fixManyFiles', upload.array('files'), (req, res, next) => {
   let fileCount = 0;
   const allRes = [];
   req.files.forEach((file) => {

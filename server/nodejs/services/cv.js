@@ -201,23 +201,9 @@ async function CheckView(filePath, cb) {
   }
 }
 
-async function FixView(filePath, cb) {
-  try {
-    const json = await pParseFile(filePath);
-    const header = await pGetCvheaderInfo(json);
-    const split = await pFixSplitNodes(json, header.version);
-    const right = await pFixRightJoins(json);
-    const builder = new xml2js.Builder();
-    const xml = builder.buildObject(json);
-    return cb(null, xml);
-  } catch (err) {
-    throw err;
-  }
-}
-
 const pCheckView = util.promisify(CheckView);
 
-async function AnalyzeSingle(filePath, cb) {
+async function AnalyzeSingleFile(filePath, cb) {
   try {
     const checkRes = await pCheckView(filePath);
     fs.unlinkSync(filePath);
@@ -229,29 +215,55 @@ async function AnalyzeSingle(filePath, cb) {
   }
 }
 
-async function AnalyzeMany(files, cb) {
+const pAnalyzeSingleFile = util.promisify(AnalyzeSingleFile);
+
+async function AnalyzeManyFiles(files, cb) {
   try {
     let analyzeRes = [];
-    let fileCount = 0;
-    files.forEach((file) => {
-      CheckView(file.path, (err, checkRes) => {
-        if (err) {
-          fs.unlinkSync(file.path);
-          throw err;
-        } else {
-          fs.unlinkSync(file.path);
-          analyzeRes.push(checkRes);
-          fileCount += 1;
-          if (fileCount === files.length) {
-            console.log(analyzeRes);
-            return cb(null, analyzeRes);
-          }
-        }
-      })
-    })
+    for (let index = 0; index < files.length; index++) {
+      const file = files[index];
+      const checkRes = await pAnalyzeSingleFile(file.path);
+      analyzeRes.push(checkRes);
+      if (index + 1 === files.length) {
+        return cb(null, analyzeRes);
+      }
+    }
   } catch (err) {
-    fs.unlinkSync(file.path);
     throw (err);
+  }
+}
+
+async function FixSingleFile(filePath, cb) {
+  try {
+    const json = await pParseFile(filePath);
+    const header = await pGetCvheaderInfo(json);
+    const split = await pFixSplitNodes(json, header.version);
+    const right = await pFixRightJoins(json);
+    const builder = new xml2js.Builder();
+    const xml = builder.buildObject(json);
+    fs.unlinkSync(filePath);
+    return cb(null, xml);
+  } catch (err) {
+    fs.unlinkSync(filePath);
+    throw err;
+  }
+}
+
+const pFixSingleFile = util.promisify(FixSingleFile);
+
+async function FixManyFiles(files, cb) {
+  try {
+    const allRes = [];
+    for (let index = 0; index < files.length; index++) {
+      const file = files[index];
+      const resXml = await pFixSingleFile(file.path);
+      allRes.push(resXml);
+      if (index + 1 === files.length) {
+        return cb(null, allRes);
+      }
+    }
+  } catch (err) {
+    throw err;
   }
 }
 
@@ -273,7 +285,7 @@ function Test() {
     console.log("Processing complete!");
     console.log(res);
     console.log("Fixing...");
-    FixView(filePath, (errFix, xml) => {
+    FixSingleFile(filePath, (errFix, xml) => {
       if (errFix) {
         console.error(errFix);
       }
@@ -288,7 +300,8 @@ function Test() {
 module.exports = {
   Test,
   CheckView,
-  FixView,
-  AnalyzeSingle,
-  AnalyzeMany
+  FixSingleFile,
+  FixManyFiles,
+  AnalyzeSingleFile,
+  AnalyzeManyFiles
 };

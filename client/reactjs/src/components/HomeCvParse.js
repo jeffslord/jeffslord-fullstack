@@ -74,7 +74,7 @@ export default function HomeCvParse() {
       // fetch("http://cv_api.jeffslord.com/api/cv", {
       //   method: "get"
       // });
-      fetch("http://cv_api.jeffslord.com/api/cv/analyzeMany", {
+      fetch("http://cv_api.jeffslord.com/api/cv/analyzeManyFiles", {
         method: "post",
         body: data
       })
@@ -110,24 +110,24 @@ export default function HomeCvParse() {
     });
     return cb(null, checks[0]);
   };
-  const Fixbutton = () => {
-    if (files.length > 0) {
-      let data = new FormData();
-      data.append("file", files[0]);
-      setLoading(true);
-      fetch("http://cv_api.jeffslord.com/api/cv/fixSingle", {
-        method: "post",
-        body: data
-      })
-        .then(res => res.json())
-        .then(data => {
-          // console.log("xml", data["xml"]);
-          setLoading(false);
-          setXmlResult(data["xml"]);
-        });
-      return;
-    }
-  };
+  // const Fixbutton = () => {
+  //   if (files.length > 0) {
+  //     let data = new FormData();
+  //     data.append("file", files[0]);
+  //     setLoading(true);
+  //     fetch("http://cv_api.jeffslord.com/api/cv/fixSingleFile", {
+  //       method: "post",
+  //       body: data
+  //     })
+  //       .then(res => res.json())
+  //       .then(data => {
+  //         // console.log("xml", data["xml"]);
+  //         setLoading(false);
+  //         setXmlResult(data["xml"]);
+  //       });
+  //     return;
+  //   }
+  // };
 
   const DownloadCalcView = (name, content) => {
     if (xmlResult !== undefined) {
