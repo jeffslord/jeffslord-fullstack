@@ -1,4 +1,4 @@
-FROM node:10-alpine
+FROM node:12-alpine
 
 RUN mkdir -p /srv/app/home-server
 # Create app directory
@@ -9,7 +9,7 @@ WORKDIR /srv/app/home-server
 # where available (npm@5+)
 # COPY package.json /srv/app/home-server
 # COPY package-lock.json /srv/app/home-server
-COPY package*.json .
+COPY package*.json ./
 COPY .npmrc .
 # COPY package-lock.json .
 

@@ -1,4 +1,4 @@
-FROM node:10-alpine
+FROM node:12-alpine
 
 RUN mkdir -p /srv/app/home-client
 # Create app directory

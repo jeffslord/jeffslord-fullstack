@@ -10,15 +10,14 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import HomeCvExpansionResult from "./HomeCvExpansionResult";
-import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import firebase from 'firebase';
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,7 +25,9 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     // padding: theme.spacing(2),
-    margin: "20px",
+    margin: "10px",
+    'margin-left': "50px",
+    'margin-right': "50px",
     textAlign: "center",
     color: theme.palette.text.secondary
   },
@@ -38,7 +39,7 @@ const useStyles = makeStyles(theme => ({
     background: "red"
   },
   button: {
-    minHeight: "75px"
+    minHeight: "50px"
   }
 }));
 
@@ -69,26 +70,32 @@ export default function HomeCvParse() {
         console.log(f);
       }
       console.log(data);
-
-      // data.append("files", files);
-      // fetch("http://cv_api.jeffslord.com/api/cv", {
-      //   method: "get"
-      // });
-      fetch("http://cv_api.jeffslord.com/api/cv/analyzeManyFiles", {
-        method: "post",
-        body: data
-      })
-        .then(res => res.json())
-        .then(data => {
-          // console.log("res.json", data);
-          setResults(data);
-          GetHeaders(data, (err, headers) => {
-            setResHeaders(headers);
-            GetChecks(data, (err2, checks) => {
-              setResChecks(checks);
+      if (firebase.auth().currentUser) {
+        firebase.auth().currentUser.getIdToken(true).then((idToken) => {
+          fetch("http://cv_api.jeffslord.com/api/cv/analyzeManyFiles", {
+            method: "post",
+            body: data,
+            headers: new Headers({
+              'token': `${idToken}`
+            })
+          })
+            .then(res => res.json())
+            .then(data => {
+              // console.log("res.json", data);
+              setResults(data);
+              GetHeaders(data, (err, headers) => {
+                setResHeaders(headers);
+                GetChecks(data, (err2, checks) => {
+                  setResChecks(checks);
+                });
+              });
             });
-          });
-        });
+        }).catch((error) => {
+          throw error;
+        })
+      } else {
+        console.error("User not logged in.");
+      }
       return;
     }
   };
@@ -154,8 +161,8 @@ export default function HomeCvParse() {
         <Paper square>
           <Tabs value={tabValue} onChange={(event, val) => TabChange(val)}>
             <Tab label="Individual View"></Tab>
-            <Tab label="XSA Project Zip"></Tab>
-            <Tab label="Classic Schema"></Tab>
+            {/* <Tab label="XSA Project Zip"></Tab>
+            <Tab label="Classic Schema"></Tab> */}
           </Tabs>
         </Paper>
       </Grid>
@@ -165,8 +172,7 @@ export default function HomeCvParse() {
           <Paper className={classes.paper} elevation={5}>
             <Typography variant={"h4"}>Instructions</Typography>
             <Typography variant={"body1"}>
-              Upload a file, click process, check for red boxes, press fix, copy
-              text, paste into calculation view, run auto format.
+              (1)Upload file (2)Click process (3)Output will be presented in 'Results' box (4)File or text can be copied from the 'Text' box
             </Typography>
           </Paper>
         </Grid>
@@ -177,7 +183,7 @@ export default function HomeCvParse() {
           <Paper className={classes.paper} elevation={5}>
             <ExpansionPanel defaultExpanded>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant={"h3"}>Upload</Typography>
+                <Typography variant={"h4"}>Upload</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <Grid container>
@@ -209,7 +215,7 @@ export default function HomeCvParse() {
           <Paper className={classes.paper} elevation={5}>
             <ExpansionPanel defaultExpanded>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="h3">Results</Typography>
+                <Typography variant="h4">Results</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <List>
@@ -230,7 +236,7 @@ export default function HomeCvParse() {
           <Paper className={classes.paper} elevation={5}>
             <ExpansionPanel>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant={"h3"}>Text</Typography>
+                <Typography variant={"h4"}>Text</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <Grid container>

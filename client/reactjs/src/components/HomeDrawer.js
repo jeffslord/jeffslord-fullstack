@@ -1,6 +1,5 @@
 import Drawer from "@material-ui/core/Drawer";
 import React, { useState } from "react";
-// import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -66,14 +65,14 @@ export default function HomeDrawer(props) {
           <Collapse in={expanded["tools"]} timeout="auto">
             <List disablePadding>
               <ListItem button component={Link} to="/tools/cvoptimizer/">
-                <ListItemText primary="Individual View Optimizer"></ListItemText>
+                <ListItemText primary="Calculation View Optimizer"></ListItemText>
               </ListItem>
-              <ListItem button component={Link} to="/tools/cvclassic/">
+              {/* <ListItem button component={Link} to="/tools/cvclassic/">
                 <ListItemText primary="Classic Schema Analyzer"></ListItemText>
               </ListItem>
               <ListItem button component={Link} to="/tools/cvxsa/">
                 <ListItemText primary="XSA Project Zip Analyzer"></ListItemText>
-              </ListItem>
+              </ListItem> */}
             </List>
           </Collapse>
         </ListItem>

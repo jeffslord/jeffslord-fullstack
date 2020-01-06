@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 
+var admin = require("firebase-admin");
+
 require('dotenv').config();
 
 // set router files
@@ -27,6 +29,16 @@ app.use(express.json({ limit: '10MB' }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+function loggedIn(req, res, next) {
+  admin.auth().verifyIdToken(req.token).then((decodedToken) => {
+    let uid = decodedToken.uid;
+    console.log(uid);
+    next();
+  }).catch((error) => {
+    throw error;
+  })
+}
+app.use(loggedIn);
 // set routes based on previous routers set
 app.use('/', indexRouter);
 app.use('/api/cv', cvRouter);

@@ -24,9 +24,11 @@ export default function Welcome(props) {
 
   return (
     <div className={classes.root}>
-      <Grid container justify="center">
+      <Grid container justify="center" alignItems="center" direction="column">
         <Grid item xs={12}>
           <Typography variant="h1">WELCOME</Typography>
+        </Grid>
+        <Grid item xs={12}>
           <Typography variant="body1">This is the one and only website of Jeff Lord. Feel free to browse our limited selection of things </Typography>
         </Grid>
       </Grid>
