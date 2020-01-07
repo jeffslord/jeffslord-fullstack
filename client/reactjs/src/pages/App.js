@@ -12,13 +12,13 @@ export default function App() {
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged(newUser => {
-      console.log(newUser);
+      // console.log(newUser);
       if (newUser !== null) {
         firebase.auth().currentUser.getIdToken(true).then((idToken) => {
-          console.log(idToken);
+          // console.log(idToken);
           setIdToken(idToken);
         }).catch((error) => {
-          console.log(error);
+          // console.log(error);
           setIdToken(null);
         })
       } else {

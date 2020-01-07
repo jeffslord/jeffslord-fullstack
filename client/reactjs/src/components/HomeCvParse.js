@@ -76,7 +76,8 @@ export default function HomeCvParse() {
             method: "post",
             body: data,
             headers: new Headers({
-              'token': `${idToken}`
+              'token': `${idToken}`,
+              'claim': 'cv'
             })
           })
             .then(res => res.json())

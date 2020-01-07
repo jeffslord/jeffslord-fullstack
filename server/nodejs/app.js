@@ -39,16 +39,27 @@ admin.initializeApp({
 });
 
 function loggedIn(req, res, next) {
-  // console.log(JSON.stringify(req));
-  console.log(req.headers.token);
-  admin.auth().verifyIdToken(req.headers.token).then((decodedToken) => {
-    let uid = decodedToken.uid;
-    console.log(uid);
-    next();
-  }).catch((error) => {
-    throw error;
-  })
+  admin.auth().verifyIdToken(req.headers.token)
+    .then(decodedToken => {
+      return decodedToken.uid;
+    })
+    .then(uid => {
+      return admin.auth().getUser(uid)
+    })
+    .then(userRecord => {
+      const claim = req.headers.claim
+      if (userRecord.customClaims && userRecord.customClaims[`${claim}`]) {
+        // console.log(`userRecord${claim}:`, userRecord.customClaims[`${claim}`]);
+        next();
+      } else {
+        throw new Error('401 Unauthorized');
+      }
+    })
+    .catch(error => {
+      next(error);
+    })
 }
+
 app.use(loggedIn);
 // set routes based on previous routers set
 app.use('/', indexRouter);
