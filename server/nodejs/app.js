@@ -29,8 +29,19 @@ app.use(express.json({ limit: '10MB' }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+var serviceAccount = require("./config/home-f65a9-firebase-adminsdk-sjzuh-dfad38ba19.json")
+
+admin.initializeApp({
+  // credential: admin.credential.applicationDefault(),
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://home-f65a9.firebaseio.com"
+});
+
 function loggedIn(req, res, next) {
-  admin.auth().verifyIdToken(req.token).then((decodedToken) => {
+  // console.log(JSON.stringify(req));
+  console.log(req.headers.token);
+  admin.auth().verifyIdToken(req.headers.token).then((decodedToken) => {
     let uid = decodedToken.uid;
     console.log(uid);
     next();
@@ -44,9 +55,9 @@ app.use('/', indexRouter);
 app.use('/api/cv', cvRouter);
 
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
-  next(createError(404));
-});
+// app.use((req, res, next) => {
+//   next(createError(404));
+// });
 
 // error handler
 app.use((err, req, res, next) => {
