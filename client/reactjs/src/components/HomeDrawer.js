@@ -77,7 +77,7 @@ export default function HomeDrawer(props) {
           </Collapse>
         </ListItem>
         <Divider></Divider>
-        <ListItem button onClick={() => expandButton("other")}>
+        {/* <ListItem button onClick={() => expandButton("other")}>
           <ListItemIcon>
             <HelpIcon></HelpIcon>
           </ListItemIcon>
@@ -96,7 +96,7 @@ export default function HomeDrawer(props) {
             </List>
           </Collapse>
         </ListItem>
-        <Divider></Divider>
+        <Divider></Divider> */}
         <ListItem button component={Link} to="/login">
           <ListItemIcon>
             <HomeIcon></HomeIcon>

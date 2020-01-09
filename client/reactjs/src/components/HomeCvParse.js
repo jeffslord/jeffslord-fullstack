@@ -56,11 +56,12 @@ export default function HomeCvParse() {
   const [resChecks, setResChecks] = useState([]);
 
   useEffect(() => {
-    document.title = "Calculation View Optimizer";
+    document.title = "Calculation View Optimizer (Very early version...)";
   });
 
   // Run analysis on file to get all values returned
   const AnalyzeButton = () => {
+    const API = process.env.API;
     if (files.length > 0) {
       console.log("FILES", files);
 
@@ -72,6 +73,7 @@ export default function HomeCvParse() {
       console.log(data);
       if (firebase.auth().currentUser) {
         firebase.auth().currentUser.getIdToken(true).then((idToken) => {
+          // fetch(`${process.env.API}/api/cv/analyzeManyFile`),{
           fetch("http://cv_api.jeffslord.com/api/cv/analyzeManyFiles", {
             method: "post",
             body: data,

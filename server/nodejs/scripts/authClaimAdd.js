@@ -1,7 +1,7 @@
 var admin = require("firebase-admin");
 
 var serviceAccount = require("../config/home-f65a9-firebase-adminsdk-sjzuh-dfad38ba19.json")
-const uid = "WVDrYElGlUfbDZQxyn20weDWyah2"
+const uid = "hCUK7ou9aLWwPcTKkAJ1w0gidBx2"
 
 admin.initializeApp({
     // credential: admin.credential.applicationDefault(),

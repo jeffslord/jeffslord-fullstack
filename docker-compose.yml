@@ -24,6 +24,7 @@ services:
     environment:
       - CLIENT_PORT=${CLIENT_PORT}
       - PORT=${CLIENT_PORT}
+      - API=${API}
     expose:
       - ${CLIENT_PORT}
     volumes:
@@ -35,7 +36,7 @@ services:
       # - cv
     labels:
       - traefik.enable=true
-      - traefik.http.routers.cv_client.rule=Host(`cv.jeffslord.com`)
+      - traefik.http.routers.cv_client.rule=Host(`jeffslord.com`)
       - traefik.http.services.cv_client.loadbalancer.server.port=${CLIENT_PORT}
       # - "traefik.http.middlewares.test-auth.forwardauth.address=https://authserver.com/auth"
       - traefik.docker.network=traefik
