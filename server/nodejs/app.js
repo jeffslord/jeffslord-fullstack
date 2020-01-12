@@ -15,7 +15,7 @@ const cvRouter = require('./routes/cv.route');
 // const hanaRouter = require('./routes/hana.route');
 
 const app = express();
-console.log("PORT:", process.env.SERVER_PORT);
+console.log("SERVER PORT:", process.env.SERVER_PORT);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,25 +39,30 @@ admin.initializeApp({
 });
 
 function loggedIn(req, res, next) {
-  admin.auth().verifyIdToken(req.headers.token)
-    .then(decodedToken => {
-      return decodedToken.uid;
-    })
-    .then(uid => {
-      return admin.auth().getUser(uid)
-    })
-    .then(userRecord => {
-      const claim = req.headers.claim
-      if (userRecord.customClaims && userRecord.customClaims[`${claim}`]) {
-        // console.log(`userRecord${claim}:`, userRecord.customClaims[`${claim}`]);
-        next();
-      } else {
-        throw new Error('401 Unauthorized');
-      }
-    })
-    .catch(error => {
-      next(error);
-    })
+  console.log(process.env.NODE_ENV);
+  if (process.env.NODE_ENV !== 'development') {
+    admin.auth().verifyIdToken(req.headers.token)
+      .then(decodedToken => {
+        return decodedToken.uid;
+      })
+      .then(uid => {
+        return admin.auth().getUser(uid)
+      })
+      .then(userRecord => {
+        const claim = req.headers.claim
+        if (userRecord.customClaims && userRecord.customClaims[`${claim}`]) {
+          // console.log(`userRecord${claim}:`, userRecord.customClaims[`${claim}`]);
+          next();
+        } else {
+          throw new Error('401 Unauthorized');
+        }
+      })
+      .catch(error => {
+        next(error);
+      })
+  } else {
+    next();
+  }
 }
 
 app.use(loggedIn);

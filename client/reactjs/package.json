@@ -11,20 +11,21 @@
     "i": "^0.3.6",
     "material-table": "^1.50.0",
     "material-ui-dropzone": "^2.4.1",
-    "npm": "^6.11.2",
+    "npm": "^6.13.6",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-firebaseui": "^4.0.0",
     "react-hls": "0.0.8",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "^3.1.1"
+    "react-scripts": "^3.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "devstart": "react-scripts start"
   },
   "devDependencies": {},
   "browserslist": {

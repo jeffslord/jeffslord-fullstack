@@ -4,18 +4,19 @@ services:
     build: ./server/nodejs
     environment:
       - SERVER_PORT=${SERVER_PORT}
-    expose:
-      - ${SERVER_PORT}
-    # ports:
-    #   - ${SERVER_PORT}:${SERVER_PORT}
+      - NODE_ENV=${NODE_ENV}
+    # expose:
+    #   - ${SERVER_PORT}
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
       - ./server/nodejs/src:/srv/app/home-server/src
     command: npm run devstart
-    networks:
-      - traefik
-      # - cv
+    # networks:
+    #   - traefik
     labels:
-      - traefik.enable=true
+      # - traefik.enable=true
+      - traefik.enable=false
       - traefik.http.services.cv_server.loadbalancer.server.port=${SERVER_PORT}
       - traefik.http.routers.cv_server.rule=Host(`cv_api.jeffslord.com`)
       - traefik.docker.network=traefik
@@ -24,25 +25,25 @@ services:
     environment:
       - CLIENT_PORT=${CLIENT_PORT}
       - PORT=${CLIENT_PORT}
-      - API=${API}
-    expose:
-      - ${CLIENT_PORT}
+      - REACT_APP_API=${API}
+      - NODE_ENV=${NODE_ENV}
+    # expose:
+    #   - ${CLIENT_PORT}
+    ports:
+      - ${CLIENT_PORT}:${CLIENT_PORT}
     volumes:
       - ./client/reactjs/src:/srv/app/home-client/src
       - ./client/reactjs/public:/srv/app/home-client/public
-    command: npm run start
-    networks:
-      - traefik
-      # - cv
+    command: npm run devstart
+    # networks:
+    #   - traefik
     labels:
-      - traefik.enable=true
+      # - traefik.enable=true
+      - traefik.enable=false
       - traefik.http.routers.cv_client.rule=Host(`jeffslord.com`)
       - traefik.http.services.cv_client.loadbalancer.server.port=${CLIENT_PORT}
-      # - "traefik.http.middlewares.test-auth.forwardauth.address=https://authserver.com/auth"
       - traefik.docker.network=traefik
 
-networks:
-  traefik:
-    external: true
-  # cv:
-  #   driver: bridge
+# networks:
+#   traefik:
+#     external: true

@@ -25,6 +25,7 @@ COPY .npmrc .
 #     npm install @sap/hana-client &&\
 #     npm config set registry https://registry.npmjs.org/ && \
 RUN npm install
+RUN npm install -g nodemon
 
 # If you are building your code for production
 # RUN npm ci --only=production

@@ -72,9 +72,11 @@ export default function HomeCvParse() {
       }
       console.log(data);
       if (firebase.auth().currentUser) {
+        console.log("API", process.env.REACT_APP_API);
+        console.log("PORT", process.env.PORT);
         firebase.auth().currentUser.getIdToken(true).then((idToken) => {
-          // fetch(`${process.env.API}/api/cv/analyzeManyFile`),{
-          fetch("http://cv_api.jeffslord.com/api/cv/analyzeManyFiles", {
+          fetch(`${process.env.REACT_APP_API}/api/cv/analyzeManyFiles`, {
+            // fetch("http://cv_api.jeffslord.com/api/cv/analyzeManyFiles", {
             method: "post",
             body: data,
             headers: new Headers({
