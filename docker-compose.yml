@@ -3,9 +3,11 @@ services:
   cv_server:
     build: ./server/nodejs
     volumes:
-      - ./server/nodejs/src:/srv/app/home-server/src
+      # - ./server/nodejs/src:/srv/app/home-server/src
+      - ./server/nodejs:/srv/app/home-server
   cv_client:
     build: ./client/reactjs
     volumes:
-      - ./client/reactjs/src:/srv/app/home-client/src
-      - ./client/reactjs/public:/srv/app/home-client/public
+      # - ./client/reactjs/src:/srv/app/home-client/src
+      # - ./client/reactjs/public:/srv/app/home-client/public
+      - ./client/reactjs:/srv/app/home-client

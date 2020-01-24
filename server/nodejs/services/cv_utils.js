@@ -70,6 +70,14 @@ function GetLocalVarRoot(jsonResult, cb) {
   return cb(null, localVarRoot);
 }
 
+function GetHintRoot(jsonResult, cb) {
+  const hintRoot = jsonResult["Calculation:scenario"].executionHints;
+  if (hintRoot === undefined) {
+    return cb(null, []);
+  }
+  return cb(null, hintRoot);
+}
+
 function GetLocalVars(jsonResult, cb) {
   const localVars = [];
   GetLocalVarRoot(jsonResult, (err, localVarRoot) => {
@@ -441,6 +449,21 @@ function GetCalculatedColumnsInJoin(jsonResult, cb) {
   return cb(null, calcColumns);
 }
 
+function GetHints(jsonResult, cb) {
+  const hints = [];
+  GetHintRoot(jsonResult, (err, hintRoot) => {
+    if (hintRoot === []) {
+      return cb(null, hints);
+    } else {
+      hintRoot.forEach(hint => {
+        hints.push(`HINT: ${hint.$.name} VALUE: ${hint.$.value}`)
+      });
+      console.log(hintRoot);
+    }
+  })
+  return cb(null, hints);
+}
+
 function Test() {
   //   const filePath = path.join(`${__dirname}`, '..', 'data', 'xml', 'employeespunchedin.xml');
   const filePath = path.join(
@@ -449,7 +472,7 @@ function Test() {
     "data",
     "xml",
     "samples",
-    "cv_bad.xml"
+    "cv_hints.xml"
   );
   // const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad2.xml`);
   ParseFile(filePath, (err, jsonRes) => {
@@ -457,19 +480,21 @@ function Test() {
       "./data/json/cv_json_latest.json",
       JSON.stringify(jsonRes, null, 4)
     );
+    GetHints(jsonRes, (err, res) => { });
     // GetDataSourceNames(jsonRes, (err, res) => {
     //   console.log(res);
     // });
-    GetCalcColumnsInFilter(jsonRes, (err, res) => {
-      if (err) {
-        console.error(err);
-      }
-      // console.log('RES\n', res);
-    });
+    // GetCalcColumnsInFilter(jsonRes, (err, res) => {
+    //   if (err) {
+    //     console.error(err);
+    //   }
+    //   // console.log('RES\n', res);
+    // });
     // GetCalculatedColumns(jsonRes, (err, res) => {});
   });
 }
 // Test();
+
 
 module.exports = {
   GetCvheaderInfo,
@@ -493,5 +518,6 @@ module.exports = {
   GetCalcColumnsInFilter,
   GetRightJoinCvs,
   GetSplitNodes,
-  GetUnmappedParameters
+  GetUnmappedParameters,
+  GetHints
 };

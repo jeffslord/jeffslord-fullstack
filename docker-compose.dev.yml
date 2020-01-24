@@ -15,6 +15,7 @@ services:
       - PORT=${DEV_CLIENT_PORT}
       - REACT_APP_API=${DEV_API}
       - NODE_ENV=${DEV_NODE_ENV}
+      - CHOKIDAR_USEPOLLING=true
     ports:
       - ${DEV_CLIENT_PORT}:${DEV_CLIENT_PORT}
-    command: npm run devstart
+    command: npm run start

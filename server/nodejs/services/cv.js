@@ -40,40 +40,50 @@ const cvUtils = require("./cv_utils");
 // Find all input nodes that are used in more than 1 calc view node
 // And remove any datasources
 function CheckSplitNodes(jsonResult, cb) {
-  cvUtils.GetSplitNodes(jsonResult, (err, splitNodes) => {
+  cvUtils.GetSplitNodes(jsonResult, (err, data) => {
     if (err) {
       return cb(err);
     }
-    return cb(null, { splitNodes, found: Object.keys(splitNodes).length > 0 });
+    return cb(null, { data, found: Object.keys(data).length > 0 });
   });
 }
 
 function CheckRightJoinCvs(jsonResult, cb) {
-  cvUtils.GetRightJoinCvs(jsonResult, (err, rightOuters) => {
+  cvUtils.GetRightJoinCvs(jsonResult, (err, data) => {
     if (err) {
       return cb(err);
     }
-    return cb(null, { rightOuters, found: rightOuters.length > 0 });
+    return cb(null, { data, found: data.length > 0 });
   });
 }
 
 function CheckCalcColumnsInFilter(jsonResult, cb) {
-  cvUtils.GetCalcColumnsInFilter(jsonResult, (err, calcColsInFilter) => {
+  cvUtils.GetCalcColumnsInFilter(jsonResult, (err, data) => {
     if (err) {
       return cb(err);
     }
-    return cb(null, { calcColsInFilter, found: calcColsInFilter.length > 0 });
+    return cb(null, { data, found: data.length > 0 });
   });
 }
 
 function CheckUnmappedParameters(jsonResult, cb) {
-  cvUtils.GetUnmappedParameters(jsonResult, (err, unmapped) => {
+  cvUtils.GetUnmappedParameters(jsonResult, (err, data) => {
     if (err) {
       return cb(err);
     }
-    return cb(null, { unmapped, found: unmapped.length > 0 });
+    return cb(null, { data, found: data.length > 0 });
   });
 }
+
+function CheckHints(jsonResult, cb) {
+  cvUtils.GetHints(jsonResult, (err, data) => {
+    if (err) {
+      return cb(err);
+    }
+    return cb(null, { data, found: data.length > 0 });
+  })
+}
+
 // need to check if split node is a data source
 // if it is a data source than it is allowed to be in multiple places
 function FixSplitNodes(jsonResult, version, cb) {
@@ -135,12 +145,28 @@ function FixRightJoins(jsonResult, cb) {
   });
 }
 
+function MakeCheck(checkName, found, autoFix, data, importance = 'unknown') {
+  let check = {
+    checkName: checkName,
+    found: found,
+    autoFix, autoFix,
+    data, data,
+    importance, importance
+  }
+  return check;
+}
+
+
+//! Checks
 const pParseFile = util.promisify(cvUtils.ParseFile);
 const pGetCvheaderInfo = util.promisify(cvUtils.GetCvheaderInfo);
 const pCheckSplitNodes = util.promisify(CheckSplitNodes);
 const pCheckRightJoinCvs = util.promisify(CheckRightJoinCvs);
 const pCheckCalcColumnsInFilter = util.promisify(CheckCalcColumnsInFilter);
 const pCheckUnmappedParameters = util.promisify(CheckUnmappedParameters);
+const pCheckHints = util.promisify(CheckHints);
+
+//! Fixes
 const pFixSplitNodes = util.promisify(FixSplitNodes);
 const pFixRightJoins = util.promisify(FixRightJoins);
 
@@ -154,44 +180,54 @@ async function CheckView(filePath, cb) {
 
     //! SPLIT NODES
     const splits = await pCheckSplitNodes(json);
-    // console.log('Split Nodes:\n', splits);
+    checks.push(MakeCheck("Split Nodes", splits.found, true, splits.data));
 
     //! RIGHT JOINS
     const rJoins = await pCheckRightJoinCvs(json);
-    // console.log('Right Outer Joins:\n', rJoins);
+    checks.push(MakeCheck("Right Joins", rJoins.found, true, rJoins.data, 'low'));
 
     //! CALCULATED COLUMNS IN FILTER
     const calcColsInFilter = await pCheckCalcColumnsInFilter(json);
-    // console.log('Calculated Columns in Filters:\n', cColsFilter);
+    checks.push(MakeCheck("Calculated Columns in Filter", calcColsInFilter.found, false, calcColsInFilter.data));
 
     //! UNMAPPED PARAMETERS (Not used in filters or calculations)
     const unmapped = await pCheckUnmappedParameters(json);
-    // console.log('Unmapped Parameters:\n', unmapped);
+    checks.push(MakeCheck("Unmapped Parameters", unmapped.found, false, unmapped.data));
 
-    checks.push({
-      checkName: "Split Nodes",
-      found: splits.found,
-      autoFix: true,
-      data: splits.splitNodes
-    });
-    checks.push({
-      checkName: "Right Joins",
-      found: rJoins.found,
-      autoFix: true,
-      data: rJoins.rightOuters
-    });
-    checks.push({
-      checkName: "Calculated Columns in Filter",
-      found: calcColsInFilter.found,
-      autoFix: false,
-      data: calcColsInFilter.calcColsInFilter
-    });
-    checks.push({
-      checkName: "Unmapped parameters",
-      found: unmapped.found,
-      autoFix: false,
-      data: unmapped.unmapped
-    });
+    //! HINTS
+    const hints = await pCheckHints(json);
+    checks.push(MakeCheck("Hints", hints.found, false, hints.data));
+
+    // checks.push({
+    //   checkName: "Split Nodes",
+    //   found: splits.found,
+    //   autoFix: true,
+    //   data: splits.splitNodes
+    // });
+    // checks.push({
+    //   checkName: "Right Joins",
+    //   found: rJoins.found,
+    //   autoFix: true,
+    //   data: rJoins.rightOuters
+    // });
+    // checks.push({
+    //   checkName: "Calculated Columns in Filter",
+    //   found: calcColsInFilter.found,
+    //   autoFix: false,
+    //   data: calcColsInFilter.calcColsInFilter
+    // });
+    // checks.push({
+    //   checkName: "Unmapped parameters",
+    //   found: unmapped.found,
+    //   autoFix: false,
+    //   data: unmapped.unmapped
+    // });
+    // checks.push({
+    //   checkName: "Hints",
+    //   found: hints.found,
+    //   autoFix: false,
+    //   data: hints.hints
+    // });
 
     res.checks = checks;
     console.log("Check Results", JSON.stringify(res, null, 4));
@@ -275,6 +311,7 @@ function Test() {
     "xml",
     "employeespunchedin.xml"
   );
+  console.log("New test");
   // const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad.xml`);
   // const filePath = path.join(`${__dirname}`, `..`, `data`, `xml`, `cv_bad2.xml`);
   console.log("Processing...");
