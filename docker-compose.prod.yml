@@ -1,0 +1,49 @@
+version: "3"
+services:
+  cv_server:
+    build: ./server/nodejs
+    environment:
+      - SERVER_PORT=${PROD_SERVER_PORT}
+      - NODE_ENV=${PROD_NODE_ENV}
+    expose:
+      - ${SERVER_PORT}
+    # ports:
+    #   - ${PROD_SERVER_PORT}:${PROD_SERVER_PORT}
+    volumes:
+      - ./server/nodejs/src:/srv/app/home-server/src
+    command: npm run start
+    networks:
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.enable=false
+      - traefik.http.services.cv_server.loadbalancer.server.port=${PROD_SERVER_PORT}
+      - traefik.http.routers.cv_server.rule=Host(`cv_api.jeffslord.com`)
+      - traefik.docker.network=traefik
+  cv_client:
+    build: ./client/reactjs
+    environment:
+      - CLIENT_PORT=${PROD_CLIENT_PORT}
+      - PORT=${PROD_CLIENT_PORT}
+      - REACT_APP_API=${PROD_API}
+      - NODE_ENV=${PROD_NODE_ENV}
+    expose:
+      - ${CLIENT_PORT}
+    # ports:
+    #   - ${PROD_CLIENT_PORT}:${PROD_CLIENT_PORT}
+    volumes:
+      - ./client/reactjs/src:/srv/app/home-client/src
+      - ./client/reactjs/public:/srv/app/home-client/public
+    command: npm run start
+    networks:
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.enable=false
+      - traefik.http.routers.cv_client.rule=Host(`jeffslord.com`)
+      - traefik.http.services.cv_client.loadbalancer.server.port=${CLIENT_PORT}
+      - traefik.docker.network=traefik
+
+networks:
+  traefik:
+    external: true
