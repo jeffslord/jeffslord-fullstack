@@ -3,19 +3,22 @@ services:
   cv_server:
     build: ./server/nodejs
     environment:
-      - SERVER_PORT=${DEV_SERVER_PORT}
-      - NODE_ENV=${DEV_NODE_ENV}
+      SERVER_PORT: ${DEV_SERVER_PORT}
+      NODE_ENV: ${DEV_NODE_ENV}
     ports:
       - ${DEV_SERVER_PORT}:${DEV_SERVER_PORT}
     command: npm run devstart
   cv_client:
     build: ./client/reactjs
     environment:
-      - CLIENT_PORT=${DEV_CLIENT_PORT}
-      - PORT=${DEV_CLIENT_PORT}
-      - REACT_APP_API=${DEV_API}
-      - NODE_ENV=${DEV_NODE_ENV}
-      - CHOKIDAR_USEPOLLING=true
+      CLIENT_PORT: ${DEV_CLIENT_PORT}
+      PORT: ${DEV_CLIENT_PORT}
+      REACT_APP_API: ${DEV_API}
+      NODE_ENV: ${DEV_NODE_ENV}
+      CHOKIDAR_USEPOLLING: 'true'
     ports:
       - ${DEV_CLIENT_PORT}:${DEV_CLIENT_PORT}
     command: npm run start
+
+
+# docker-compose -f docker-compose.yml -f docker-compose.dev.yml up

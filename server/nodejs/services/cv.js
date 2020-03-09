@@ -37,113 +37,17 @@ const util = require("util");
 const fs = require('fs');
 const cvUtils = require("./cv_utils");
 
-// Find all input nodes that are used in more than 1 calc view node
-// And remove any datasources
-function CheckSplitNodes(jsonResult, cb) {
-  cvUtils.GetSplitNodes(jsonResult, (err, data) => {
-    if (err) {
-      return cb(err);
-    }
-    return cb(null, { data, found: Object.keys(data).length > 0 });
-  });
-}
+const dataSourceUtils = require("./cv_data_source_utils");
+const headerUtils = require("./cv_header_utils");
+const hintUtils = require("./cv_hint_utils");
+const joinUtils = require("./cv_join_utils");
+const localVarUtils = require("./cv_local_var_utils");
+const nodeUtils = require("./cv_node_utils");
+const parseUtils = require("./cv_parse_utils");
+const varMapUtils = require("./cv_var_map_utils");
 
-function CheckRightJoinCvs(jsonResult, cb) {
-  cvUtils.GetRightJoinCvs(jsonResult, (err, data) => {
-    if (err) {
-      return cb(err);
-    }
-    return cb(null, { data, found: data.length > 0 });
-  });
-}
-
-function CheckCalcColumnsInFilter(jsonResult, cb) {
-  cvUtils.GetCalcColumnsInFilter(jsonResult, (err, data) => {
-    if (err) {
-      return cb(err);
-    }
-    return cb(null, { data, found: data.length > 0 });
-  });
-}
-
-function CheckUnmappedParameters(jsonResult, cb) {
-  cvUtils.GetUnmappedParameters(jsonResult, (err, data) => {
-    if (err) {
-      return cb(err);
-    }
-    return cb(null, { data, found: data.length > 0 });
-  });
-}
-
-function CheckHints(jsonResult, cb) {
-  cvUtils.GetHints(jsonResult, (err, data) => {
-    if (err) {
-      return cb(err);
-    }
-    return cb(null, { data, found: data.length > 0 });
-  })
-}
-
-// need to check if split node is a data source
-// if it is a data source than it is allowed to be in multiple places
-function FixSplitNodes(jsonResult, version, cb) {
-  // const cvRoot = GetCvRoot(jsonResult);
-  cvUtils.GetNodeRoot(jsonResult, (err, cvRoot) => {
-    if (err) {
-      return cb(err);
-    }
-    let complete = false;
-    const allSplits = [];
-    while (!complete) {
-      // Get input nodes that are used by more than 1 node
-      CheckSplitNodes(jsonResult, (err, splitRes) => {
-        if (err) {
-          return cb(err);
-        }
-        if (Object.keys(splitRes.splitNodes).length === 0) {
-          complete = true;
-        } else {
-          allSplits.push(splitRes.splitNodes);
-          Object.keys(splitRes.splitNodes).forEach(key => {
-            // Get the calc view nodes based on the name of split inputs
-            cvUtils.GetInputs(jsonResult, key, (err2, inputNodes) => {
-              for (let i = 0; i < splitRes.splitNodes[key] - 1; i++) {
-                // Make a copy for each split (if used in 10 places, create 9 new)
-                cvUtils.CopyCv(jsonResult, key, cvCopy => {
-                  const cvCopyNew = cvCopy;
-                  // Change the copies id to new id (_i for iteration)
-                  cvCopyNew.$.id = `${cvCopyNew.$.id}_${i + 1}`;
-                  // Add copy to the structure
-                  cvRoot.push(cvCopyNew);
-                  // Change input node to the newly created calc view node
-                  // CreateInputName(inputNodes[i].$.node, version, (err, newName) => {
-                  //   inputNodes[i].$.node = newName;
-                  // });
-                  if (version <= 2.3) {
-                    inputNodes[i].$.node = `#${cvCopyNew.$.id}`;
-                  } else {
-                    inputNodes[i].$.node = `${cvCopyNew.$.id}`;
-                  }
-                });
-              }
-            });
-          });
-        }
-      });
-    }
-    return cb(null, allSplits);
-  });
-}
-
-function FixRightJoins(jsonResult, cb) {
-  CheckRightJoinCvs(jsonResult, (err, rightRes) => {
-    rightRes.rightOuters.forEach(ele => {
-      ele.$.joinType = "leftOuter";
-      [ele.input[0], ele.input[1]] = [ele.input[1], ele.input[0]];
-    });
-    return cb(null, rightRes.rightOuters);
-  });
-}
+const cvCheck = require("./cv_check");
+const cvFix = require("./cv_fix");
 
 function MakeCheck(checkName, found, autoFix, data, importance = 'unknown') {
   let check = {
@@ -158,17 +62,19 @@ function MakeCheck(checkName, found, autoFix, data, importance = 'unknown') {
 
 
 //! Checks
-const pParseFile = util.promisify(cvUtils.ParseFile);
-const pGetCvheaderInfo = util.promisify(cvUtils.GetCvheaderInfo);
-const pCheckSplitNodes = util.promisify(CheckSplitNodes);
-const pCheckRightJoinCvs = util.promisify(CheckRightJoinCvs);
-const pCheckCalcColumnsInFilter = util.promisify(CheckCalcColumnsInFilter);
-const pCheckUnmappedParameters = util.promisify(CheckUnmappedParameters);
-const pCheckHints = util.promisify(CheckHints);
+const pParseFile = util.promisify(parseUtils.ParseFile);
+const pGetCvheaderInfo = util.promisify(headerUtils.GetCvheaderInfo);
+const pCheckSplitNodes = util.promisify(cvCheck.CheckSplitNodes);
+const pCheckRightJoinCvs = util.promisify(cvCheck.CheckRightJoins);
+const pCheckCalcColumnsInFilter = util.promisify(cvCheck.CheckCalcColumnsInFilter);
+const pCheckUnmappedParameters = util.promisify(cvCheck.CheckUnmappedParameters);
+const pCheckHints = util.promisify(cvCheck.CheckHints);
 
 //! Fixes
-const pFixSplitNodes = util.promisify(FixSplitNodes);
-const pFixRightJoins = util.promisify(FixRightJoins);
+// const pFixSplitNodes = util.promisify(FixSplitNodes);
+const pFixSplitNodes = util.promisify(cvFix.FixSplitNodes);
+// const pFixRightJoins = util.promisify(FixRightJoins);
+const pFixRightJoins = util.promisify(cvFix.FixRightJoins);
 
 async function CheckView(filePath, cb) {
   const res = {};
@@ -197,37 +103,6 @@ async function CheckView(filePath, cb) {
     //! HINTS
     const hints = await pCheckHints(json);
     checks.push(MakeCheck("Hints", hints.found, false, hints.data));
-
-    // checks.push({
-    //   checkName: "Split Nodes",
-    //   found: splits.found,
-    //   autoFix: true,
-    //   data: splits.splitNodes
-    // });
-    // checks.push({
-    //   checkName: "Right Joins",
-    //   found: rJoins.found,
-    //   autoFix: true,
-    //   data: rJoins.rightOuters
-    // });
-    // checks.push({
-    //   checkName: "Calculated Columns in Filter",
-    //   found: calcColsInFilter.found,
-    //   autoFix: false,
-    //   data: calcColsInFilter.calcColsInFilter
-    // });
-    // checks.push({
-    //   checkName: "Unmapped parameters",
-    //   found: unmapped.found,
-    //   autoFix: false,
-    //   data: unmapped.unmapped
-    // });
-    // checks.push({
-    //   checkName: "Hints",
-    //   found: hints.found,
-    //   autoFix: false,
-    //   data: hints.hints
-    // });
 
     res.checks = checks;
     console.log("Check Results", JSON.stringify(res, null, 4));

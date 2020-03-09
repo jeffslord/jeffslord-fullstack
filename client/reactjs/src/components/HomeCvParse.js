@@ -226,9 +226,9 @@ export default function HomeCvParse() {
                 <List>
                   {resChecks.map((check, i) => (
                     <ListItem>
-                      {/* <ul key={i}> */}
-                      <HomeCvExpansionResult check={check}></HomeCvExpansionResult>
-                      {/* </ul> */}
+                      <ul key={i}>
+                        <HomeCvExpansionResult check={check}></HomeCvExpansionResult>
+                      </ul>
                     </ListItem>
                   ))}
                 </List>
