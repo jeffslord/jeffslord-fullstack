@@ -104,6 +104,28 @@ export default function HomeCvParse() {
       return;
     }
   };
+  //? attempting to rewrite previous function in cleaner way
+  // const Analyzefiles = async () => {
+  //   try {
+  //     if (files.length < 0) {
+  //       throw new error("No files uploaded");
+  //     }
+  //     let data = new FormData();
+  //     for (const f in files) {
+  //       data.append("files", files[f]);
+  //     }
+  //     if (process.env.NODE_ENV !== 'development') {
+  //       const currentUser = await firebase.auth().currentUser;
+  //       if(currentUser){
+  //         firebase
+  //       }
+  //     }
+
+  //   } catch (error) {
+
+  //   }
+  // }
+
   // extract header information from the result set containing all data
   const GetHeaders = (data, cb) => {
     let headers = [];

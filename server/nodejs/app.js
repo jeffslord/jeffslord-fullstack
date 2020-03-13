@@ -65,9 +65,8 @@ function loggedIn(req, res, next) {
   }
 }
 
-if (process.env.NODE_ENV !== 'development') {
-  app.use(loggedIn);
-}
+app.use(loggedIn);
+
 // set routes based on previous routers set
 app.use('/', indexRouter);
 app.use('/api/cv', cvRouter);
