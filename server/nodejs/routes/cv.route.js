@@ -2,19 +2,20 @@ const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
-const cv = require('../services/cv');
+const cv_check = require('../services/cv_check');
+const cv_fix = require('../services/cv_fix');
 
 const upload = multer({ dest: 'uploads/' });
 const router = express.Router();
 
 router.get('/', (req, res, next) => {
   console.log('hey there');
-  cv.Test();
+  // cv.Test();
   res.send('Test successful');
 });
 
 router.post('/analyzeSingleFile', upload.single('file'), (req, res, next) => {
-  cv.AnalyzeSingleFile(req.file.path, (err, analyzeRes) => {
+  cv_check.AnalyzeSingleFile(req.file.path, (err, analyzeRes) => {
     if (err) {
       throw err;
     } else {
@@ -24,7 +25,7 @@ router.post('/analyzeSingleFile', upload.single('file'), (req, res, next) => {
 });
 
 router.post('/analyzeManyFiles', upload.array('files'), (req, res, next) => {
-  cv.AnalyzeManyFiles(req.files, (err, analyzeRes) => {
+  cv_check.AnalyzeManyFiles(req.files, (err, analyzeRes) => {
     if (err) {
       throw err;
     } else {
@@ -34,7 +35,7 @@ router.post('/analyzeManyFiles', upload.array('files'), (req, res, next) => {
 });
 
 router.post('/fixSingleFile', upload.single('file'), (req, res, next) => {
-  cv.FixSingleFile(req.file.path, (err, xmlRes) => {
+  cv_fix.FixSingleFile(req.file.path, (err, xmlRes) => {
     if (err) {
       throw err
     } else {
@@ -48,7 +49,7 @@ router.post('/fixManyFiles', upload.array('files'), (req, res, next) => {
   let fileCount = 0;
   const allRes = [];
   req.files.forEach((file) => {
-    cv.FixView(file.path, (err, xmlRes) => {
+    cv_fix.FixView(file.path, (err, xmlRes) => {
       if (err) {
         fs.unlinkSync(file.path);
       }

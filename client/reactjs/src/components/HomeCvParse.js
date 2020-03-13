@@ -60,7 +60,7 @@ export default function HomeCvParse() {
   });
 
   // Run analysis on file to get all values returned
-  const AnalyzeButton = () => {
+  const AnalyzeFiles = () => {
     const API = process.env.API;
     if (files.length > 0) {
       console.log("FILES", files);
@@ -204,7 +204,7 @@ export default function HomeCvParse() {
                       fullWidth
                       variant={"contained"}
                       files={files}
-                      onClick={() => AnalyzeButton()}
+                      onClick={() => AnalyzeFiles()}
                       color="primary"
                     >
                       Process
