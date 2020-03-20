@@ -1,5 +1,7 @@
-const nodeUtils = require("./cv_node_utils");
-const joinUtils = require("./cv_join_utils");
+const nodeUtils = require("./utils/cv_node_utils");
+const joinUtils = require("./utils/cv_join_utils");
+const parseUtils = require("./utils/cv_parse_utils");
+const util = require("util");
 
 const FixSplitNodes = nodeUtils.FixSplitNodes;
 const FixRightJoins = joinUtils.FixRightJoins;

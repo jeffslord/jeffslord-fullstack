@@ -1,10 +1,14 @@
 const nodeUtils = require("./utils/cv_node_utils");
 const joinUtils = require("./utils/cv_join_utils");
-const headerUtils = require("./cv_header_utils");
+const headerUtils = require("./utils/cv_header_utils");
 const dataSourceUtils = require("./utils/cv_data_source_utils");
 const hintUtils = require("./utils/cv_hint_utils");
 const localVarUtils = require("./utils/cv_local_var_utils");
 const varMapUtils = require("./utils/cv_var_map_utils");
+const parseUtils = require("./utils/cv_parse_utils");
+const util = require("util");
+const fs = require('fs');
+
 
 
 const CheckSplitNodes = nodeUtils.CheckSplitNodes;
@@ -21,6 +25,17 @@ const pCheckRightJoinCvs = util.promisify(CheckRightJoins);
 const pCheckCalcColumnsInFilter = util.promisify(CheckCalcColumnsInFilter);
 const pCheckUnmappedParameters = util.promisify(CheckUnmappedParameters);
 const pCheckHints = util.promisify(CheckHints);
+
+function MakeCheck(checkName, found, autoFix, data, importance = 'unknown') {
+    let check = {
+        checkName: checkName,
+        found: found,
+        autoFix, autoFix,
+        data, data,
+        importance, importance
+    }
+    return check;
+}
 
 async function CheckView(filePath, cb) {
     const res = {};
