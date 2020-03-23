@@ -39,7 +39,6 @@ services:
       - traefik
     labels:
       traefik.enable: 'true'
-      traefik.enable: 'false'
       traefik.http.routers.cv_client.rule: Host(`jeffslord.com`)
       traefik.http.services.cv_client.loadbalancer.server.port: ${PROD_CLIENT_PORT}
       traefik.docker.network: traefik
@@ -49,4 +48,4 @@ networks:
     external: true
 
 
-# docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+# sudo docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
