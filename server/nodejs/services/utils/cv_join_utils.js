@@ -1,5 +1,6 @@
 const nodeUtils = require("./cv_node_utils");
 
+//! UTILS
 function GetRightJoinCvs(cvJson, cb) {
     nodeUtils.GetNodes(cvJson, (err, cvs) => {
         const rightOuters = [];
@@ -12,6 +13,8 @@ function GetRightJoinCvs(cvJson, cb) {
         // return cb(null, { rightOuters, found: rightOuters.length > 0 });
     });
 }
+
+//! CHECKS
 function CheckRightJoins(cvJson, cb) {
     GetRightJoinCvs(cvJson, (err, data) => {
         if (err) {
@@ -20,6 +23,8 @@ function CheckRightJoins(cvJson, cb) {
         return cb(null, { data, found: data.length > 0 });
     });
 }
+
+//! FIXES
 function FixRightJoins(jsonResult, cb) {
     CheckRightJoinCvs(jsonResult, (err, rightRes) => {
         rightRes.rightOuters.forEach(ele => {

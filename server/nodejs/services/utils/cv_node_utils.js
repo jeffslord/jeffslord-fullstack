@@ -3,6 +3,8 @@ const cvUtils = require("./cv_utils");
 const localVarUtils = require("./cv_local_var_utils");
 const varMapUtils = require("./cv_var_map_utils");
 
+
+//! UTILS
 // Get the root of Calculation View element.
 // This contains an array of all calculation view nodes
 function GetNodeRoot(cvJson, cb) {
@@ -192,20 +194,11 @@ function GetSplitNodes(cvJson, cb) {
     });
     return cb(null, splitNodes);
 }
-function CheckSplitNodes(cvJson, cb) {
-    GetSplitNodes(cvJson, (err, data) => {
-        if (err) {
-            return cb(err);
-        }
-        return cb(null, { data, found: Object.keys(data).length > 0 });
-    });
-}
-function CheckCalcColumnsInFilter(cvJson, cb) {
-    GetCalcColumnsInFilter(cvJson, (err, data) => {
-        if (err) {
-            return cb(err);
-        }
-        return cb(null, { data, found: data.length > 0 });
+function CopyNode(jsonResult, cvName, cb) {
+    GetNodeByName(jsonResult, cvName, cv => {
+        // duplicate cv into another cv and add it to the root
+        const cvCopy = JSON.parse(JSON.stringify(cv));
+        return cb(cvCopy);
     });
 }
 function GetUnmappedParameters(cvJson, cb) {
@@ -248,6 +241,23 @@ function GetUnmappedParameters(cvJson, cb) {
     return cb(null, unmapped);
 }
 
+//! CHECKS
+function CheckSplitNodes(cvJson, cb) {
+    GetSplitNodes(cvJson, (err, data) => {
+        if (err) {
+            return cb(err);
+        }
+        return cb(null, { data, found: Object.keys(data).length > 0 });
+    });
+}
+function CheckCalcColumnsInFilter(cvJson, cb) {
+    GetCalcColumnsInFilter(cvJson, (err, data) => {
+        if (err) {
+            return cb(err);
+        }
+        return cb(null, { data, found: data.length > 0 });
+    });
+}
 function CheckUnmappedParameters(cvJson, cb) {
     GetUnmappedParameters(cvJson, (err, data) => {
         if (err) {
@@ -257,6 +267,7 @@ function CheckUnmappedParameters(cvJson, cb) {
     });
 }
 
+//! FIXES
 // need to check if split node is a data source
 // if it is a data source than it is allowed to be in multiple places
 function FixSplitNodes(cvJson, version, cb) {
@@ -308,13 +319,7 @@ function FixSplitNodes(cvJson, version, cb) {
         return cb(null, allSplits);
     });
 }
-function CopyNode(jsonResult, cvName, cb) {
-    GetNodeByName(jsonResult, cvName, cv => {
-        // duplicate cv into another cv and add it to the root
-        const cvCopy = JSON.parse(JSON.stringify(cv));
-        return cb(cvCopy);
-    });
-}
+
 
 //! NOT IMPLEMENTED
 // There doesn't seem to be a single join formula.

@@ -3,6 +3,7 @@ const xml2js = require("xml2js");
 const path = require("path");
 const parser = new xml2js.Parser();
 
+//! UTILS
 function ParseFile(filePath, cb) {
     fs.readFile(filePath, "utf8", (err, data) => {
         parser.parseString(data, (err2, parsedString) => {
