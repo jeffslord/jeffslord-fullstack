@@ -107,12 +107,6 @@ async function AnalyzeManyFiles(files, cb) {
 
 
 module.exports = {
-    // CheckSplitNodes,
-    // CheckCalcColumnsInFilter,
-    // CheckRightJoins,
-    // CheckHints,
-    // CheckUnmappedParameters
-
     AnalyzeSingleFile,
     AnalyzeManyFiles
 };

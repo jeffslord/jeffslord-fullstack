@@ -1,4 +1,4 @@
-
+//! UTILS
 function GetHintRoot(cvJson, cb) {
     const hintRoot = cvJson["Calculation:scenario"].executionHints;
     if (hintRoot === undefined) {
@@ -20,6 +20,8 @@ function GetHints(cvJson, cb) {
     })
     return cb(null, hints);
 }
+
+//! CHECKS
 function CheckHints(cvJson, cb) {
     GetHints(cvJson, (err, data) => {
         if (err) {

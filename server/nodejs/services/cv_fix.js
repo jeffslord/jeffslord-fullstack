@@ -48,9 +48,6 @@ async function FixManyFiles(files, cb) {
 }
 
 module.exports = {
-    // FixSplitNodes,
-    // FixRightJoins
-
     FixSingleFile,
     FixManyFiles
 }
