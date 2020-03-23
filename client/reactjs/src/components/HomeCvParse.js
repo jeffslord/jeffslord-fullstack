@@ -26,8 +26,8 @@ const useStyles = makeStyles(theme => ({
   paper: {
     // padding: theme.spacing(2),
     margin: "10px",
-    'margin-left': "50px",
-    'margin-right': "50px",
+    'margin-left': "0px",
+    'margin-right': "0px",
     textAlign: "center",
     color: theme.palette.text.secondary
   },
@@ -195,18 +195,18 @@ export default function HomeCvParse() {
       </Grid>
       {/* Instruction Box */}
       <Grid container justify="center" spacing={0}>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Paper className={classes.paper} elevation={5}>
             <Typography variant={"h4"}>Instructions</Typography>
             <Typography variant={"body1"}>
               (1)Upload file (2)Click process (3)Output will be presented in 'Results' box (4)File or text can be copied from the 'Text' box
             </Typography>
           </Paper>
-        </Grid>
+        </Grid> */}
         {/* <Paper className={classes.paper}> */}
         {/* Upload Box */}
         {/* <Grid item xs={12}></Grid> */}
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <Paper className={classes.paper} elevation={5}>
             <ExpansionPanel defaultExpanded>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -238,7 +238,7 @@ export default function HomeCvParse() {
           </Paper>
         </Grid>
         {/* Checks */}
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <Paper className={classes.paper} elevation={5}>
             <ExpansionPanel defaultExpanded>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -255,65 +255,68 @@ export default function HomeCvParse() {
                   ))}
                 </List>
               </ExpansionPanelDetails>
+
+              <Grid item xs={12}>
+                {/* <Paper className={classes.paper} elevation={5}> */}
+                <ExpansionPanel>
+                  <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography variant={"h4"}>Text</Typography>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails>
+                    <Grid container>
+                      <Grid item xs={12}>
+                        <Button
+                          variant="contained"
+                          onClick={() => {
+                            DownloadCalcView("Fixed", xmlResult);
+                          }}
+                        >
+                          Download txt
+                    </Button>
+                        <Button
+                          variant="contained"
+                          onClick={() => {
+                            navigator.clipboard.writeText(xmlResult);
+                            setTextCopyOpen(true);
+                          }}
+                        >
+                          Copy
+                    </Button>
+                        <Snackbar
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "left"
+                          }}
+                          open={textCopyOpen}
+                          autoHideDuration={1000}
+                          onClose={() => {
+                            setTextCopyOpen(false);
+                          }}
+                          ContentProps={{
+                            "aria-describedby": "message-id"
+                          }}
+                          message={<span id="message-id">Text Copied</span>}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextField
+                          multiline={true}
+                          value={xmlResult}
+                          rowsMax={Infinity}
+                          fullWidth
+                        ></TextField>
+                      </Grid>
+                    </Grid>
+                  </ExpansionPanelDetails>
+                </ExpansionPanel>
+                {/* </Paper> */}
+              </Grid>
             </ExpansionPanel>
+
           </Paper>
         </Grid>
         {/* Text Result Box */}
-        <Grid item xs={12}>
-          <Paper className={classes.paper} elevation={5}>
-            <ExpansionPanel>
-              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant={"h4"}>Text</Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <Grid container>
-                  <Grid item xs={12}>
-                    <Button
-                      variant="contained"
-                      onClick={() => {
-                        DownloadCalcView("Fixed", xmlResult);
-                      }}
-                    >
-                      Download txt
-                    </Button>
-                    <Button
-                      variant="contained"
-                      onClick={() => {
-                        navigator.clipboard.writeText(xmlResult);
-                        setTextCopyOpen(true);
-                      }}
-                    >
-                      Copy
-                    </Button>
-                    <Snackbar
-                      anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "left"
-                      }}
-                      open={textCopyOpen}
-                      autoHideDuration={1000}
-                      onClose={() => {
-                        setTextCopyOpen(false);
-                      }}
-                      ContentProps={{
-                        "aria-describedby": "message-id"
-                      }}
-                      message={<span id="message-id">Text Copied</span>}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      multiline={true}
-                      value={xmlResult}
-                      rowsMax={Infinity}
-                      fullWidth
-                    ></TextField>
-                  </Grid>
-                </Grid>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-          </Paper>
-        </Grid>
+
       </Grid>
     </div>
   );

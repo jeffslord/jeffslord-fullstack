@@ -7,30 +7,30 @@
     "devstart": "nodemon -L ./bin/www"
   },
   "dependencies": {
-    "adm-zip": "^0.4.13",
-    "body-parser": "^1.19.0",
-    "cookie-parser": "~1.4.3",
-    "cors": "^2.8.5",
-    "debug": "~2.6.9",
-    "dotenv": "^8.1.0",
-    "express": "~4.16.0",
-    "firebase-admin": "^8.9.0",
-    "http-errors": "~1.6.2",
-    "mongodb": "^3.1.6",
-    "mongoose": "^5.2.17",
-    "morgan": "~1.9.0",
-    "multer": "^1.4.2",
-    "npmrc": "^1.1.1",
-    "pug": "^2.0.3",
-    "xml2js": "^0.4.19"
+    "adm-zip": "latest",
+    "body-parser": "latest",
+    "cookie-parser": "latest",
+    "cors": "latest",
+    "debug": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "firebase-admin": "latest",
+    "http-errors": "latest",
+    "mongodb": "latest",
+    "mongoose": "latest",
+    "morgan": "latest",
+    "multer": "latest",
+    "npmrc": "latest",
+    "pug": "latest",
+    "xml2js": "latest"
   },
   "devDependencies": {
-    "eslint": "^5.6.1",
-    "eslint-config-airbnb": "^17.1.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.1",
-    "eslint-plugin-react": "^7.11.1",
-    "nodemon": "^1.18.4"
+    "eslint": "latest",
+    "eslint-config-airbnb": "latest",
+    "eslint-plugin-import": "latest",
+    "eslint-plugin-jsx-a11y": "latest",
+    "eslint-plugin-react": "latest",
+    "nodemon": "latest"
   },
   "nodemonConfig": {
     "ignore": [
