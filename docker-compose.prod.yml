@@ -27,6 +27,7 @@ services:
       PORT: ${PROD_CLIENT_PORT}
       REACT_APP_API: ${PROD_API}
       NODE_ENV: ${PROD_NODE_ENV}
+      CI: 'true'
     expose:
       - ${PROD_CLIENT_PORT}
     # ports:
