@@ -182,7 +182,7 @@ export default function HomeCvParse() {
 
   return (
     <div className={classes.root}>
-      {console.log("RESULTS:", results)}
+      {/* {console.log("RESULTS:", results)} */}
       {/* Tab Bar */}
       <Grid item xs={12}>
         <Paper square>

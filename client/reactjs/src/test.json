@@ -1,0 +1,61 @@
+[
+    {
+        "header": {
+            "version": "2.3",
+            "id": "EmployeesPunchedIn"
+        },
+        "checks": [
+            {
+                "checkName": "Split Nodes",
+                "found": true,
+                "autoFix": true,
+                "data": {
+                    "\"#PROJ_LABOR_MSG\"": 2,
+                    "\"#PROJ_FACILITY\"": 2,
+                    "\"#PROJ_LAST_24HRS_EMP_PERF\"": 2,
+                    "\"#JOIN_EMP_LABOR_MSG\"": 17,
+                    "\"#PROJ_FILTR_TRESHHOLD\"": 6
+                },
+                "importance": "unknown"
+            },
+            {
+                "checkName": "Right Joins",
+                "found": false,
+                "autoFix": true,
+                "data": [],
+                "importance": "low"
+            },
+            {
+                "checkName": "Calculated Columns in Filter",
+                "found": true,
+                "autoFix": false,
+                "data": [
+                    "TimePast24hours",
+                    "TimePast24hours",
+                    "TimePast24hours",
+                    "TimePast24hours",
+                    "CreatedDTTMinLocal",
+                    "NowTimeInLocal",
+                    "CreatedDTTMinLocal",
+                    "NowTimeInLocal",
+                    "CreatedDTTMinLocal"
+                ],
+                "importance": "unknown"
+            },
+            {
+                "checkName": "Unmapped Parameters",
+                "found": false,
+                "autoFix": false,
+                "data": [],
+                "importance": "unknown"
+            },
+            {
+                "checkName": "Hints",
+                "found": false,
+                "autoFix": false,
+                "data": [],
+                "importance": "unknown"
+            }
+        ]
+    }
+]

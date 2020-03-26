@@ -43,6 +43,8 @@ async function CheckView(filePath, cb) {
     try {
         const json = await pParseFile(filePath);
         const headerInfo = await pGetCvheaderInfo(json);
+        res.id = headerInfo.id;
+        res.version = headerInfo.version;
         res.header = headerInfo;
 
         //! SPLIT NODES
@@ -66,7 +68,8 @@ async function CheckView(filePath, cb) {
         checks.push(MakeCheck("Hints", hints.found, false, hints.data));
 
         res.checks = checks;
-        console.log("Check Results", JSON.stringify(res, null, 4));
+        console.log("Check Results...");
+        console.log(JSON.stringify(res, null, 4))
         return cb(null, res);
     } catch (err) {
         throw err;

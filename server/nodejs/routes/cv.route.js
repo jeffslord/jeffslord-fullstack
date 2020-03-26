@@ -5,6 +5,7 @@ const fs = require('fs');
 const cv_check = require('../services/cv_check');
 const cv_fix = require('../services/cv_fix');
 
+
 const upload = multer({ dest: 'uploads/' });
 const router = express.Router();
 
@@ -73,5 +74,19 @@ router.post('/analyzeManyCdata', (req, res, next) => {
 });
 
 router.post('/analyzeCdata', (req, res, next) => { });
+
+router.post('/makeXML', (req, res, next) => {
+  let filePath = path.join(__dirname, `../data/temp/${req.body.title}.xml`);
+  fs.writeFileSync(filePath, req.body.xml.xml);
+  let r = { filePath };
+  res.json(r);
+})
+
+router.get('/downloadXML/:filePath', (req, res, next) => {
+  console.log(req.params.filePath);
+  let filePath = path.join(__dirname, `../data/temp/${req.params.filePath}.xml`);
+  console.log(filePath);
+  res.download(filePath);
+})
 
 module.exports = router;

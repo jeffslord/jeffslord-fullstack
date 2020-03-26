@@ -7,7 +7,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import Welcome from "./pages/Welcome";
 // import HomeCvParse from "./components/HomeCvParse";
-import CvParse from "./pages/CvParse";
+import CvOptimizer from "./pages/CvOptimizer";
 import Login from "./pages/Login"
 
 ReactDOM.render(
@@ -16,7 +16,7 @@ ReactDOM.render(
       <Route path="/" component={App} />
       <Switch>
         <Route exact path="/" component={Welcome} />
-        <Route exact path="/tools/cvoptimizer/" component={CvParse} />
+        <Route exact path="/tools/cvoptimizer/" component={CvOptimizer} />
         <Route exact path="/login" component={Login}></Route>
         {/* <Route exact path="/tools/cvclassic/" component={MyCvClassic} /> */}
         {/* <Route exact path="/tools/cvxsa/" component={MyCvXSA} /> */}

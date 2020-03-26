@@ -1,0 +1,12 @@
+.paper{
+    background-color: lightblue;
+    box-shadow: blue;
+    /* padding: 10px; */
+}
+/* .MuiPaper-outlined{
+    
+} */
+.button-test{
+    width: 100%;
+    background-color: red;
+}

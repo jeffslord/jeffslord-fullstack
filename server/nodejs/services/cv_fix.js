@@ -1,7 +1,12 @@
 const nodeUtils = require("./utils/cv_node_utils");
 const joinUtils = require("./utils/cv_join_utils");
 const parseUtils = require("./utils/cv_parse_utils");
+const headerUtils = require('./utils/cv_header_utils');
 const util = require("util");
+const fs = require('fs');
+const xml2js = require("xml2js");
+
+
 
 const FixSplitNodes = nodeUtils.FixSplitNodes;
 const FixRightJoins = joinUtils.FixRightJoins;
@@ -11,6 +16,9 @@ const FixRightJoins = joinUtils.FixRightJoins;
 const pFixSplitNodes = util.promisify(FixSplitNodes);
 // const pFixRightJoins = util.promisify(FixRightJoins);
 const pFixRightJoins = util.promisify(FixRightJoins);
+
+const pParseFile = util.promisify(parseUtils.ParseFile);
+const pGetCvheaderInfo = util.promisify(headerUtils.GetCvheaderInfo);
 
 
 async function FixSingleFile(filePath, cb) {
