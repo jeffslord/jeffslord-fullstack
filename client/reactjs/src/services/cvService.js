@@ -67,22 +67,11 @@ function FixView(files, title, cb) {
                         })
                             .then(res => res.json())
                             .then(json => {
-                                fetch(`${process.env.REACT_APP_API}/api/cv/downloadXML/${title}`, {
-                                    method: "get",
-                                    headers: new Headers({
-                                        'token': `${idToken}`,
-                                        'claim': 'cv'
-                                    })
-                                })
+                                let a = document.createElement('a');
+                                a.href = `${process.env.REACT_APP_API}/api/cv/downloadXML/${title}`;
+                                // a.download = `${title}_fixed.xml`;
+                                a.click();
                             })
-
-                        // .then(res => res.blob())
-                        // .then(blob => URL.createObjectURL(blob))
-                        // .then(url => {
-                        //     window.open(url, '_blank');
-                        //     URL.revokeObjectURL(url);
-                        // })
-                        // return cb(null, data);
                     })
                     .catch(err => {
                         console.error(err);
@@ -92,24 +81,7 @@ function FixView(files, title, cb) {
         }
     }
 }
-// const Fixbutton = () => {
-//   if (files.length > 0) {
-//     let data = new FormData();
-//     data.append("file", files[0]);
-//     setLoading(true);
-//     fetch("http://cv_api.jeffslord.com/api/cv/fixSingleFile", {
-//       method: "post",
-//       body: data
-//     })
-//       .then(res => res.json())
-//       .then(data => {
-//         // console.log("xml", data["xml"]);
-//         setLoading(false);
-//         setXmlResult(data["xml"]);
-//       });
-//     return;
-//   }
-// };
+
 export {
     CheckFile,
     FixView

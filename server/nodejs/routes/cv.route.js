@@ -77,7 +77,7 @@ router.post('/analyzeCdata', (req, res, next) => { });
 
 router.post('/makeXML', (req, res, next) => {
   let filePath = path.join(__dirname, `../data/temp/${req.body.title}.xml`);
-  fs.writeFileSync(filePath, req.body.xml.xml);
+  fs.writeFileSync(filePath, req.body.xml.xml + "\n<!--Optimized by Jeff v0.1.0-->");
   let r = { filePath };
   res.json(r);
 })
@@ -86,6 +86,7 @@ router.get('/downloadXML/:filePath', (req, res, next) => {
   console.log(req.params.filePath);
   let filePath = path.join(__dirname, `../data/temp/${req.params.filePath}.xml`);
   console.log(filePath);
+  res.set('Content-Type', 'text/xml');
   res.download(filePath);
 })
 
