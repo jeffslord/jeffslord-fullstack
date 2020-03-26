@@ -44,40 +44,41 @@ function FixView(files, title, cb) {
         let data = new FormData();
         data.append("file", files[0]);
         if (firebase.auth().currentUser) {
-            firebase.auth().currentUser.getIdToken(true).then((idToken) => {
-                fetch(`${process.env.REACT_APP_API}/api/cv/fixSingleFile`, {
-                    method: "post",
-                    body: data
-                })
-                    .then(res => res.json())
-                    .then(data => {
-                        let data2 = {
-                            xml: data,
-                            title: title
-                        }
-                        fetch(`${process.env.REACT_APP_API}/api/cv/makeXML`, {
-                            method: "post",
-                            body: JSON.stringify(data2),
-                            headers: new Headers({
-                                // "Content-Type": "'text/javascript'",
-                                "Content-Type": "application/json",
-                                'token': `${idToken}`,
-                                'claim': 'cv'
-                            })
-                        })
-                            .then(res => res.json())
-                            .then(json => {
-                                let a = document.createElement('a');
-                                a.href = `${process.env.REACT_APP_API}/api/cv/downloadXML/${title}`;
-                                // a.download = `${title}_fixed.xml`;
-                                a.click();
-                            })
+            firebase.auth().currentUser.getIdToken(true)
+                .then((idToken) => {
+                    fetch(`${process.env.REACT_APP_API}/api/cv/fixSingleFile`, {
+                        method: "post",
+                        body: data
                     })
-                    .catch(err => {
-                        console.error(err);
-                    });
-            }
-            )
+                        .then(res => res.json())
+                        .then(data => {
+                            let data2 = {
+                                xml: data,
+                                title: title
+                            }
+                            fetch(`${process.env.REACT_APP_API}/api/cv/makeXML`, {
+                                method: "post",
+                                body: JSON.stringify(data2),
+                                headers: new Headers({
+                                    // "Content-Type": "'text/javascript'",
+                                    "Content-Type": "application/json",
+                                    'token': `${idToken}`,
+                                    'claim': 'cv'
+                                })
+                            })
+                                .then(res => res.json())
+                                .then(json => {
+                                    let a = document.createElement('a');
+                                    a.href = `${process.env.REACT_APP_API}/api/cv/downloadXML/${title}`;
+                                    // a.download = `${title}_fixed.xml`;
+                                    a.click();
+                                })
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                }
+                )
         }
     }
 }

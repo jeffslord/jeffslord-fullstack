@@ -16,8 +16,8 @@ services:
       - traefik
     labels:
       traefik.enable: 'true'
+      traefik.http.routers.cv_server.rule: Host(`api.jeffslord.com`)
       traefik.http.services.cv_server.loadbalancer.server.port: ${PROD_SERVER_PORT}
-      traefik.http.routers.cv_server.rule: Host(`cv_api.jeffslord.com`)
       traefik.http.routers.cv_server.tls: 'true'
       traefik.http.routers.cv_server.tls.certresolver: myresolver
       traefik.docker.network: traefik
