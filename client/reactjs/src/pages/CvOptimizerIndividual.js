@@ -10,13 +10,17 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import bsCustomFileInput from 'bs-custom-file-input'
 import { CheckFile, FixView } from '../services/cvService'
+import Alert from 'react-bootstrap/Alert'
 const util = require("util");
+
 
 function CvOptimizerIndividual(props) {
     const [tabsDisabled, setTabsDisabled] = useState(true);
     const [files, setFiles] = useState();
     const [checkResults, setCheckResults] = useState([]);
     const [tabKey, setTabKey] = useState('upload');
+    const [errorMessage, setErrorMessage] = useState(null);
+
 
     useEffect(() => {
         document.title = "Calculation View Optimizer (Very early version...)";
@@ -26,7 +30,9 @@ function CvOptimizerIndividual(props) {
     const HandleProcessClick = () => {
         CheckFile(files, (err, results) => {
             if (err) {
-                throw err;
+                console.log("error caught");
+                setErrorMessage(err.message);
+                // throw err;
             } else {
                 setCheckResults(results);
                 setTabsDisabled(false);
@@ -34,9 +40,20 @@ function CvOptimizerIndividual(props) {
             }
         })
     }
+    const HandleError = () => {
+        if (errorMessage) {
+            return (
+                <Alert variant="danger">{errorMessage}</Alert>
+            )
+        } else {
+            return null;
+        }
+
+    }
 
     return (
         <div>
+            <HandleError></HandleError>
             <Tabs activeKey={tabKey} id="controlled-tab-example" onSelect={(k) => setTabKey(k)}>
                 <Tab eventKey="upload" title="Upload">
                     <Container>
@@ -49,14 +66,13 @@ function CvOptimizerIndividual(props) {
                     <Container>
                         <h1>{checkResults[0] && checkResults[0].id ? checkResults[0].id : "No View Uploaded"}</h1>
                         <CvResultTable checkData={checkResults}></CvResultTable>
-                        {/* <CvResultStep></CvResultStep> */}
                     </Container>
                 </Tab>
                 <Tab eventKey="fix" title="Fix" disabled={tabsDisabled}>
                     <Container>
                         <h1>{checkResults[0] && checkResults[0].id ? checkResults[0].id : "No View Uploaded"}</h1>
-                        <Button block onClick={() => FixView(files, checkResults[0].id)}>Process</Button>
-
+                        <Button block onClick={() => FixView(files, checkResults[0].id)}>Fix View</Button>
+                        <CvResultStep></CvResultStep>
                     </Container>
                 </Tab>
             </Tabs>

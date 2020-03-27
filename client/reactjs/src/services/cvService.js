@@ -32,10 +32,12 @@ function CheckFile(files, cb) {
                             });
                     })
                     .catch((error) => {
+                        console.error("[ERROR] ", error);
                         throw error;
                     })
             } else {
-                console.error("User not logged in.");
+                console.error("[ERROR] User not logged in.");
+                cb(new Error("user not logged in."));
             }
             return cb(null, res);
         }
@@ -90,7 +92,8 @@ function FixView(files, title, cb) {
                                 })
                         })
                         .catch(err => {
-                            console.error(err);
+                            console.error("[ERROR] ", err);
+                            throw err;
                         });
                 }
                 )
