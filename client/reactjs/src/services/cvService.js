@@ -1,5 +1,7 @@
 import firebase from 'firebase';
+import { saveAs } from 'file-saver';
 const util = require("util");
+var FileSaver = require('file-saver');
 
 
 function CheckFile(files, cb) {
@@ -48,7 +50,11 @@ function FixView(files, title, cb) {
                 .then((idToken) => {
                     fetch(`${process.env.REACT_APP_API}/api/cv/fixSingleFile`, {
                         method: "post",
-                        body: data
+                        body: data,
+                        headers: new Headers({
+                            'token': `${idToken}`,
+                            'claim': 'cv'
+                        })
                     })
                         .then(res => res.json())
                         .then(data => {
@@ -60,18 +66,27 @@ function FixView(files, title, cb) {
                                 method: "post",
                                 body: JSON.stringify(data2),
                                 headers: new Headers({
-                                    // "Content-Type": "'text/javascript'",
                                     "Content-Type": "application/json",
                                     'token': `${idToken}`,
                                     'claim': 'cv'
                                 })
                             })
+                                //! href technique won't work in prod because you can't attach headers with tokens for security check
+                                //! so need to figure out other way.
                                 .then(res => res.json())
+
                                 .then(json => {
-                                    let a = document.createElement('a');
-                                    a.href = `${process.env.REACT_APP_API}/api/cv/downloadXML/${title}`;
-                                    // a.download = `${title}_fixed.xml`;
-                                    a.click();
+
+                                    fetch(`${process.env.REACT_APP_API}/api/cv/downloadXML/${title}`, {
+                                        method: "get",
+                                        headers: new Headers({
+                                            'token': `${idToken}`,
+                                            'claim': 'cv'
+                                        }),
+                                        processData: false
+                                    })
+                                        .then(res => res.blob())
+                                        .then(res => FileSaver.saveAs(res, title + "_fixed"))
                                 })
                         })
                         .catch(err => {
