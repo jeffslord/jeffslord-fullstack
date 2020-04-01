@@ -72,7 +72,7 @@ function CvOptimizerIndividual(props) {
                     <Container>
                         <h1>{checkResults[0] && checkResults[0].id ? checkResults[0].id : "No View Uploaded"}</h1>
                         <Button block onClick={() => FixView(files, checkResults[0].id)}>Fix View</Button>
-                        <CvResultStep></CvResultStep>
+                        <CvResultStep checkResults={checkResults}></CvResultStep>
                     </Container>
                 </Tab>
             </Tabs>

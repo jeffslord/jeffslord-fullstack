@@ -10,7 +10,10 @@ export default function CvResultCard(props) {
                     Step {props.step}: {props.title}
                 </Accordion.Toggle>
                 <Accordion.Collapse eventKey={props.step - 1}>
-                    <Card.Body>{props.body}</Card.Body>
+                    <Card.Body>
+                        <h3>Issue Info</h3>
+                        {props.body}
+                    </Card.Body>
                 </Accordion.Collapse>
             </Card>
         </div >
