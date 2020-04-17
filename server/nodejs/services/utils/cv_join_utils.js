@@ -26,8 +26,8 @@ function CheckRightJoins(cvJson, cb) {
 
 //! FIXES
 function FixRightJoins(jsonResult, cb) {
-    CheckRightJoinCvs(jsonResult, (err, rightRes) => {
-        rightRes.rightOuters.forEach(ele => {
+    CheckRightJoins(jsonResult, (err, rightRes) => {
+        rightRes.data.forEach(ele => {
             ele.$.joinType = "leftOuter";
             [ele.input[0], ele.input[1]] = [ele.input[1], ele.input[0]];
         });

@@ -29,7 +29,7 @@ export default function Welcome(props) {
           <Typography variant="h1">WELCOME</Typography>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="body1">This is the one and only website of Jeff Lord. Feel free to browse our limited selection of things </Typography>
+          <Typography variant="body1">This is the one and only website of Jeff Lord. Feel free to browse our limited selection of things.</Typography>
         </Grid>
       </Grid>
     </div>

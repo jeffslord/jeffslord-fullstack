@@ -285,14 +285,14 @@ function FixSplitNodes(cvJson, version, cb) {
                 if (err) {
                     return cb(err);
                 }
-                if (Object.keys(splitRes.splitNodes).length === 0) {
+                if (Object.keys(splitRes.data).length === 0) {
                     complete = true;
                 } else {
                     allSplits.push(splitRes.splitNodes);
-                    Object.keys(splitRes.splitNodes).forEach(key => {
+                    Object.keys(splitRes.data).forEach(key => {
                         // Get the calc view nodes based on the name of split inputs
                         GetInputs(cvJson, key, (err2, inputNodes) => {
-                            for (let i = 0; i < splitRes.splitNodes[key] - 1; i++) {
+                            for (let i = 0; i < splitRes.data[key] - 1; i++) {
                                 // Make a copy for each split (if used in 10 places, create 9 new)
                                 CopyNode(cvJson, key, cvCopy => {
                                     const cvCopyNew = cvCopy;
