@@ -273,12 +273,13 @@ function CheckUnmappedParameters(cvJson, cb) {
 function FixSplitNodes(cvJson, version, cb) {
     // const cvRoot = GetCvRoot(cvJson);
     // TODO: Replace this with GetNodes
+
     GetNodeRoot(cvJson, (err, cvRoot) => {
         if (err) {
-            return cb(err);
+            return cb(new Error(err));
         }
         let complete = false;
-        const allSplits = [];
+        let allSplits = [];
         while (!complete) {
             // Get input nodes that are used by more than 1 node
             CheckSplitNodes(cvJson, (err, splitRes) => {

@@ -11,7 +11,8 @@ services:
     #   - ${PROD_SERVER_PORT}:${PROD_SERVER_PORT}
     volumes:
       - ./server/nodejs/src:/srv/app/home-server/src
-    command: npm run start
+    # command: npm run start
+    command: npm run devstart
     networks:
       - traefik
     labels:

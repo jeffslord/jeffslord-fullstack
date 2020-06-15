@@ -6,17 +6,23 @@ const parser = new xml2js.Parser();
 //! UTILS
 function ParseFile(filePath, cb) {
     fs.readFile(filePath, "utf8", (err, data) => {
+        if (err) {
+            return cb(new Error(err));
+        }
         parser.parseString(data, (err2, parsedString) => {
-            // WriteFile(
-            //     "./data/json/cv_json_latest.json",
-            //     JSON.stringify(result, null, 4)
-            // );
+            if (err2) {
+                return cb(new Error(err2));
+            }
             cb(null, parsedString);
         });
     });
 }
 function ParseXML(xml, cb) {
     parser.parseString(xml, (err, parsedString) => {
+        if (err) {
+            return cb(new Error(err));
+        }
+
         cb(null, parsedString);
     });
 }
