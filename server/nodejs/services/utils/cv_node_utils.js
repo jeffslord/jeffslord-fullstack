@@ -15,20 +15,50 @@ function GetNodeRoot(cvJson, cb) {
     }
     return cb(null, cvRoot);
 }
+function GetNodeRootPromise(cvJson) {
+    return new Promise((resolve, reject) => {
+        const cvRoot = cvJson["Calculation:scenario"].calculationViews[0].calculationView;
+        if (cvRoot === undefined) {
+            reject(new Error("No calculation view"));
+        } else {
+            resolve(cvRoot);
+        }
+    })
+}
+
 // Get all CalculationView nodes
 // Return array
 function GetNodes(cvJson, cb) {
     GetNodeRoot(cvJson, (err, root) => {
-        const cvs = [];
+        if (err) {
+            return cb(null);
+        }
+        let cvs = [];
         for (let i = 0; i < root.length; i += 1) {
             cvs.push(root[i]);
         }
-        return cb(err, cvs);
+        return cb(null, cvs);
     });
+}
+function GetNodesPromise(cvJson) {
+    return GetNodeRootPromise(cvJson)
+        .then(root => {
+            if (root.length === 0) {
+                throw new Error("Root length is 0.");
+            }
+            let cvs = [];
+            for (let i = 0; i < root.length; i += 1) {
+                cvs.push(root[i]);
+            }
+            return cvs;
+        })
 }
 // Get CalculationView node by name (id)
 function GetNodeByName(cvJson, cvName, cb) {
     GetNodeRoot(cvJson, (err, root) => {
+        if (err) {
+            return cb(err);
+        }
         let cvNameParsed = JSON.parse(cvName);
         if (cvNameParsed.charAt(0) === "#") {
             cvNameParsed = cvNameParsed.substr(1);
@@ -40,6 +70,22 @@ function GetNodeByName(cvJson, cvName, cb) {
         }
         return null;
     });
+}
+
+function GetNodeByNamePromise(cvJson, cvName) {
+    return GetNodeRootPromise(cvJson)
+        .then(root => {
+            let cvNameParsed = JSON.parse(cvName);
+            if (cvNameParsed.charAt(0) === "#") {
+                cvNameParsed = cvNameParsed.substr(1);
+            }
+            for (let i = 0; i < root.length; i += 1) {
+                if (root[i].$.id === cvNameParsed) {
+                    return cb(root[i]);
+                }
+            }
+            return null;
+        })
 }
 
 // Get all Calculation View nodes that have specified input node
@@ -74,11 +120,25 @@ function GetFilterExpressions(cvJson, cb) {
     return cb(null, filterExpressions);
 }
 
+function GetFilterExpressionsPromise(cvJson) {
+    return GetNodesPromise(cvJson)
+        .then(nodes => {
+            const filterExpressions = [];
+            nodes.forEach(node => {
+                if (node.filter !== undefined) filterExpressions.push(node.filter[0]);
+            });
+            return filterExpressions;
+        })
+}
+
 // Go through all Calculation View nodes and count how many times each input node is used
 // This will determine whether a split nodes occur
 //! check if this is comparing with data sources. data sources can occur multiple times.
 function GetInputNodeCounts(cvJson, cb) {
     GetNodes(cvJson, (err, cvs) => {
+        if (err) {
+            return cb(err);
+        }
         const inputNodes = {};
         cvs.forEach(ele1 => {
             ele1.input.forEach(ele2 => {
@@ -93,6 +153,25 @@ function GetInputNodeCounts(cvJson, cb) {
         return cb(null, inputNodes);
     });
 }
+
+function GetInputNodeCountsPromise(cvJson) {
+    return GetNodesPromise(cvJson)
+        .then(cvs => {
+            const inputNodes = {};
+            cvs.forEach(ele1 => {
+                ele1.input.forEach(ele2 => {
+                    const inputNode = JSON.stringify(ele2.$.node);
+                    if (inputNode in inputNodes) {
+                        inputNodes[inputNode] += 1;
+                    } else {
+                        inputNodes[inputNode] = 1;
+                    }
+                });
+            });
+            return inputNodes;
+        })
+}
+
 // Return array of input nodes
 //! figure out what this does exactly
 // Get all Calculation View Inputs based on an input name
@@ -115,8 +194,28 @@ function GetInputs(cvJson, inputName, cb) {
     // console.log(inputs);
     return cb(null, inputs);
 }
+
+function GetInputsPromise(cvJson, inputName) {
+    let inputNameParsed = inputName;
+    if (inputNameParsed.charAt(0) === '"') {
+        inputNameParsed = inputNameParsed.slice(1, -1);
+    }
+    return GetNodesPromise(cvJson)
+        .then(nodes => {
+            const inputs = [];
+            nodes.forEach(cv => {
+                cv.input.forEach(input => {
+                    if (input.$.node === inputNameParsed) {
+                        inputs.push(input);
+                    }
+                });
+            });
+            return inputs;
+        })
+}
+
 function GetCalculatedColumns(cvJson, cb) {
-    const calcColumns = [];
+    let calcColumns = [];
     GetNodes(cvJson, (err, nodes) => {
         nodes.forEach(element => {
             if (element.calculatedViewAttributes[0] !== "") {
@@ -130,8 +229,26 @@ function GetCalculatedColumns(cvJson, cb) {
     });
     return cb(null, calcColumns);
 }
+
+function GetCalculatedColumnsPromise(cvJson) {
+    return GetNodesPromise(cvJson)
+        .then(nodes => {
+            let calcColumns = [];
+            nodes.forEach(element => {
+                if (element.calculatedViewAttributes[0] !== "") {
+                    const calcAtts =
+                        element.calculatedViewAttributes[0].calculatedViewAttribute;
+                    calcAtts.forEach(col => {
+                        calcColumns.push(col);
+                    });
+                }
+            });
+            return calcColumns;
+        })
+}
+
 function GetCalculatedColumnNames(cvJson, cb) {
-    const calcColumnNames = [];
+    let calcColumnNames = [];
     GetCalculatedColumns(cvJson, (err, calcColumns) => {
         if (err) {
             return cb(Error("Error at GetCalculatedColumns"));
@@ -142,6 +259,18 @@ function GetCalculatedColumnNames(cvJson, cb) {
     });
     return cb(null, calcColumnNames);
 }
+
+function GetCalculatedColumnNamesPromise(cvJson) {
+    return GetCalculatedColumnsPromise(cvJson)
+        .then(calcColumns => {
+            let calcColumnNames = [];
+            calcColumns.forEach(element => {
+                calcColumnNames.push(element.$.id);
+            });
+            return calcColumnNames;
+        })
+}
+
 function GetCalculatedColumnFormulas(cvJson, cb) {
     const formulas = [];
     GetCalculatedColumns(cvJson, (err, calcColumns) => {
@@ -154,6 +283,18 @@ function GetCalculatedColumnFormulas(cvJson, cb) {
     });
     return cb(null, formulas);
 }
+
+function GetCalculatedColumnFormulasPromise(cvJson) {
+    return GetCalculatedColumnsPromise(cvJson)
+        .then(calcColumns => {
+            const formulas = [];
+            calcColumns.forEach(element => {
+                formulas.push(element.formula[0]);
+            });
+            return formulas;
+        })
+}
+
 function GetCalcColumnsInFilter(cvJson, cb) {
     const calcColumnsInFilter = [];
     GetCalculatedColumnNames(cvJson, (err, calcColumns) => {
@@ -177,6 +318,22 @@ function GetCalcColumnsInFilter(cvJson, cb) {
     });
     return cb(null, calcColumnsInFilter);
 }
+
+function GetCalcColumnsInFilterPromise(cvJson) {
+    return Promise.all([GetCalculatedColumnNamesPromise(cvJson), GetFilterExpressionsPromise(cvJson)])
+        .then(([calcColumnNames, filtersExpressions]) => {
+            const calcColumnsInFilter = [];
+            filtersExpressions.forEach(filter => {
+                calcColumnNames.forEach(col => {
+                    if (filter.includes(col)) {
+                        calcColumnsInFilter.push(col);
+                    }
+                });
+            });
+            return calcColumnsInFilter;
+        })
+}
+
 function GetSplitNodes(cvJson, cb) {
     const splitNodes = {};
     dataSourceUtils.GetDataSourceNames(cvJson, (err2, ds) => {
@@ -194,6 +351,11 @@ function GetSplitNodes(cvJson, cb) {
     });
     return cb(null, splitNodes);
 }
+
+function GetSplitNodesPromise(cvJson) {
+
+}
+
 function CopyNode(jsonResult, cvName, cb) {
     GetNodeByName(jsonResult, cvName, cv => {
         // duplicate cv into another cv and add it to the root
@@ -201,6 +363,11 @@ function CopyNode(jsonResult, cvName, cb) {
         return cb(cvCopy);
     });
 }
+
+function CopyNodePromise(jsonResult, cvName) {
+
+}
+
 function GetUnmappedParameters(cvJson, cb) {
     let unmapped = [];
     localVarUtils.GetLocalVarNames(cvJson, (err, localVarNames) => {
@@ -241,6 +408,10 @@ function GetUnmappedParameters(cvJson, cb) {
     return cb(null, unmapped);
 }
 
+function GetUnmappedParametersPromise() {
+
+}
+
 //! CHECKS
 function CheckSplitNodes(cvJson, cb) {
     GetSplitNodes(cvJson, (err, data) => {
@@ -250,6 +421,11 @@ function CheckSplitNodes(cvJson, cb) {
         return cb(null, { data, found: Object.keys(data).length > 0 });
     });
 }
+
+function CheckSplitNodesPromise(cvJson) {
+
+}
+
 function CheckCalcColumnsInFilter(cvJson, cb) {
     GetCalcColumnsInFilter(cvJson, (err, data) => {
         if (err) {
@@ -321,6 +497,27 @@ function FixSplitNodes(cvJson, version, cb) {
     });
 }
 
+function FixSplits(jsonResult, splits, key) {
+    return new Promise((resolve, reject) => {
+        for (let i = 0; i < splits.data[key] - 1; i++) {
+            CopyNodePromise(jsonResult, key)
+        }
+    })
+}
+function FixSplitNodesPromise(cvJson) {
+    let complete = false;
+    let allSplits = [];
+    return GetNodeRootPromise(cvJson)
+        .then(cvRoot => {
+            return CheckSplitNodesPromise(cvJson);
+        })
+        .then(splitRes => {
+            Object.keys(splitRes.data).forEach(key => {
+                return GetInputsPromise(cvJson, key);
+
+            });
+        })
+}
 
 //! NOT IMPLEMENTED
 // There doesn't seem to be a single join formula.

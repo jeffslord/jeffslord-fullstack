@@ -7,7 +7,7 @@ const parser = new xml2js.Parser();
 function ParseFile(filePath, cb) {
     fs.readFile(filePath, "utf8", (err, data) => {
         if (err) {
-            return cb(new Error(err));
+            return cb(err);
         }
         parser.parseString(data, (err2, parsedString) => {
             if (err2) {
@@ -20,9 +20,8 @@ function ParseFile(filePath, cb) {
 function ParseXML(xml, cb) {
     parser.parseString(xml, (err, parsedString) => {
         if (err) {
-            return cb(new Error(err));
+            return cb(err);
         }
-
         cb(null, parsedString);
     });
 }
