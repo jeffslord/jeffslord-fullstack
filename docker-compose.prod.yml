@@ -1,27 +1,27 @@
 version: "3"
 services:
-  cv_server:
-    build: ./server/nodejs
-    environment:
-      SERVER_PORT: ${PROD_SERVER_PORT}
-      NODE_ENV: ${PROD_NODE_ENV}
-    expose:
-      - ${PROD_SERVER_PORT}
-    # ports:
-    #   - ${PROD_SERVER_PORT}:${PROD_SERVER_PORT}
-    volumes:
-      - ./server/nodejs/src:/srv/app/home-server/src
-    # command: npm run start
-    command: npm run devstart
-    networks:
-      - traefik
-    labels:
-      traefik.enable: 'true'
-      traefik.http.routers.cv_server.rule: Host(`api.jeffslord.com`)
-      traefik.http.services.cv_server.loadbalancer.server.port: ${PROD_SERVER_PORT}
-      traefik.http.routers.cv_server.tls: 'true'
-      traefik.http.routers.cv_server.tls.certresolver: myresolver
-      traefik.docker.network: traefik
+  # cv_server:
+  #   build: ./server/nodejs
+  #   environment:
+  #     SERVER_PORT: ${PROD_SERVER_PORT}
+  #     NODE_ENV: ${PROD_NODE_ENV}
+  #   expose:
+  #     - ${PROD_SERVER_PORT}
+  #   # ports:
+  #   #   - ${PROD_SERVER_PORT}:${PROD_SERVER_PORT}
+  #   volumes:
+  #     - ./server/nodejs/src:/srv/app/home-server/src
+  #   # command: npm run start
+  #   command: npm run devstart
+  #   networks:
+  #     - traefik
+  #   labels:
+  #     traefik.enable: 'true'
+  #     traefik.http.routers.cv_server.rule: Host(`api.jeffslord.com`)
+  #     traefik.http.services.cv_server.loadbalancer.server.port: ${PROD_SERVER_PORT}
+  #     traefik.http.routers.cv_server.tls: 'true'
+  #     traefik.http.routers.cv_server.tls.certresolver: myresolver
+  #     traefik.docker.network: traefik
   cv_client:
     build: ./client/reactjs
     environment:
@@ -29,7 +29,7 @@ services:
       PORT: ${PROD_CLIENT_PORT}
       REACT_APP_API: ${PROD_API}
       NODE_ENV: ${PROD_NODE_ENV}
-      CI: 'true'
+      CI: "true"
     expose:
       - ${PROD_CLIENT_PORT}
     # ports:
@@ -41,16 +41,14 @@ services:
     networks:
       - traefik
     labels:
-      traefik.enable: 'true'
+      traefik.enable: "true"
       traefik.http.routers.cv_client.rule: Host(`home.jeffslord.com`)
       traefik.http.services.cv_client.loadbalancer.server.port: ${PROD_CLIENT_PORT}
-      traefik.http.routers.cv_client.tls: 'true'
+      traefik.http.routers.cv_client.tls: "true"
       traefik.http.routers.cv_client.tls.certresolver: myresolver
       traefik.docker.network: traefik
 
 networks:
   traefik:
     external: true
-
-
 # sudo docker-compose -f docker-compose.yml -f docker-compose.prod.yml up

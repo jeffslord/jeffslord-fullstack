@@ -1,10 +1,10 @@
 version: "3"
 services:
-  cv_server:
-    build: ./server/nodejs
-    volumes:
-      # - ./server/nodejs/src:/srv/app/home-server/src
-      - ./server/nodejs:/srv/app/home-server
+  # cv_server:
+  #   build: ./server/nodejs
+  #   volumes:
+  #     # - ./server/nodejs/src:/srv/app/home-server/src
+  #     - ./server/nodejs:/srv/app/home-server
   cv_client:
     build: ./client/reactjs
     volumes:
