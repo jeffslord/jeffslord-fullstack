@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import HomeBar from "../components/HomeBar";
-import HomeDrawer from "../components/HomeDrawer";
+// import HomeBar from "../components/HomeBar";
+// import HomeDrawer from "../components/HomeDrawer";
 import firebase from 'firebase';
 import MyNavbar from "../components/navigation/MyNavbar";
 
