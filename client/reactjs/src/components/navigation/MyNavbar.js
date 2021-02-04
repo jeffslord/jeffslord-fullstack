@@ -13,6 +13,7 @@ function MyNavbar(props) {
                     <NavDropdown.Item href="/tools/cvoptimizer/">HANA Calculation View Optimizer</NavDropdown.Item>
                     {/* <NavDropdown.Item href="">Games</NavDropdown.Item> */}
                 </NavDropdown>
+                <Nav.Link href="/about">About</Nav.Link>
             </Nav>
         </Navbar>
     )

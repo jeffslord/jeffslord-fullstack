@@ -10,6 +10,7 @@ import Welcome from "./screens/Welcome";
 import CvOptimizer from "./screens/CvOptimizer";
 import Login from "./screens/Login"
 import GameServers from "./screens/GameServers"
+import AboutScreen from "./screens/AboutScreen"
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -28,6 +29,7 @@ ReactDOM.render(
         <Route exact path="/games/servers/" component={GameServers} />
         {/* <Route exact path="/tools/cvclassic/" component={MyCvClassic} /> */}
         {/* <Route exact path="/tools/cvxsa/" component={MyCvXSA} /> */}
+        <Route exact path="/about" component={AboutScreen} />
         <Route component={NotFound}></Route>
       </Switch>
     </BrowserRouter>
