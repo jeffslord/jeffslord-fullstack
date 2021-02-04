@@ -7,7 +7,7 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import NotFound from "./screens/NotFound";
 import Welcome from "./screens/Welcome";
 // import HomeCvParse from "./components/HomeCvParse";
-import CvOptimizer from "./screens/CvOptimizer";
+// import CvOptimizer from "./screens/CvOptimizer";
 import Login from "./screens/Login"
 import GameServers from "./screens/GameServers"
 import AboutScreen from "./screens/AboutScreen"
@@ -24,7 +24,7 @@ ReactDOM.render(
         <Route exact path="/">
           <Redirect to="/home"></Redirect>
         </Route>
-        <Route exact path="/tools/cvoptimizer/" component={CvOptimizer} />
+        {/* <Route exact path="/tools/cvoptimizer/" component={CvOptimizer} /> */}
         <Route exact path="/login" component={Login}></Route>
         <Route exact path="/games/servers/" component={GameServers} />
         {/* <Route exact path="/tools/cvclassic/" component={MyCvClassic} /> */}
