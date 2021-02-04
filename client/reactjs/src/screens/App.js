@@ -3,7 +3,7 @@ import "./App.css";
 import HomeBar from "../components/HomeBar";
 import HomeDrawer from "../components/HomeDrawer";
 import firebase from 'firebase';
-
+import MyNavbar from "../components/navigation/MyNavbar";
 
 export default function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -30,14 +30,15 @@ export default function App() {
 
   return (
     <div className="App">
-      <HomeBar
+      {/* <HomeBar
         setDrawerOpen={open => setDrawerOpen(open)}
         title={"Title"}
-      />
-      <HomeDrawer
+      /> */}
+      <MyNavbar></MyNavbar>
+      {/* <HomeDrawer
         drawerOpen={drawerOpen}
         setDrawerOpen={open => setDrawerOpen(open)}
-      ></HomeDrawer>
+      ></HomeDrawer> */}
     </div >
   );
 }

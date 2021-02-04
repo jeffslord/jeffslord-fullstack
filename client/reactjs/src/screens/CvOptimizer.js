@@ -4,6 +4,7 @@ import CvOptimizerIndividual from './CvOptimizerIndividual'
 import Grid from "@material-ui/core/Grid";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import CalcviewForm from "../components/calcview/CalcviewForm"
 
 export default function CvOptimizer(props) {
     const [tabValue, setTabValue] = useState(0);
@@ -26,6 +27,7 @@ export default function CvOptimizer(props) {
             </Grid>
             {/* <HomeCvParse></HomeCvParse> */}
             <CvOptimizerIndividual></CvOptimizerIndividual>
+            <CalcviewForm />
         </div>
     );
 };
