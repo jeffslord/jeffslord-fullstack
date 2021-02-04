@@ -38,9 +38,14 @@ import Jumbotron from 'react-bootstrap/Jumbotron'
 // }
 function Welcome(props) {
   return (
-    <Jumbotron flud>
-      <h1>Welcome</h1>
-    </Jumbotron>
+    <div>
+      <Jumbotron flud>
+        <h1>Welcome</h1>
+      </Jumbotron>
+      <p>
+        There is nothing else here at the moment.
+      </p>
+    </div>
   )
 }
 

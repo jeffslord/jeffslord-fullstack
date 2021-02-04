@@ -11,6 +11,7 @@ import Welcome from "./screens/Welcome";
 import Login from "./screens/Login"
 import GameServers from "./screens/GameServers"
 import AboutScreen from "./screens/AboutScreen"
+import CalcviewScreen from "./screens/CalcViewScreen"
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -24,7 +25,7 @@ ReactDOM.render(
         <Route exact path="/">
           <Redirect to="/home"></Redirect>
         </Route>
-        {/* <Route exact path="/tools/cvoptimizer/" component={CvOptimizer} /> */}
+        <Route exact path="/tools/cvoptimizer/" component={CalcviewScreen} />
         <Route exact path="/login" component={Login}></Route>
         <Route exact path="/games/servers/" component={GameServers} />
         {/* <Route exact path="/tools/cvclassic/" component={MyCvClassic} /> */}
