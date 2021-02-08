@@ -2,8 +2,8 @@ const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
-const cv_check = require('../services/cv_check');
-const cv_fix = require('../services/cv_fix');
+const cv_check = require('../services/calcview/cv_check');
+const cv_fix = require('../services/calcview/cv_fix');
 
 
 const upload = multer({ dest: 'uploads/' });
