@@ -10,7 +10,7 @@
     "firebase": "8.2.5",
     "firebaseui": "4.7.3",
     "i": "0.3.6",
-    "node-sass": "^5.0.0",
+    "node-sass": "^7.0.0",
     "npm": "7.5.2",
     "prop-types": "15.7.2",
     "react": "^17.0.1",
